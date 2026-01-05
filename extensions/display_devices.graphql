@@ -1,0 +1,74 @@
+"""
+SinglePanelDevice represents a device which can display a single picture, e.g. using LED technology.
+The picture is represented either by a displaySign (a numeric value e.g. the index of the picture)
+or a contentKey, which is usually the hash of the bitmap which shall be displayed.
+"""
+type SinglePanelDevice implements Host & Device {
+    hostid: ID!
+    """
+    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname
+    """
+    host: String!
+    deviceType: String
+    hostgroups: [HostGroup!]
+    name: String
+    tags: JSONObject
+    state: PanelState
+}
+
+type PanelState implements DeviceState {
+    operational: OperationalDeviceData
+    current: PanelCurrentState
+}
+
+type PanelCurrentState {
+    values: PanelValues
+}
+
+type PanelValues {
+    """
+    Index of the bitmap which is displayed
+    """
+    contentIndex: Int
+    """
+    Hash of the bitmap which is displayed
+    """
+    contentKey: String
+    """
+    Text representation of what is displayed
+    """
+    contentText: String
+}
+
+"""
+The FourPanelDevice is a panel which allows to define pictures in 4
+subpanels, called TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+"""
+type FourPanelDevice implements Host & Device {
+    hostid: ID!
+    """
+    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname
+    """
+    host: String!
+    deviceType: String
+    hostgroups: [HostGroup!]
+    name: String
+    tags: JSONObject
+    state: FourPanelState
+}
+
+type FourPanelState implements DeviceState {
+    operational: OperationalDeviceData
+    current: FourPanelCurrentState
+}
+
+type FourPanelCurrentState {
+    values: FourPanelValues
+}
+
+type FourPanelValues {
+    TOP_LEFT: PanelValues
+    TOP_RIGHT: PanelValues
+    BOTTOM_LEFT: PanelValues
+    BOTTOM_RIGHT: PanelValues
+}

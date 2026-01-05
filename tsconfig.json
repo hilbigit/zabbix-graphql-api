@@ -1,0 +1,29 @@
+{
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true,
+    "esm": true,
+    "compilerOptions": {
+      "module": "esnext"
+    }
+  },
+  "compilerOptions": {
+    "rootDirs": ["src"],
+    "outDir": "dist",
+    "lib": ["es2020"],
+    "target": "es2022",
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "types": ["node", "jest"],
+    "skipLibCheck": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+  },
+  "include": ["./src/**/*", "./src/*"],
+  "files": ["node_modules/jest-expect-message/types/index.d.ts"]
+}
