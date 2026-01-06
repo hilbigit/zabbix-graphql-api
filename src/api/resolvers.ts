@@ -12,8 +12,8 @@ import {
     QueryHasPermissionsArgs,
     QueryUserPermissionsArgs,
     Resolvers,
-    StorageItemType, Host, QueryExportHostValueHistoryArgs,
-} from "../generated/graphql.js";
+    StorageItemType, Host, QueryExportHostValueHistoryArgs, Device,
+} from "../schema/generated/graphql.js";
 
 import {HostImporter} from "../execution/host_importer";
 import {HostValueExporter} from "../execution/host_exporter";
@@ -34,6 +34,7 @@ import {
 } from "../datasources/zabbix-userroles.js";
 import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api";
 import {GraphQLInterfaceType, GraphQLList} from "graphql/type";
+import {isDevice} from "./resolver_helpers";
 
 
 export function createResolvers(): Resolvers {
@@ -160,23 +161,20 @@ export function createResolvers(): Resolvers {
             // @ts-ignore
             __resolveType: function (host: Host, _context, info ): string {
 
-                const deviceType = host.deviceType ?? "";
+                if (!isDevice(host)) {
+                    logger.info(`checking host ${host.name} for deviceType - no device type found, returning as ZabbixHost`);
 
-                if (deviceType) {
-                    logger.info(`checking host ${host.name} for deviceType - found ${deviceType}`);
-                    let interfaceType: GraphQLInterfaceType = (info.returnType instanceof GraphQLList ?
-                        info.returnType.ofType : info.returnType) as GraphQLInterfaceType
-                    if (info.schema.getImplementations(interfaceType).objects.some((impl: { name: string; }) => impl.name === deviceType)) {
-                        return deviceType;
-                    }
-                    return "GenericDevice"
+                    return "ZabbixHost";
                 }
-
-                logger.info(`checking host ${host.name} for deviceType - no device type found, returning as ZabbixHost`);
-                return "ZabbixHost"; // Return "generic" device host as a default if no templates are assigned
+                const deviceType = host.deviceType!;
+                logger.info(`checking host ${host.name} for deviceType - found ${deviceType}`);
+                let interfaceType: GraphQLInterfaceType = (info.returnType instanceof GraphQLList ?
+                    info.returnType.ofType : info.returnType) as GraphQLInterfaceType
+                if (info.schema.getImplementations(interfaceType).objects.some((impl: { name: string; }) => impl.name === deviceType)) {
+                    return deviceType;
+                }
+                return "GenericDevice"
             }
-
-
         },
 
         Inventory: {
@@ -239,13 +237,6 @@ export function createResolvers(): Resolvers {
             DISABLED: DeviceStatus.DISABLED
         },
 
-        SensorValueType: {
-            NUMERIC: 0,
-            CHARACTER: 1,
-            LOG: 2,
-            NUMERIC_UNSIGNED: 3,
-            TEXT: 4
-        },
         StorageItemType: {
             TEXT: StorageItemType.Text,
             FLOAT: StorageItemType.Float,

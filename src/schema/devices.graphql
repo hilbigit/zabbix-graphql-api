@@ -1,0 +1,58 @@
+
+"""
+(IoT / Edge - ) Devices are hosts having a state containing the "output" / the business data which is exposed
+besides monitoring information.
+"""
+interface Device implements Host {
+    hostid: ID!
+    """
+    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname
+    """
+    host: String!
+    deviceType: String
+    hostgroups: [HostGroup!]
+    name: String
+    tags: JSONObject
+    state: DeviceState
+}
+type OperationalDeviceData {
+    temperature: Float
+    voltage: Float
+    signalstrength: Float
+    location: Location
+    timestamp: DateTime
+    error: [ErrorPayload!]
+}
+
+type ErrorPayload {
+    code: Int!
+    message: String
+    additionalInfo: JSONObject
+}
+
+interface DeviceState {
+    operational: OperationalDeviceData
+}
+
+# Generic IoT devices with "generic" current state - mapping all "values"
+type GenericDeviceState implements DeviceState {
+    operational: OperationalDeviceData
+    current: JSONObject
+}
+
+
+"""
+Device represents generic IoT / Edge - devices providing their state as generic "state.current" - JSON Object
+"""
+type GenericDevice implements Host & Device  {
+    hostid: ID!
+    """
+    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname
+    """
+    host: String!
+    deviceType: String
+    hostgroups: [HostGroup!]
+    name: String
+    tags: JSONObject
+    state: GenericDeviceState
+}

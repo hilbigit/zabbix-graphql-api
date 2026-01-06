@@ -1,4 +1,5 @@
 import {ParsedArgs, ZabbixParams, ZabbixRequest, ZabbixResult, ZabbixValueType} from "./zabbix-request.js";
+import {ZabbixItem} from "../schema/generated/graphql";
 
 export class ZabbixQueryItemsMetaRequest extends ZabbixRequest<any> {
     createZabbixParams(args?: ParsedArgs) {
@@ -13,27 +14,8 @@ export class ZabbixQueryItemsMetaRequest extends ZabbixRequest<any> {
     }
 }
 
-export type QueryZabbixItemResponse = {
-    value_type: string;
-    itemid: string,
-    name: string,
-    status?: string,
-    key_?: string,
-    lastvalue: string | null
-    lastclock: string | null
-    tags?: {
-        tag: string,
-        value: string
-    }[]
-    hosts?: {
-        hostid: number,
-        host: string,
-        templateid?: number,
-        name: string
-    }[]
-}
 
-export class ZabbixQueryItemsRequest extends ZabbixRequest<QueryZabbixItemResponse[]> {
+export class ZabbixQueryItemsRequest extends ZabbixRequest<ZabbixItem[]> {
     constructor(authToken?: string | null, cookie?: string) {
         super("item.get", authToken, cookie);
     }
@@ -66,7 +48,7 @@ export class ZabbixQueryItemsRequest extends ZabbixRequest<QueryZabbixItemRespon
 }
 
 
-export class ZabbixQueryItemsByIdRequest extends ZabbixRequest<QueryZabbixItemResponse[]> {
+export class ZabbixQueryItemsByIdRequest extends ZabbixRequest<ZabbixItem[]> {
     constructor(authToken?: string | null, cookie?: string) {
         super("item.get.itembyid", authToken, cookie);
     }

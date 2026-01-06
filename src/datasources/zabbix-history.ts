@@ -1,5 +1,5 @@
 import {ZabbixAPI} from "./zabbix-api.js";
-import {ApiError, SortOrder, StorageItemType} from "../generated/graphql.js";
+import {ApiError, SortOrder, StorageItemType} from "../schema/generated/graphql.js";
 import {ZabbixCreateOrUpdateStorageItemRequest} from "./zabbix-items.js";
 import {ZabbixForceCacheReloadRequest} from "./zabbix-script.js";
 import {logger} from "../logging/logger.js";

@@ -1,11 +1,11 @@
 import {
     ApiError,
-    HistoryExportResponse, QueryExportHostValueHistoryArgs,
-    StorageItemType
-} from "../generated/graphql.js";
+    GenericResponse, QueryExportHostValueHistoryArgs,
+    StorageItemType, ZabbixItem
+} from "../schema/generated/graphql.js";
 import {ApiErrorCode, ApiErrorMessage} from "../model/model_enum_values.js";
 
-import {QueryZabbixItemResponse, ZabbixQueryItemsRequest} from "../datasources/zabbix-items.js";
+import {ZabbixQueryItemsRequest} from "../datasources/zabbix-items.js";
 import {isZabbixErrorResult, ParsedArgs, ZabbixErrorResult} from "../datasources/zabbix-request.js";
 import {ZabbixHistoryGetParams, ZabbixQueryHistoryRequest} from "../datasources/zabbix-history.js";
 import {zabbixAPI} from "../datasources/zabbix-api";
@@ -20,7 +20,7 @@ type ItemMapResponse = {
 }
 
 export class HostValueExporter {
-    static async exportHistory(args: QueryExportHostValueHistoryArgs, zabbixAuthToken?: string, cookie?: string): Promise<HistoryExportResponse> {
+    static async exportHistory(args: QueryExportHostValueHistoryArgs, zabbixAuthToken?: string, cookie?: string): Promise<GenericResponse> {
         let itemMapResponse: ItemMapResponse = await HostValueExporter.queryItemsForFilterArgs(args, zabbixAuthToken, cookie);
         if (itemMapResponse.error || !itemMapResponse.items) {
             return {
@@ -77,7 +77,7 @@ export class HostValueExporter {
         let hostFilter = args.host_filter
         let itemKeyFilter = args.itemKey_filter
 
-        let items: QueryZabbixItemResponse[] | ZabbixErrorResult = await new ZabbixQueryItemsRequest(zabbixAuthToken, cookie)
+        let items: ZabbixItem[] | ZabbixErrorResult = await new ZabbixQueryItemsRequest(zabbixAuthToken, cookie)
             .executeRequestReturnError(zabbixAPI, new ParsedArgs(
                 {
                     filter: {

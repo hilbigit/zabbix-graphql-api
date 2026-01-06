@@ -1,0 +1,110 @@
+########################################################
+#  Request/response
+########################################################
+
+type GenericResponse {
+    result: [JSONObject!]
+    error: ApiError
+}
+
+type ApiError implements Error {
+    code: Int
+    message: String
+    data: JSONObject
+    path: String
+    args: JSONObject
+}
+
+interface Error {
+    code: Int
+    message: String
+    data: JSONObject
+}
+
+
+########################################################
+#  User permissions
+########################################################
+
+input PermissionRequest {
+    permission: Permission!,
+    """
+    objectName maps to name / path suffix of the template group representing the permission in Zabbix:
+    Permissions/{objectName}
+    """
+    objectName:  String!
+}
+
+"""
+READ, READ_WRITE or DENY:
+describes the rights related to an objectName
+There is no EXECUTE or anything else in Zabbix,
+i.e. objectName - Tree has to be designed accordingly in order to represent the perform actions.
+
+E.g.
+
+Let's assume a button called "button1", used in application "app1", having a label which shows "do something". Instead of model the action "do something" the idea is
+to model the effect of this action - do something will result in a status change. Let's further assume that the button will only
+be displayed if the user is allowed to see the current status.
+
+Permissions/app1/button1/status
+
+The following PermissionRequests would be used by the frontend:
+
+1. Should the button (and its status) be displayed at all?
+button1.displayed = hasPermissions(
+{
+objectName: "app1/button1/status"
+permission: READ
+})
+2. Should the user be able to press the button (enabled)?
+button1.displayed = hasPermissions(
+{
+objectName: "app1/button1/status"
+permission: READ_WRITE
+})
+
+
+Usage Example for this pattern: Activation/Deactivation of a control program - the button
+shows the possible action. If the program is active it shows "Deactivate". If the program is inactive it shows "Activate".
+From this label the user learns something about the current state - therefore the status - read - permission is needed in order
+to display the button at all. The status write permission is needed in order to enable the button (i.e. allow the user to press it).
+in order to model the permissions to press / see a button "button1" belonging to application "app1"
+the following template group could be modelled in Zabbix
+"""
+enum Permission {
+    """
+    DENY superseeds anything else  - i.e. if in Zabbix there is a DENY and READ at the same time the result will be DENY
+    """
+    DENY
+    """
+    READ superseeds READ_WRITE  - i.e. if in Zabbix there is a READ_WRITE and READ at the same time the resulting permission
+    level will be READ
+    """
+    READ
+    """
+    READ_WRITE implies the READ permission. Do not set both READ and READ_WRITE at the same time if you want to achieve
+    READ + WRITE permission, because in this case READ will superseed the READ_WRITE and the resulting permission level will be READ
+    """
+    READ_WRITE
+}
+
+type UserPermission {
+    permission: Permission!,
+    """
+    objectName maps to name / path suffix of the template group representing the permission in Zabbix:
+    Permissions/{objectName}
+    """
+    objectName:  String!
+}
+
+
+############################################################################
+# General purpose types + enums
+############################################################################
+enum SortOrder {
+    "Deliver values in ascending order"
+    asc
+    "Deliver values in descending order"
+    desc
+}

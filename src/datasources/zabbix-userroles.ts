@@ -8,7 +8,7 @@ import {
     ZabbixRequest,
     ZabbixResult
 } from "./zabbix-request.js";
-import {ApiError, ImportUserRightResult, UserRole, UserRoleInput, UserRoleModule} from "../generated/graphql.js";
+import {ApiError, ImportUserRightResult, UserRole, UserRoleInput, UserRoleModule} from "../schema/generated/graphql.js";
 import {ZabbixAPI} from "./zabbix-api.js";
 import {ZabbixQueryModulesRequest} from "./zabbix-module.js";
 import {ApiErrorCode} from "../model/model_enum_values.js";

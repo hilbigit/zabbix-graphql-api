@@ -15,7 +15,7 @@ import {
     UserGroupInput,
     ZabbixGroupRight,
     ZabbixGroupRightInput
-} from "../generated/graphql.js";
+} from "../schema/generated/graphql.js";
 import {ZabbixAPI} from "./zabbix-api.js";
 import {ZabbixQueryTemplateGroupRequest, ZabbixQueryTemplateGroupResponse} from "./zabbix-templates.js";
 import {ZabbixQueryHostgroupsRequest, ZabbixQueryHostgroupsResult} from "./zabbix-hostgroups.js";

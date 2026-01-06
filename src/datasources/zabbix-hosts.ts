@@ -1,4 +1,4 @@
-import {Host, ZabbixHost} from "../generated/graphql.js";
+import {CreateHostResponse, Host, ZabbixHost} from "../schema/generated/graphql.js";
 import {ZabbixAPI} from "./zabbix-api.js";
 import {
     isZabbixErrorResult,
@@ -8,8 +8,7 @@ import {
     ZabbixRequest,
     ZabbixResult
 } from "./zabbix-request.js";
-import {QueryZabbixItemResponse} from "./zabbix-items.js";
-import {ZabbixExportValue, ZabbixHistoryGetParams, ZabbixQueryHistoryRequest} from "./zabbix-history.js";
+import {ZabbixHistoryGetParams, ZabbixQueryHistoryRequest} from "./zabbix-history.js";
 
 
 export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult> extends ZabbixRequest<T> {
@@ -244,9 +243,7 @@ class ZabbixCreateHostParams implements ZabbixParams {
 }
 
 
-export class ZabbixCreateHostRequest extends ZabbixRequest<{
-    hostids: number[]
-}> {
+export class ZabbixCreateHostRequest extends ZabbixRequest<CreateHostResponse> {
     constructor(authToken?: string | null, cookie?: string) {
         super("host.create", authToken, cookie);
     }

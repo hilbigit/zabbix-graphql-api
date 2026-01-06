@@ -1,0 +1,171 @@
+type Mutation {
+
+    """
+    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    """
+    createHost(host: String!, hostgroupids:[Int!]!, templateids: [Int!]!,
+        location: LocationInput): CreateHostResponse
+
+    """
+    (Mass) Import zabbix groups
+    and assign them to the corresponding hosts by groupid or groupName.
+
+    Return value: If no error occurs a groupid be returned for each created group,
+    otherwise the return object will contain an error message
+
+    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    """
+    importHostGroups(hostGroups: [CreateHostGroup!]!):[CreateHostGroupResponse!]
+
+
+    """
+    (Mass) Import hosts and assign them to host groups by groupid or groupName.
+
+    Return value: If no error occurs a hostid will be returned for each created host,
+    otherwise the return object will contain an error message.
+
+    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    """
+    importHosts(hosts: [CreateHost!]!):[ImportHostResponse!]
+
+    importUserRights(input: UserRightsInput!, dryRun: Boolean! = true): ImportUserRightsResult
+}
+
+####################################################################
+# Input types used for importXXX - and storeXXX - Mutations
+####################################################################
+
+input CreateHostGroup {
+    """
+    Name of the host group
+    """
+    groupName: String!
+    """
+    Internally used unique id
+    (will be assigned by Zabbix if empty)
+    """
+    uuid: String
+}
+type ImportHostResponse {
+    deviceKey: String!
+    hostid: String
+    message: String
+    error: ApiError
+}
+
+
+type CreateHostGroupResponse {
+    groupName: String!
+    groupid: Int
+    message: String
+    error: ApiError
+}
+
+input CreateHost {
+    deviceKey: String!
+    """
+    Optional display name of the device (must be unique if provided - default is to set display name to deviceKey)
+    """
+    name: String
+    deviceType: String!
+    """
+    groupNames is used to assign the created object
+    to a host group. It is mandatory but
+    can also be blank. This is usefull in case of
+    passing a groupid instead which is
+    the zabbix internal key for storing the group.
+    If a groupid is provided the passed groupName is ignored
+    """
+    groupNames: [String!]!
+    """
+    Optionally the internal groupids can be passed - in this case the
+    groupName is ignored
+    """
+    groupids: [Int]
+    location: LocationInput
+}
+
+type CreateHostResponse {
+    hostids: [Int]
+    itemids: [Int]
+    error: ApiError
+}
+input LocationInput {
+    name: String
+    location_lat: String
+    location_lon: String
+}
+
+#######################################
+# Permission related input
+#######################################
+input UserRightsInput {
+    userRoles: [UserRoleInput!]
+    userGroups: [UserGroupInput!]
+}
+
+input UserRoleInput {
+    name: String
+    type: Int
+    readonly: Int
+    rules: UserRoleRulesInput
+}
+
+input UserRoleRulesInput {
+    ui: [UserRoleRuleInput!]
+    ui_default_access: Int
+    modules:[UserRoleModuleInput!]
+    modules_default_access: Int
+    api_access: Int
+    api_mode: Int
+    api: [String!]
+    actions: [UserRoleRuleInput!]
+    actions_default_access: Int
+}
+
+input UserRoleRuleInput {
+    name: String
+    status: Int
+}
+input UserRoleModuleInput {
+    moduleid: String
+    status: Int
+    id: String
+}
+
+input UserGroupInput {
+    name: String!
+    gui_access: Int
+    users_status: Int
+    hostgroup_rights: [ZabbixGroupRightInput!]
+    templategroup_rights: [ZabbixGroupRightInput!]
+}
+
+
+input ZabbixGroupRightInput {
+    uuid: String
+    """
+    name may optionally be specified for documentation purpose,
+    but the master for setting the user right is the uuid.
+    If a uuid is found and the corresponding group
+    has a deviating name this will be documented within a message
+    with errorcode = 0 (OK) but the permission will be set (
+    the reason is that names for groups may deviate between several
+    instances of the control center although the semantic is the same -
+    while the semantic is identified by uuid.
+    """
+    name: String
+    permission: Permission
+}
+
+type ImportUserRightsResult {
+    userRoles: [ImportUserRightResult!]
+    userGroups: [ImportUserRightResult!]
+}
+type ImportUserRightResult {
+    id: String
+    name: String
+    message: String
+    errors: [ApiError!]
+}
+

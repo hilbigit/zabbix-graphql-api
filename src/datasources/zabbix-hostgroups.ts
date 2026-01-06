@@ -1,5 +1,5 @@
 import {isZabbixErrorResult, ParsedArgs, ZabbixParams, ZabbixRequest} from "./zabbix-request.js";
-import {Permission} from "../generated/graphql.js";
+import {Permission} from "../schema/generated/graphql.js";
 import {
     FIND_ZABBIX_EDGE_DEVICE_BASE_GROUP_PREFIX,
     ZABBIX_EDGE_DEVICE_BASE_GROUP,

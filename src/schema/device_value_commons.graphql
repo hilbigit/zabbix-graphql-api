@@ -1,6 +1,6 @@
 """
 Represents a message containing information about a specific device and its associated data value.
-The class is designed to be extended by other classes that define more structured or specialized types
+The interface is designed to be extended by other types that define more structured or specialized types
 of device value messages.
 """
 interface DeviceValueMessage {

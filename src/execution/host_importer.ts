@@ -1,9 +1,10 @@
 import {
     CreateHost,
-    CreateHostResponse,
+    CreateHostGroup,
     CreateHostGroupResponse,
-    InputMaybe,CreateHostGroup
-} from "../generated/graphql.js";
+    ImportHostResponse,
+    InputMaybe
+} from "../schema/generated/graphql.js";
 import {logger} from "../logging/logger.js";
 import {ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
 import {isZabbixErrorResult, ParsedArgs, ZabbixErrorResult} from "../datasources/zabbix-request.js";
@@ -89,7 +90,7 @@ export class HostImporter {
         if (!hosts) {
             return null
         }
-        let result: CreateHostResponse[] = []
+        let result: ImportHostResponse[] = []
         for (let device of hosts) {
             let groupids = device.groupids
             if (!groupids) {

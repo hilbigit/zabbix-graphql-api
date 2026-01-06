@@ -1,0 +1,155 @@
+###################################
+# Hosts, items + groups, templates
+###################################
+
+type HostGroup {
+    groupid: ID!
+    name: String
+}
+
+interface Host {
+    hostid: ID!
+    """
+    The host field contains the "hostname" in Zabbix
+    """
+    host: String!
+    hostgroups: [HostGroup!]
+    name: String
+    tags: JSONObject
+}
+
+type ZabbixItem {
+    itemid: Int!
+    name: String!
+    key_: String!
+    hostid: Int
+    lastclock: Int
+    lastvalue: String
+    value_type: Int!
+    attributeName: String
+    status: DeviceStatus
+    type: DeviceCommunicationType
+    hosts: [Host!]
+}
+
+enum DeviceCommunicationType {
+    ZABBIX_AGENT
+    ZABBIX_AGENT_ACTIVE
+    ZABBIX_TRAP
+    ZABBIX_INTERNAL_ITEM
+    SIMPLE_CHECK
+    DEPENDANT_ITEM
+    SIMULATOR_CALCULATED
+    SIMULATOR_JAVASCRIPT
+    HTTP_AGENT
+    IPMI_AGENT
+    JMX_AGENT
+    SNMP_AGENT
+    SNMP_TRAP
+    DATABASE_MONITOR
+}
+
+type ZabbixHost implements Host {
+    hostid: ID!
+    host: String!
+    hostgroups: [HostGroup!]
+    name: String
+    tags: JSONObject
+
+
+    items: [ZabbixItem!]
+    inventory: Inventory
+    parentTemplates: [Template!]
+}
+
+
+type Template {
+    templateid: String!
+    name: String
+}
+
+type Inventory {
+    location: Location
+}
+
+"""
+Hint: WGS84[dd.ddddd] coordinates are used
+"""
+interface GpsPosition {
+    latitude: Float
+    longitude: Float
+}
+type Location implements GpsPosition {
+    name: String
+    latitude: Float
+    longitude: Float
+}
+
+enum DeviceStatus {
+    ENABLED
+    DISABLED
+}
+
+########################################################
+#  History / Values
+########################################################
+
+enum StorageItemType {
+    FLOAT
+    INT
+    TEXT
+}
+############################
+# Permissions
+############################
+type UserRights {
+    userGroups: [UserGroup!]
+    userRoles: [UserRole!]
+}
+
+type UserRole {
+    roleid: Int!
+    name: String
+    type: Int
+    readonly: Int
+    rules: UserRoleRules
+}
+
+type UserRoleRules {
+    ui: [UserRoleRule!]
+    ui_default_access: Int
+    modules:[UserRoleModule!]
+    modules_default_access: Int
+    api_access: Int
+    api_mode: Int
+    api: [String!]
+    actions: [UserRoleRule!]
+    actions_default_access: Int
+}
+
+type UserRoleRule {
+    name: String
+    status: Int
+}
+type UserRoleModule {
+    moduleid: String
+    status: Int
+    id: String
+    relative_path: String
+}
+
+type UserGroup {
+    usrgrpid: Int!
+    name: String!
+    gui_access: Int
+    users_status: Int
+    hostgroup_rights: [ZabbixGroupRight!]
+    templategroup_rights: [ZabbixGroupRight!]
+}
+
+type ZabbixGroupRight {
+    id: Int!
+    uuid: String
+    name: String
+    permission: Permission
+}

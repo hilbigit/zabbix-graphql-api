@@ -1,4 +1,4 @@
-import {ApiError, InputMaybe, QueryHasPermissionsArgs, UserPermission} from "../generated/graphql.js";
+import {ApiError, InputMaybe, QueryHasPermissionsArgs, UserPermission} from "../schema/generated/graphql.js";
 import {ZabbixAPI} from "./zabbix-api.js";
 import {ApiErrorCode, Permission, PermissionNumber} from "../model/model_enum_values.js";
 import {logger} from "../logging/logger.js";
