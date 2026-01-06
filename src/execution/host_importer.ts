@@ -85,12 +85,12 @@ export class HostImporter {
         return result
     }
 
-    static async importHosts(devices: InputMaybe<Array<CreateHost>> | undefined, zabbixAuthToken?: string, cookie?: string) {
-        if (!devices) {
+    static async importHosts(hosts: InputMaybe<Array<CreateHost>> | undefined, zabbixAuthToken?: string, cookie?: string) {
+        if (!hosts) {
             return null
         }
         let result: CreateHostResponse[] = []
-        for (let device of devices) {
+        for (let device of hosts) {
             let groupids = device.groupids
             if (!groupids) {
                 groupids = await GroupHelper.findHostGroupIdsByName([ZABBIX_EDGE_DEVICE_BASE_GROUP, ...device.groupNames], zabbixAPI, zabbixAuthToken, cookie)

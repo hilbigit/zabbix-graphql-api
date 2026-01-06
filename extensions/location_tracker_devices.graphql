@@ -1,0 +1,68 @@
+"""
+DistanceTracker represents a device which can detect other devices around itself and estimate
+the distances, e.g. by using Bluetooth scanning technology and estimating the distance by .
+Optionally the
+"""
+type DistanceTrackerDevice implements Host & Device {
+    hostid: ID!
+    """
+    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname
+    """
+    host: String!
+    deviceType: String
+    hostgroups: [HostGroup!]
+    name: String
+    tags: JSONObject
+    state: DistanceTrackerState
+}
+
+type DistanceTrackerState implements DeviceState {
+    operational: OperationalDeviceData
+    current: DistanceTrackerCurrentState
+}
+
+type DistanceTrackerCurrentState {
+    values: DistanceTrackerValues
+}
+
+type DistanceTrackerValues {
+    """
+    Aggregated information of devices detected around the tracker
+    """
+    countValues: DeviceCountValues
+    """
+    Information about devices detected nearby
+    """
+    distanceValues: String
+
+}
+
+type DeviceCountValues {
+    """
+    Number of unique deviceKeys detected between timeFrom and timeUnti
+    """
+    count: Int
+    """
+    Start of time interval for the delivered device counting value
+    """
+    timeFrom: Time
+    """
+    End of time interval for the delivered device counting value
+    """
+    timeUntil: Time
+}
+
+type DeviceDistanceValues {
+    """
+    Number of unique deviceKeys detected between timeFrom and timeUnti
+    """
+    count: Int
+    """
+    Start of time interval for the delivered device counting value
+    """
+    timeFrom: Time
+    """
+    End of time interval for the delivered device counting value
+    """
+    timeUntil: Time
+}

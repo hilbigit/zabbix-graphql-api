@@ -1,0 +1,49 @@
+"""
+Represents a message containing information about a specific device and its associated data value.
+The class is designed to be extended by other classes that define more structured or specialized types
+of device value messages.
+"""
+interface DeviceValueMessage {
+    """
+    A unique identifier used to distinguish a specific device within the system.
+    This field is commonly used to associate messages, configurations, or data values
+    with a particular device.
+    """
+    deviceKey: String
+
+    """
+    Represents the timestamp at which a specific event, message, or data point was created or recorded.
+    The format should align with standard expectations (e.g., ISO 8601).
+    """
+    timestamp: String
+
+    """
+    Represents the name assigned to a set of values that are submitted together with a single timestamp.
+    This name is associated with a well-defined data structure.
+    """
+    attributeName: String
+
+    """
+    Represents the name of the sub-topic to which the attribute is submitted.
+    Classification or grouping of data within a broader topic structure.
+    """
+    topicName: String
+
+    """
+    Specifies the type or category of the device. Used to define the classification
+    of a device in the system (capabilities, functionalities, or purpose).
+    """
+    deviceType: String
+
+    """
+    Retrieves the value associated with the current instance of the object.
+    """
+    value: DeviceValue
+}
+
+"""
+Marker-interface for device-related data values.
+"""
+interface DeviceValue {
+    _empty: String
+}

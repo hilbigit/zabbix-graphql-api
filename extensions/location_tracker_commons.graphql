@@ -1,0 +1,60 @@
+
+
+"""
+Concrete implementation of a DeviceValueMessage for sensor distance data.
+"""
+type SensorDistanceMessage implements DeviceValueMessage {
+    deviceKey: String
+    timestamp: String
+    attributeName: String
+    topicName: String
+    deviceType: String
+    value: SensorDistanceValue
+}
+
+"""
+Represents the payload for a sensor distance measurement.
+"""
+type SensorDistanceValue implements DeviceValue {
+    """
+    Represents the name of the device that reports or provides distance sensor data.
+    Uniquely identifies the device within the context of the SensorDistanceValue.
+    """
+    deviceName: String
+
+    """
+    Represents the MAC address of the device. Typically formatted as a 12-character
+    hexadecimal string (e.g., "00:1A:2B:3C:4D:5E").
+    """
+    mac: String
+
+    """
+    Represents the measured or calculated distance value, typically in meters.
+    Should be non-negative.
+    """
+    distance: Float
+
+    """
+    Represents the time at which the sensor measurement was recorded.
+    """
+    time: String
+
+    _empty: String
+}
+
+"""
+Represents a coordinate in 3D space with x, y, and z components.
+"""
+type Position {
+    x: Float
+    y: Float
+    z: Float
+}
+
+"""
+Represents the result of a position calculation, including the calculated position and accuracy.
+"""
+type PositionCalculatorResult {
+    position: Position
+    accuracy: Float
+}

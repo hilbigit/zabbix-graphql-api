@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="index.ts" type="NodeJSConfigurationType" path-to-node="wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v22.14.0/bin/node" nameIsGenerated="true" path-to-js-file="src/index.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$">
     <envs>
-      <env name="ADDITIONAL_RESOLVERS" value="SinglePanelDevice,FourPanelDevice" />
-      <env name="ADDITIONAL_SCHEMAS" value="./extensions/display_devices.graphql" />
+      <env name="ADDITIONAL_RESOLVERS" value="SinglePanelDevice,FourPanelDevice,DistanceTracker" />
+      <env name="ADDITIONAL_SCHEMAS" value="./extensions/display_devices.graphql,./extensions/location_tracker_devices.graphql" />
       <env name="DEBUG" value="device-control-center-api:*" />
       <env name="ZABBIX_AUTH_TOKEN" value="$ZABBIX_AUTH_TOKEN_VCR_DEV$" />
       <env name="ZABBIX_BASE_URL" value="http://cockpit.vcr.develop.hilbigit.com/" />

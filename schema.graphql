@@ -37,7 +37,7 @@ type Query {
 
     """
     Get all host groups.
-    If with_hosts==true only groups with attached devices are delivered.
+    If with_hosts==true only groups with attached hosts are delivered.
 
     Authentication: By zbx_session - cookie or zabbix-auth-token - header
     """
@@ -54,19 +54,19 @@ type Query {
     locations(name_pattern: String = "", distinct_by_name: Boolean = true, templateids:[String] = null): [Location]
 
     """
-    Export device value history from Zabbix
+    Export history from Zabbix items
 
     Authentication: By zbx_session - cookie or zabbix-auth-token - header
     """
-    exportDeviceValueHistory(
-        "(Optional) list of deviceKeys to be included in the result"
-        deviceKey_filter: [String!],
-        "(Optional) list of attribute names to be included in the result"
-        attribute_filter: [String!],
+    exportHostValueHistory(
+        "(Optional) list of hostnames to be included in the result"
+        host_filter: [String!],
+        "(Optional) list of item keys to be included in the result"
+        itemKey_filter: [String!],
         """
-        (Optional) timestamp of earliest deviceValue"""
+        (Optional) timestamp of earliest value"""
         time_from: DateTime,
-        """(Optional) timestamp of last deviceValue """
+        """(Optional) timestamp of last value """
         time_until: DateTime,
         """Results are sorted by timestamps - ascending or descending order may be specified
         using this parameter"""
@@ -83,7 +83,7 @@ type Query {
         """
         type: StorageItemType = FLOAT
 
-    ):DeviceValueExportResponse
+    ):HistoryExportResponse
 
     """
     Return all user permissions. If objectNames is provided return only the permissions related to the objects within
@@ -234,7 +234,7 @@ type UserPermission {
     objectName:  String!
 }
 ########################################################
-#  Device values
+#  Values
 ########################################################
 
 enum StorageItemType {
@@ -243,7 +243,7 @@ enum StorageItemType {
     TEXT
 }
 
-type DeviceValueExportResponse {
+type HistoryExportResponse {
     result: [JSONObject!]
     error: ApiError
 }
@@ -270,15 +270,14 @@ type Mutation {
 
 
     """
-    (Mass) Import edge devices and assign them to host groups by groupid or groupName.
+    (Mass) Import hosts and assign them to host groups by groupid or groupName.
 
-    Return value: If no error occurs a hostid will be returned for each created device,
-    otherwise the return object will contain an error message. The hostid will be equal
-    to the provided deviceKey if the operation was successfull.
+    Return value: If no error occurs a hostid will be returned for each created host,
+    otherwise the return object will contain an error message.
 
     Authentication: By zbx_session - cookie or zabbix-auth-token - header
     """
-    importHosts(devices: [CreateHost!]!):[CreateHostResponse!]
+    importHosts(hosts: [CreateHost!]!):[CreateHostResponse!]
 
     importUserRights(input: UserRightsInput!, dryRun: Boolean! = true): ImportUserRightsResult
 }

@@ -1,7 +1,6 @@
 import {
     ApiError,
-    DeviceValueExportResponse,
-    QueryExportDeviceValueHistoryArgs,
+    HistoryExportResponse, QueryExportHostValueHistoryArgs,
     StorageItemType
 } from "../generated/graphql.js";
 import {ApiErrorCode, ApiErrorMessage} from "../model/model_enum_values.js";
@@ -21,7 +20,7 @@ type ItemMapResponse = {
 }
 
 export class HostValueExporter {
-    static async exportDeviceData(args: QueryExportDeviceValueHistoryArgs, zabbixAuthToken?: string, cookie?: string): Promise<DeviceValueExportResponse> {
+    static async exportHistory(args: QueryExportHostValueHistoryArgs, zabbixAuthToken?: string, cookie?: string): Promise<HistoryExportResponse> {
         let itemMapResponse: ItemMapResponse = await HostValueExporter.queryItemsForFilterArgs(args, zabbixAuthToken, cookie);
         if (itemMapResponse.error || !itemMapResponse.items) {
             return {
@@ -74,16 +73,16 @@ export class HostValueExporter {
         }
     }
 
-    static async queryItemsForFilterArgs(args: QueryExportDeviceValueHistoryArgs, zabbixAuthToken?: string, cookie?: string): Promise<ItemMapResponse> {
-        let deviceKeys = args.deviceKey_filter
-        let attributeNames = args.attribute_filter
+    static async queryItemsForFilterArgs(args: QueryExportHostValueHistoryArgs, zabbixAuthToken?: string, cookie?: string): Promise<ItemMapResponse> {
+        let hostFilter = args.host_filter
+        let itemKeyFilter = args.itemKey_filter
 
         let items: QueryZabbixItemResponse[] | ZabbixErrorResult = await new ZabbixQueryItemsRequest(zabbixAuthToken, cookie)
             .executeRequestReturnError(zabbixAPI, new ParsedArgs(
                 {
                     filter: {
-                        host: deviceKeys,
-                        key_: attributeNames
+                        host: hostFilter,
+                        key_: itemKeyFilter
                     },
                     tags: [{"tag": "hasValue", "operator": 1, "value": "true"}]
                 }))

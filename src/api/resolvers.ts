@@ -8,12 +8,11 @@ import {
     Permission,
     QueryAllHostsArgs,
     QueryAllHostGroupsArgs,
-    QueryExportDeviceValueHistoryArgs,
     QueryExportUserRightsArgs,
     QueryHasPermissionsArgs,
     QueryUserPermissionsArgs,
     Resolvers,
-    StorageItemType, Host,
+    StorageItemType, Host, QueryExportHostValueHistoryArgs,
 } from "../generated/graphql.js";
 
 import {HostImporter} from "../execution/host_importer";
@@ -92,11 +91,11 @@ export function createResolvers(): Resolvers {
                 )
             },
 
-            exportDeviceValueHistory: (_parent: any, args: QueryExportDeviceValueHistoryArgs, {
+            exportHostValueHistory: (_parent: any, args: QueryExportHostValueHistoryArgs, {
                 zabbixAuthToken,
                 cookie
             }: any) => {
-                return HostValueExporter.exportDeviceData(args, zabbixAuthToken, cookie)
+                return HostValueExporter.exportHistory(args, zabbixAuthToken, cookie)
             },
 
             exportUserRights: async (_, args: QueryExportUserRightsArgs, {
@@ -134,7 +133,7 @@ export function createResolvers(): Resolvers {
                 zabbixAuthToken,
                 cookie
             }: any) => {
-                return HostImporter.importHosts(args.devices, zabbixAuthToken, cookie)
+                return HostImporter.importHosts(args.hosts, zabbixAuthToken, cookie)
             },
             importUserRights: async (_, args: MutationImportUserRightsArgs, {
                 zabbixAuthToken,
