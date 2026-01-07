@@ -25,7 +25,7 @@ const createZabbixHierarchicalDeviceTagsResolver =
     }
 export async function schema_loader(): Promise<GraphQLSchema> {
     const resolvers = createResolvers();
-    let typeDefs: string = readFileSync('./schema.graphql', {encoding: 'utf-8'});
+    let typeDefs: string = readFileSync('./src/schema/*.graphql', {encoding: 'utf-8'});
     if (process.env.ADDITIONAL_SCHEMAS) {
         for (const schema of process.env.ADDITIONAL_SCHEMAS.split(",")){
             typeDefs += readFileSync(schema, {encoding: 'utf-8'});

@@ -62,26 +62,6 @@ export class ZabbixQueryHostsMetaRequest extends ZabbixQueryHostsGenericRequest<
     }
 }
 
-export class ZabbixQueryHostsWithDeviceTypeMetaRequest extends ZabbixQueryHostsGenericRequest<Host[]> {
-    public static PATH = "host.get.meta_with_device_type"
-
-    constructor(authToken?: string | null, cookie?: string | null) {
-        super(ZabbixQueryHostsWithDeviceTypeMetaRequest.PATH, authToken, cookie);
-    }
-
-    createZabbixParams(args?: ParsedArgs): ZabbixParams {
-        return {
-            ...super.createZabbixParams(args),
-            tags: [
-                {
-                    "tag": "deviceType",
-                    "operator": 4
-                }
-            ],
-            inheritedTags: true
-        };
-    }
-}
 
 export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult> extends ZabbixQueryHostsGenericRequest<T> {
     constructor(path: string, authToken?: string | null, cookie?: string) {
@@ -164,30 +144,6 @@ export class ZabbixQueryHostsRequestWithItemsAndInventory extends ZabbixQueryHos
     }
 }
 
-export class ZabbixQueryHostWithInventoryRequest extends ZabbixRequest<any> {
-    constructor(authToken?: string | null, cookie?: string) {
-        super("host.get.with_inventory", authToken, cookie);
-    }
-
-    createZabbixParams(args?: ParsedArgs): ZabbixParams {
-        return {
-            ...super.createZabbixParams(args),
-            selectInventory: [
-                "location", "location_lat", "location_lon"
-            ],
-            output: [
-                "hostid",
-                "host",
-                "name",
-                "hostgroup",
-                "description",
-                "parentTemplates"
-            ],
-        };
-    }
-}
-
-
 const isZabbixCreateHostInputParams = (value: ZabbixParams): value is ZabbixCreateHostInputParams => "host" in value && !!value.host;
 
 export interface ZabbixCreateHostInputParams extends ZabbixParams {
@@ -254,47 +210,5 @@ export class ZabbixCreateHostRequest extends ZabbixRequest<CreateHostResponse> {
         }
 
         return args?.zabbix_params || {};
-    }
-}
-
-export class ZabbixQueryHostRequest extends ZabbixQueryHostsGenericRequest<any> {
-    constructor(authToken?: string | null, cookie?: string | null) {
-        super("host.get", authToken, cookie);
-    }
-}
-
-
-export class ZabbixCreateOrFindHostRequest extends ZabbixCreateHostRequest {
-
-    constructor(protected groupid: number, protected templateid: number, authToken?: string | null, cookie?: string,) {
-        super(authToken, cookie);
-    }
-
-    createZabbixParams(args?: ParsedArgs): ZabbixParams {
-        return super.createZabbixParams(args);
-    }
-
-    async prepare(zabbixAPI: ZabbixAPI, args?: ParsedArgs) {
-        // Lookup host of appropriate type (by template) and groupName
-        // or create one if not found. If multiple hosts are found the first
-        // will be taken
-
-        let queryHostArgs = new ParsedArgs({
-            groupids: this.groupid,
-            templateids: this.templateid,
-        });
-        let hosts: {
-            hostid: number
-        }[] = await new ZabbixQueryHostRequest(this.authToken, this.cookie)
-            .executeRequestThrowError(zabbixAPI, queryHostArgs)
-        // logger.debug("Query hosts args=", JSON.stringify(queryHostArgs), "lead to result=", JSON.stringify(hosts));
-        if (hosts && hosts.length > 0) {
-            // If we found a host and return it as prep result the execution of the create host request will be skipped
-            this.prepResult = {
-                hostids: [hosts[0].hostid]
-            }
-        }
-        return this.prepResult;
-
     }
 }

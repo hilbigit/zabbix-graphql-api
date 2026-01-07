@@ -1,5 +1,4 @@
 import {
-    CacheOptions,
     DataSourceConfig,
     DataSourceFetchResult,
     DataSourceRequest,
@@ -26,65 +25,57 @@ export class ZabbixAPI
     override async fetch<Object>(path: string, incomingRequest: DataSourceRequest = {}): Promise<DataSourceFetchResult<Object>> {
         logger.debug(`Zabbix request path=${path}, body=${JSON.stringify(incomingRequest.body).substring(0, ZabbixAPI.MAX_LOG_REQUEST_BODY_LIMIT_LENGTH)} (...)`)
 
-        let response_promise_original
+        let response_promise: Promise<DataSourceFetchResult<Object>> = super.fetch("api_jsonrpc.php", incomingRequest);
         try {
-            const response_promise: Promise<DataSourceFetchResult<Object>> = super.fetch("api_jsonrpc.php", incomingRequest);
-            try {
-                const response = await response_promise;
-                const body = response.parsedBody;
-                return await new Promise!<DataSourceFetchResult<Object>>((resolve, reject) => {
-                    if (body && body.hasOwnProperty("result")) {
-                        // @ts-ignore
-                        let result: any = body["result"];
-                        response.parsedBody = result;
-                        if (result) {
-                            logger.debug(`Found and returned result - length = ${result.length}`);
-                            if (!Array.isArray(result) || !result.length) {
-                                logger.debug(`Result: ${JSON.stringify(result)}`);
-                            } else {
-                                result.forEach((entry: any) => {
-                                    if (entry.hasOwnProperty("tags")) {
-                                        entry["tags"].forEach((tag: { tag: string; value: string; }) => {
-                                            entry[tag.tag] = tag.value;
-                                        });
-                                    }
-                                    if (entry.hasOwnProperty("inheritedTags")) {
-                                        entry["inheritedTags"].forEach((tag_1: { tag: string; value: string; }) => {
-                                            entry[tag_1.tag] = tag_1.value;
-                                        });
-                                    }
-                                });
-                            }
-                        }
-                        resolve(response);
-                    } else {
-                        let error_result: any;
-                        if (body && body.hasOwnProperty("error")) {
-                            // @ts-ignore
-                            error_result = body["error"];
+            const response = await response_promise;
+            const body = response.parsedBody;
+            return await new Promise!<DataSourceFetchResult<Object>>((resolve) => {
+                if (body && body.hasOwnProperty("result")) {
+                    // @ts-ignore
+                    let result: any = body["result"];
+                    response.parsedBody = result;
+                    if (result) {
+                        logger.debug(`Found and returned result - length = ${result.length}`);
+                        if (!Array.isArray(result) || !result.length) {
+                            logger.debug(`Result: ${JSON.stringify(result)}`);
                         } else {
-                            error_result = body;
+                            result.forEach((entry: any) => {
+                                if (entry.hasOwnProperty("tags")) {
+                                    entry["tags"].forEach((tag: { tag: string; value: string; }) => {
+                                        entry[tag.tag] = tag.value;
+                                    });
+                                }
+                                if (entry.hasOwnProperty("inheritedTags")) {
+                                    entry["inheritedTags"].forEach((tag_1: { tag: string; value: string; }) => {
+                                        entry[tag_1.tag] = tag_1.value;
+                                    });
+                                }
+                            });
                         }
-                        logger.error(`No result for Zabbix request body=${JSON.stringify(incomingRequest.body)}: ${JSON.stringify(error_result)}`);
-                        resolve(response);
                     }
-                });
-            } catch (reason) {
-                let msg = `Unable to retrieve response for request body=${JSON.stringify(incomingRequest.body)}: ${JSON.stringify(reason)}`;
-                logger.error(msg);
-                return response_promise
-            }
-        } catch (e) {
-            let msg = `Unable to retrieve response for request body=${JSON.stringify(incomingRequest.body)}: ${JSON.stringify(e)}`
-            logger.error(msg)
-            // @ts-ignore
-            return response_promise_original
+                    resolve(response);
+                } else {
+                    let error_result: any;
+                    if (body && body.hasOwnProperty("error")) {
+                        // @ts-ignore
+                        error_result = body["error"];
+                    } else {
+                        error_result = body;
+                    }
+                    logger.error(`No result for Zabbix request body=${JSON.stringify(incomingRequest.body)}: ${JSON.stringify(error_result)}`);
+                    resolve(response);
+                }
+            });
+        } catch (reason) {
+            let msg = `Unable to retrieve response for request body=${JSON.stringify(incomingRequest.body)}: ${JSON.stringify(reason)}`;
+            logger.error(msg);
+            return response_promise
         }
 
     }
 
 
-    public post<TResult = any>(path: string, request?: PostRequest<CacheOptions>): Promise<TResult> {
+    public post<TResult = any>(path: string, request?: PostRequest): Promise<TResult> {
         return super.post(path, request);
     }
 

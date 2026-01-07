@@ -1,24 +1,26 @@
 import {
     DeviceCommunicationType,
     DeviceStatus,
+    Host,
     MutationCreateHostArgs,
-    MutationImportHostsArgs,
     MutationImportHostGroupsArgs,
+    MutationImportHostsArgs,
     MutationImportUserRightsArgs,
     Permission,
-    QueryAllHostsArgs,
     QueryAllHostGroupsArgs,
+    QueryAllHostsArgs,
+    QueryExportHostValueHistoryArgs,
     QueryExportUserRightsArgs,
     QueryHasPermissionsArgs,
     QueryUserPermissionsArgs,
     Resolvers,
-    StorageItemType, Host, QueryExportHostValueHistoryArgs, Device,
+    StorageItemType,
 } from "../schema/generated/graphql.js";
 
 import {HostImporter} from "../execution/host_importer";
 import {HostValueExporter} from "../execution/host_exporter";
 import {logger} from "../logging/logger.js";
-import {ParsedArgs, ZabbixPermissionsHelper, ZabbixRequest} from "../datasources/zabbix-request.js";
+import {ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
 import {ZabbixCreateHostRequest, ZabbixQueryHostsRequestWithItemsAndInventory,} from "../datasources/zabbix-hosts.js";
 import {ZabbixQueryHostgroupsParams, ZabbixQueryHostgroupsRequest} from "../datasources/zabbix-hostgroups.js";
 import {
@@ -35,6 +37,7 @@ import {
 import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api";
 import {GraphQLInterfaceType, GraphQLList} from "graphql/type";
 import {isDevice} from "./resolver_helpers";
+import {ZabbixPermissionsHelper} from "../datasources/zabbix-permissions";
 
 
 export function createResolvers(): Resolvers {
@@ -66,7 +69,7 @@ export function createResolvers(): Resolvers {
                     zabbixAPI, new ParsedArgs(args))
             },
             logout: async (_parent, _args, {zabbixAuthToken, cookie}: any) => {
-                return await new ZabbixRequest<any>("user.logout", undefined, cookie).executeRequestThrowError(zabbixAPI);
+                return await new ZabbixRequest<any>("user.logout", zabbixAuthToken, cookie).executeRequestThrowError(zabbixAPI);
             },
 
             allHosts: async (_parent: any, args: QueryAllHostsArgs, {

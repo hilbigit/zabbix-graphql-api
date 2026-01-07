@@ -7,6 +7,7 @@ import {
     zabbixSuperAuthToken
 } from "./zabbix-api";
 import {logger} from "../logging/logger";
+import {ZabbixRequestWithPermissions} from "./zabbix-permissions";
 
 export interface CreateHostGroupResult {
     groupids: string[]
@@ -20,31 +21,9 @@ const hostGroupReadWritePermissions = {
         }]
 }
 
-const hostGroupReadPermissions = {
-    permissions: [
-        {
-            objectName: "Hostgroup/ConstructionSite",
-            permission: Permission.Read
-        }]
-}
-
-export class ZabbixCreateHostGroupRequest extends ZabbixRequest<CreateHostGroupResult> {
+export class ZabbixCreateHostGroupRequest extends ZabbixRequestWithPermissions<CreateHostGroupResult> {
     constructor(_authToken?: string | null, cookie?: string) {
         super("hostgroup.create", zabbixSuperAuthToken, cookie, hostGroupReadWritePermissions);
-    }
-}
-
-export class ZabbixDeleteHostGroupRequest extends ZabbixRequest<{
-    "groupids": string []
-}> {
-    constructor(_authToken?: string | null, cookie?: string) {
-        super("hostgroup.delete", zabbixSuperAuthToken, cookie, {
-            permissions: [
-                {
-                    objectName: "Hostgroup/ConstructionSite",
-                    permission: Permission.ReadWrite
-                }]
-        });
     }
 }
 
@@ -66,7 +45,7 @@ export type ZabbixQueryHostgroupsResult = {
     uuid: string
 }
 
-export class ZabbixQueryHostgroupsRequest extends ZabbixRequest<ZabbixQueryHostgroupsResult[],
+export class ZabbixQueryHostgroupsRequest extends ZabbixRequestWithPermissions<ZabbixQueryHostgroupsResult[],
     ZabbixQueryHostgroupsParams> {
     constructor(authToken?: string | null, cookie?: string | null, hostGroupReadPermissions?: any) {
         super("hostgroup.get", authToken, cookie, hostGroupReadPermissions,);
