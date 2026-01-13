@@ -1,6 +1,6 @@
 import {isObjectType} from "graphql";
 import {logger} from "../logging/logger.js";
-import {Device, Host} from "../schema/generated/graphql";
+import {Device, Host} from "../schema/generated/graphql.js";
 
 export const isDevice = (value: Host): value is Device => !!(value as Device).deviceType;
 

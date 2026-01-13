@@ -1,7 +1,7 @@
 import {ParsedArgs, ZabbixErrorResult, ZabbixRequest, ZabbixResult} from "./zabbix-request.js";
-import {ZabbixAPI} from "./zabbix-api";
-import {InputMaybe, Permission, QueryHasPermissionsArgs, UserPermission} from "../schema/generated/graphql";
-import {ApiErrorCode, PermissionNumber} from "../model/model_enum_values";
+import {ZabbixAPI} from "./zabbix-api.js";
+import {InputMaybe, Permission, QueryHasPermissionsArgs, UserPermission} from "../schema/generated/graphql.js";
+import {ApiErrorCode, PermissionNumber} from "../model/model_enum_values.js";
 
 
 export class ZabbixRequestWithPermissions<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixRequest<T, A> {

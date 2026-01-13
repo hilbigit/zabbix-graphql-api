@@ -8,7 +8,7 @@ import {ApiErrorCode, ApiErrorMessage} from "../model/model_enum_values.js";
 import {ZabbixQueryItemsRequest} from "../datasources/zabbix-items.js";
 import {isZabbixErrorResult, ParsedArgs, ZabbixErrorResult} from "../datasources/zabbix-request.js";
 import {ZabbixHistoryGetParams, ZabbixQueryHistoryRequest} from "../datasources/zabbix-history.js";
-import {zabbixAPI} from "../datasources/zabbix-api";
+import {zabbixAPI} from "../datasources/zabbix-api.js";
 
 type FilterCombo = {
     deviceKey: string,

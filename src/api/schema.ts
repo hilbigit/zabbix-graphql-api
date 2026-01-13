@@ -7,6 +7,7 @@ import {makeExecutableSchema, mergeSchemas} from "@graphql-tools/schema";
 import {readFileSync} from "fs";
 import {GraphQLSchema} from "graphql/type";
 import {createResolvers} from "./resolvers.js";
+import {readdirSync} from "node:fs";
 
 
 const createZabbixHierarchicalDeviceFieldResolver =
@@ -25,7 +26,12 @@ const createZabbixHierarchicalDeviceTagsResolver =
     }
 export async function schema_loader(): Promise<GraphQLSchema> {
     const resolvers = createResolvers();
-    let typeDefs: string = readFileSync('./src/schema/*.graphql', {encoding: 'utf-8'});
+    const schemaPath = process.env.SCHEMA_PATH || './src/schema/';
+    var schemaFiles = readdirSync(schemaPath).filter(fn => fn.endsWith('.graphql'));
+    let typeDefs: string = "";
+    for (const schemaFile of schemaFiles) {
+        typeDefs += readFileSync(schemaPath + schemaFile, {encoding: 'utf-8'});
+    }
     if (process.env.ADDITIONAL_SCHEMAS) {
         for (const schema of process.env.ADDITIONAL_SCHEMAS.split(",")){
             typeDefs += readFileSync(schema, {encoding: 'utf-8'});

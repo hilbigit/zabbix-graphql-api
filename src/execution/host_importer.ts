@@ -9,7 +9,7 @@ import {logger} from "../logging/logger.js";
 import {ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
 import {isZabbixErrorResult, ParsedArgs, ZabbixErrorResult} from "../datasources/zabbix-request.js";
 import {CreateHostGroupResult, GroupHelper, ZabbixCreateHostGroupRequest} from "../datasources/zabbix-hostgroups.js";
-import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api";
+import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api.js";
 
 export class HostImporter {
     public static getHostGroupHierarchyNames(hostGroups: Array<CreateHostGroup>) {

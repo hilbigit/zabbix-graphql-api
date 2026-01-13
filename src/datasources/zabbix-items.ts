@@ -1,5 +1,5 @@
 import {ParsedArgs, ZabbixRequest} from "./zabbix-request.js";
-import {ZabbixItem} from "../schema/generated/graphql";
+import {ZabbixItem} from "../schema/generated/graphql.js";
 
 
 export class ZabbixQueryItemsRequest extends ZabbixRequest<ZabbixItem[]> {

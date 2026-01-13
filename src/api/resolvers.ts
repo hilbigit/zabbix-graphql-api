@@ -17,8 +17,8 @@ import {
     StorageItemType,
 } from "../schema/generated/graphql.js";
 
-import {HostImporter} from "../execution/host_importer";
-import {HostValueExporter} from "../execution/host_exporter";
+import {HostImporter} from "../execution/host_importer.js";
+import {HostValueExporter} from "../execution/host_exporter.js";
 import {logger} from "../logging/logger.js";
 import {ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
 import {ZabbixCreateHostRequest, ZabbixQueryHostsRequestWithItemsAndInventory,} from "../datasources/zabbix-hosts.js";
@@ -34,10 +34,10 @@ import {
     ZabbixImportUserRolesRequest,
     ZabbixQueryUserRolesRequest
 } from "../datasources/zabbix-userroles.js";
-import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api";
-import {GraphQLInterfaceType, GraphQLList} from "graphql/type";
-import {isDevice} from "./resolver_helpers";
-import {ZabbixPermissionsHelper} from "../datasources/zabbix-permissions";
+import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api.js";
+import {GraphQLInterfaceType, GraphQLList} from "graphql/type/index.js";
+import {isDevice} from "./resolver_helpers.js";
+import {ZabbixPermissionsHelper} from "../datasources/zabbix-permissions.js";
 
 
 export function createResolvers(): Resolvers {

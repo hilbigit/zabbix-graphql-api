@@ -1,13 +1,13 @@
-import {isZabbixErrorResult, ParsedArgs, ZabbixParams, ZabbixRequest} from "./zabbix-request.js";
+import {isZabbixErrorResult, ParsedArgs, ZabbixParams} from "./zabbix-request.js";
 import {Permission} from "../schema/generated/graphql.js";
 import {
     FIND_ZABBIX_EDGE_DEVICE_BASE_GROUP_PREFIX,
     ZABBIX_EDGE_DEVICE_BASE_GROUP,
     ZabbixAPI,
     zabbixSuperAuthToken
-} from "./zabbix-api";
-import {logger} from "../logging/logger";
-import {ZabbixRequestWithPermissions} from "./zabbix-permissions";
+} from "./zabbix-api.js";
+import {logger} from "../logging/logger.js";
+import {ZabbixRequestWithPermissions} from "./zabbix-permissions.js";
 
 export interface CreateHostGroupResult {
     groupids: string[]

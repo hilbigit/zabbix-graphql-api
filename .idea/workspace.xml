@@ -4,9 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="refactor!: Update Node.js version to 24.12.0, enhance GraphQL schema structure, and improve dynamic schema loading logic">
-      <change afterPath="$PROJECT_DIR$/.forgejo/workflows/deploy-docker.yaml" afterDir="false" />
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: Add missing &quot;.js&quot; extensions to imports and improve Node.js compatibility for dynamic schema loading">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/index_ts.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/index_ts.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extensions/location_tracker_commons.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/extensions/location_tracker_commons.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extensions/location_tracker_devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/extensions/location_tracker_devices.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/resolver_helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolver_helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/resolvers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolvers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/start.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/start.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-hostgroups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-hostgroups.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-items.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-items.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-permissions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-permissions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/execution/host_exporter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/execution/host_exporter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/execution/host_importer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/execution/host_importer.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +75,9 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "settings.typescriptcompiler",
+    "npm.compile.executor": "Run",
+    "npm.prod.executor": "Run",
+    "settings.editor.selected.configurable": "preferences.sourceCode.TypeScript",
     "ts.external.directory.path": "\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -82,11 +96,27 @@
     </key>
   </component>
   <component name="RunManager" selected="Node.js.index.ts">
+    <configuration name="prod" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="prod" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Node.js.index.ts" />
       <item itemvalue="npm.codegen" />
       <item itemvalue="npm.compile" />
+      <item itemvalue="npm.prod" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.prod" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -102,8 +132,33 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1768273021451</updated>
-      <workItem from="1768273025985" duration="6749000" />
+      <workItem from="1768273025985" duration="8303000" />
     </task>
+    <task id="LOCAL-00001" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
+      <option name="closed" value="true" />
+      <created>1768310046741</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1768310046741</updated>
+    </task>
+    <task id="LOCAL-00002" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
+      <option name="closed" value="true" />
+      <created>1768310076697</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1768310076697</updated>
+    </task>
+    <task id="LOCAL-00003" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
+      <option name="closed" value="true" />
+      <created>1768310176163</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1768310176163</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -121,9 +176,11 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor!: Update Node.js version to 24.12.0, enhance GraphQL schema structure, and improve dynamic schema loading logic" />
     <MESSAGE value="refactor!: Cleanup zabbix api access and remove unused classes; Restructure grapqhl-schema to better align with clean code and project structure principles;Rename &quot;devices&quot; to &quot;hosts&quot; in &quot;exportHistory&quot; - operation. Prepare extraction of device specific types and alignment with integration layer" />
     <MESSAGE value="refactor!: Rename &quot;devices&quot; to &quot;hosts&quot; in &quot;exportHistory&quot; - operation. Cleanup zabbix api access and remove unused classes&#10; Restructure grapqhl-schema to better align with clean code and project structure principles" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor!: Rename &quot;devices&quot; to &quot;hosts&quot; in &quot;exportHistory&quot; - operation. Cleanup zabbix api access and remove unused classes&#10; Restructure grapqhl-schema to better align with clean code and project structure principles" />
+    <MESSAGE value="refactor!: Update Node.js version to 24.12.0, enhance GraphQL schema structure, and improve dynamic schema loading logic" />
+    <MESSAGE value="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment" />
+    <MESSAGE value="chore: Add missing &quot;.js&quot; extensions to imports and improve Node.js compatibility for dynamic schema loading" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: Add missing &quot;.js&quot; extensions to imports and improve Node.js compatibility for dynamic schema loading" />
   </component>
 </project>

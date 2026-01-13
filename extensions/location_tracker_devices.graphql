@@ -18,31 +18,14 @@ type DistanceTrackerDevice implements Host & Device {
 
 type DistanceTrackerState implements DeviceState {
     operational: OperationalDeviceData
-    current: DistanceTrackerCurrentState
+    current: DistanceTrackerValues
 }
 
-type DistanceTrackerCurrentState {
-    values: DistanceTrackerValues
-}
-
+"""
+Aggregated information of devices detected around the tracker
+"""
 type DistanceTrackerValues {
     """
-    Aggregated information of devices detected around the tracker
-    """
-    countValues: DeviceCountValues
-    """
-    Information about devices detected nearby
-    """
-    distanceValues: String
-
-}
-
-type DeviceCountValues {
-    """
-    Number of unique deviceKeys detected between timeFrom and timeUnti
-    """
-    count: Int
-    """
     Start of time interval for the delivered device counting value
     """
     timeFrom: Time
@@ -50,19 +33,13 @@ type DeviceCountValues {
     End of time interval for the delivered device counting value
     """
     timeUntil: Time
-}
 
-type DeviceDistanceValues {
     """
     Number of unique deviceKeys detected between timeFrom and timeUnti
     """
     count: Int
     """
-    Start of time interval for the delivered device counting value
+    Detailed information about devices detected nearby
     """
-    timeFrom: Time
-    """
-    End of time interval for the delivered device counting value
-    """
-    timeUntil: Time
+    distances: [SensorDistanceValue!]
 }

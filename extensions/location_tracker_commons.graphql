@@ -1,18 +1,6 @@
 
 
 """
-Concrete implementation of a DeviceValueMessage for sensor distance data.
-"""
-type SensorDistanceMessage implements DeviceValueMessage {
-    deviceKey: String
-    timestamp: String
-    attributeName: String
-    topicName: String
-    deviceType: String
-    value: SensorDistanceValue
-}
-
-"""
 Represents the payload for a sensor distance measurement.
 """
 type SensorDistanceValue implements DeviceValue {
@@ -57,4 +45,16 @@ Represents the result of a position calculation, including the calculated positi
 type PositionCalculatorResult {
     position: Position
     accuracy: Float
+}
+
+"""
+Concrete implementation of a DeviceValueMessage for sensor distance data.
+"""
+type SensorDistanceMessage implements DeviceValueMessage {
+    deviceKey: String
+    timestamp: String
+    attributeName: String
+    topicName: String
+    deviceType: String
+    value: SensorDistanceValue
 }

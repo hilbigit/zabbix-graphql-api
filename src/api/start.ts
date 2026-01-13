@@ -8,7 +8,7 @@ import express from 'express';
 import cors from "cors";
 import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
 import {logger} from "../logging/logger.js";
-import {zabbixAPI, zabbixRequestAuthToken} from "../datasources/zabbix-api";
+import {zabbixAPI, zabbixRequestAuthToken} from "../datasources/zabbix-api.js";
 import {WebSocketServer} from "ws";
 import {useServer} from "graphql-ws/lib/use/ws";
 
