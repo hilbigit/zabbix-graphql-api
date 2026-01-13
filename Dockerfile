@@ -17,7 +17,7 @@ ARG API_VERSION
 ENV API_VERSION=${API_VERSION}
 WORKDIR /usr/app
 COPY package*.json ./
-COPY schema.graphql ./
+COPY extensions ./
 RUN npm install --production
 
 COPY --from=builder /usr/app/dist ./dist
