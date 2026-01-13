@@ -1,8 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="refactor!: Update Node.js version to 24.12.0, enhance GraphQL schema structure, and improve dynamic schema loading logic">
+      <change afterPath="$PROJECT_DIR$/.forgejo/workflows/deploy-docker.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
   <component name="ComposerSettings">
     <execution />
   </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="53" />
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="38BVb3VzSAGgMQsmn4rSydxQ56L" />
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="autoscrollToSource" value="true" />
@@ -10,10 +38,92 @@
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;ssh.settings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "NIXITCH_NIXPKGS_CONFIG": "",
+    "NIXITCH_NIX_CONF_DIR": "",
+    "NIXITCH_NIX_OTHER_STORES": "",
+    "NIXITCH_NIX_PATH": "",
+    "NIXITCH_NIX_PROFILES": "",
+    "NIXITCH_NIX_REMOTE": "",
+    "NIXITCH_NIX_USER_PROFILE_DIR": "",
+    "Node.js.index.ts.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "go.import.settings.migrated": "true",
+    "javascript.preferred.runtime.type.id": "node",
+    "last_opened_file_path": "//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/.forgejo/workflows",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "settings.typescriptcompiler",
+    "ts.external.directory.path": "\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecapSpentCounter">
+    <option name="endsOfQuotaMs" value="1768327208764" />
+    <option name="spentUsd" value="0.026222099" />
+  </component>
+  <component name="RecapUselessUpdatesCounter">
+    <option name="suspendCountdown" value="3" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\.forgejo\workflows" />
+      <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Node.js.index.ts">
+    <list>
+      <item itemvalue="Node.js.index.ts" />
+      <item itemvalue="npm.codegen" />
+      <item itemvalue="npm.compile" />
+    </list>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.29346.242" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="" />
+      <created>1768273021451</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1768273021451</updated>
+      <workItem from="1768273025985" duration="6749000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="refactor!: Update Node.js version to 24.12.0, enhance GraphQL schema structure, and improve dynamic schema loading logic" />
+    <MESSAGE value="refactor!: Cleanup zabbix api access and remove unused classes; Restructure grapqhl-schema to better align with clean code and project structure principles;Rename &quot;devices&quot; to &quot;hosts&quot; in &quot;exportHistory&quot; - operation. Prepare extraction of device specific types and alignment with integration layer" />
+    <MESSAGE value="refactor!: Rename &quot;devices&quot; to &quot;hosts&quot; in &quot;exportHistory&quot; - operation. Cleanup zabbix api access and remove unused classes&#10; Restructure grapqhl-schema to better align with clean code and project structure principles" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor!: Rename &quot;devices&quot; to &quot;hosts&quot; in &quot;exportHistory&quot; - operation. Cleanup zabbix api access and remove unused classes&#10; Restructure grapqhl-schema to better align with clean code and project structure principles" />
+  </component>
 </project>

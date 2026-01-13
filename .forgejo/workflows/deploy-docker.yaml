@@ -1,0 +1,164 @@
+# .forgejo/workflows/deploy-docker.yaml
+name: Prototype deployment
+run-name: ${{ github.actor }} is deploying..
+on:
+  push:
+
+env:
+  API_VERSION: "unknown"
+  ENV: "develop"
+  DEBUG_WORKFLOW: "false"
+  IMAGE_TAG: forgejo.tooling.hilbigit.com/vcr/zabbix-graphql-api:${{ env.API_VERSION }}
+jobs:
+  RunNpmBuildAndTestLocally:
+    runs-on:
+      - develop-build
+    container:
+      image: forgejo.tooling.hilbigit.com/omidevco/builder:latest
+      credentials:
+        username: ${{ secrets.DOCKER_REGISTRY_USER }}
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+    steps:
+      - name: Display current ref
+        run: "echo Current ref=${{ github.ref }}, ref_name=${{ github.ref_name }}, env.DEBUG_WORKFLOW=${{ env.DEBUG_WORKFLOW }}"
+
+      - name: Prepare apk packages
+        run: apk update && apk add --no-cache nodejs npm git
+
+      - name: Checkout (needs git)
+        uses: actions/checkout@v4
+
+      - name: Run build + dry-run to test node prod installation
+        run: npm install;npm run compile;DRY_RUN=1 npm run prod
+
+      - name: Run test
+        if: ${{ vars.SKIP_TESTS != 'true' }}
+        run: npm run test
+
+  BuildAndPushDockerImage:
+    runs-on:
+      - develop-build
+      - docker
+    container:
+      image: forgejo.tooling.hilbigit.com/omidevco/builder:latest
+      credentials:
+        username: ${{ secrets.DOCKER_REGISTRY_USER }}
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+    steps:
+      - name: Checkout (needs git)
+        uses: actions/checkout@v4
+
+      - name: Determine and store version - all branches except prod
+        if: ${{ github.ref_name != 'prod' }}
+        run: |
+          API_VERSION="$(git describe --tags  --always)"
+          LATEST_TAG=latest
+          echo "Building ${{ github.ref_name }}, apiVersion=${API_VERSION}, latestTag=${LATEST_TAG}, GITHUB_WORKSPACE=$GITHUB_WORKSPACE, storing in GITHUB_ENV=$GITHUB_ENV"
+          echo "API_VERSION=$API_VERSION"  >> setApiVersion.sh
+          echo "LATEST_TAG=$LATEST_TAG"  >> setApiVersion.sh
+
+      - name: Determine and store version - prod
+        if: ${{ github.ref_name == 'prod' }}
+        run: |
+          API_VERSION="$(git describe --tags  --always)"
+          LATEST_TAG=latest-prod
+          echo "Building ${{ github.ref_name }}, apiVersion=${API_VERSION}, latestTag=${LATEST_TAG}, GITHUB_WORKSPACE=$GITHUB_WORKSPACE, storing in GITHUB_ENV=$GITHUB_ENV"
+          echo "API_VERSION=$API_VERSION"  >> setApiVersion.sh
+          echo "LATEST_TAG=$LATEST_TAG"  >> setApiVersion.sh
+
+      - name: Upload api version number
+        uses: actions/upload-artifact@v3
+        with:
+          name: setApiVersion
+          path: setApiVersion.sh
+
+      - name: Set version number in $GITHUB_ENV
+        run: |
+          set -x
+          . ./setApiVersion.sh
+          echo "Building apiVersion=${API_VERSION}, latestTag=${LATEST_TAG}, storing in GITHUB_ENV=$GITHUB_ENV"
+          echo "API_VERSION=$API_VERSION" >> "$GITHUB_ENV"
+          echo "LATEST_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
+
+      - name: Set up Docker Buildx
+        if: ${{ github.ref_name == 'main' || github.ref_name == 'prod' || env.DEBUG_WORKFLOW == 'true' }}
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/arm64
+
+      - name: Login to Forgejo Container Registry
+        if: ${{ github.ref_name == 'main' || github.ref_name == 'prod' || env.DEBUG_WORKFLOW == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: forgejo.tooling.hilbigit.com
+          username: ${{ secrets.DOCKER_REGISTRY_USER }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
+      - name: Building and pushing image
+        if: ${{ github.ref_name == 'main' || github.ref_name == 'prod' || env.DEBUG_WORKFLOW == 'true' }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          build-args: |
+            API_VERSION=${{ env.API_VERSION }}
+          push: true
+          tags: ${{ env.IMAGE_TAG }}:${{ env.API_VERSION }}
+          platforms: linux/arm64
+
+  TriggerDeploymentAndSmoketest:
+    runs-on: docker-develop
+    needs:
+      - BuildAndPushDockerImage
+      - RunNpmBuildAndTestLocally
+    env:
+      ZABBIX_BASE_URL: "http://zabbix-web-internal:8080"
+    container:
+      image: forgejo.tooling.hilbigit.com/omidevco/builder:latest
+      credentials:
+        username: ${{ secrets.DOCKER_REGISTRY_USER }}
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+    steps:
+      - name: Checkout (needs git)
+        uses: actions/checkout@v4
+
+      - name: Prepare apk packages
+        run: apk update && apk add --no-cache curl
+
+      - name: Download version number
+        uses: actions/download-artifact@v3
+        with:
+          name: setApiVersion
+
+      - name: Set version number in $GITHUB_ENV
+        run: |
+          set -x
+          . ./setApiVersion.sh
+          echo "Building apiVersion=${API_VERSION}, latestTag=${LATEST_TAG}, storing in GITHUB_ENV=$GITHUB_ENV"
+          echo "API_VERSION=$API_VERSION" >> "$GITHUB_ENV"
+          echo "LATEST_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
+
+      - name: Login to Forgejo Container Registry
+        if: ${{ github.ref_name == 'main' || github.ref_name == 'prod' || env.DEBUG_WORKFLOW == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: forgejo.tooling.hilbigit.com
+          username: ${{ secrets.DOCKER_REGISTRY_USER }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
+      - name: Set latest tag
+        if: ${{ github.ref_name == 'main' || github.ref_name == 'prod' || env.DEBUG_WORKFLOW == 'true' }}
+        run: |
+          set -x
+          docker buildx imagetools create -t  ${{ env.IMAGE_TAG }}:${LATEST_TAG} ${{ env.IMAGE_TAG }}:${API_VERSION}
+
+      - name: Trigger infrastructure project deployment
+        if: ${{ github.ref_name == 'main' || env.DEBUG_WORKFLOW == 'true' }}
+        run: |
+          forgejo_deploy_url=${{ github.api_url }}/repos/vcr/vcr-control-center-infrastructure/actions/workflows/call-deploy-apps-develop.yaml/dispatches
+          echo Deploying using $forgejo_deploy_url
+          curl -L "$forgejo_deploy_url" \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token ${{ secrets.DEPLOY_TOKEN }}" \
+            --data "{\"ref\":\"refs/heads/${{ env.ENV }}\",\"inputs\":{ \"api_version\": \"${API_VERSION}\" }}"

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="cabc2703-a2cd-4a28-9f05-ab70ada6f492" name="vcr-develop">
+        <fileTransfer accessType="SFTP" host="vcr.develop.hilbigit.com" port="22" sshConfigId="04da3fb8-04f7-46cc-9d85-b43656b0c77b" sshConfig="hilbigit@vcr.develop.hilbigit.com:22" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
