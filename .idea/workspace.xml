@@ -7,6 +7,7 @@
     <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: Add `copy-schema` script, update Dockerfile schema path, and adjust npm prod workflow">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/schema.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,7 +150,7 @@
       <option name="presentableId" value="Default" />
       <updated>1768273021451</updated>
       <workItem from="1768273025985" duration="11343000" />
-      <workItem from="1768380302361" duration="4784000" />
+      <workItem from="1768380302361" duration="6025000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
       <option name="closed" value="true" />
@@ -231,7 +232,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768382917600</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="chore: Add `copy-schema` script, update Dockerfile schema path, and adjust npm prod workflow">
+      <option name="closed" value="true" />
+      <created>1768388782068</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1768388782068</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

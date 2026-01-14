@@ -21,5 +21,6 @@ RUN npm install --production
 
 COPY --from=builder /usr/app/dist ./dist
 ADD schema ./dist/schema
-CMD node ./dist/index.js
+WORKDIR /usr/app/dist
+CMD node ./index.js
 EXPOSE 4000
