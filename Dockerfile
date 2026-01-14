@@ -17,7 +17,7 @@ ARG API_VERSION
 ENV API_VERSION=${API_VERSION}
 WORKDIR /usr/app
 COPY package*.json ./
-COPY extensions ./
+COPY schema ./
 RUN npm install --production
 
 COPY --from=builder /usr/app/dist ./dist

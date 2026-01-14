@@ -4,9 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: Add dry-run mode and configure logger for operation mode logging">
-      <change afterPath="$PROJECT_DIR$/src/test/zabbix_api_args_parser.test.ts" afterDir="false" />
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: Replace copying of `schema.graphql` with `extensions` in Dockerfile">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codegen.ts" beforeDir="false" afterPath="$PROJECT_DIR$/codegen.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extensions/display_devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/extensions/display_devices.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extensions/location_tracker_commons.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/extensions/location_tracker_commons.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/extensions/location_tracker_devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/extensions/location_tracker_devices.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schema/api_commons.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/api_commons.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schema/device_value_commons.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/device_value_commons.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schema/devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/devices.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schema/mutations.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/mutations.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schema/queries.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/queries.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schema/zabbix.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/zabbix.graphql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +28,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="53" />
+    <option name="cachedIndexableFilesCount" value="57" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -38,44 +49,44 @@
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "NIXITCH_NIXPKGS_CONFIG": "",
-    "NIXITCH_NIX_CONF_DIR": "",
-    "NIXITCH_NIX_OTHER_STORES": "",
-    "NIXITCH_NIX_PATH": "",
-    "NIXITCH_NIX_PROFILES": "",
-    "NIXITCH_NIX_REMOTE": "",
-    "NIXITCH_NIX_USER_PROFILE_DIR": "",
-    "Node.js.index.ts.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
-    "go.import.settings.migrated": "true",
-    "javascript.preferred.runtime.type.id": "node",
-    "last_opened_file_path": "//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/src/test",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node",
-    "nodejs_package_manager_path": "npm",
-    "npm.compile.executor": "Run",
-    "npm.prod.executor": "Run",
-    "settings.editor.selected.configurable": "preferences.sourceCode.TypeScript",
-    "ts.external.directory.path": "\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;NIXITCH_NIXPKGS_CONFIG&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_CONF_DIR&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_OTHER_STORES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PATH&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PROFILES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_REMOTE&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_USER_PROFILE_DIR&quot;: &quot;&quot;,
+    &quot;Node.js.index.ts.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/src/test&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.compile.executor&quot;: &quot;Run&quot;,
+    &quot;npm.prod.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.TypeScript&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecapSpentCounter">
     <option name="endsOfQuotaMs" value="1768327208764" />
-    <option name="spentUsd" value="0.026222099" />
+    <option name="spentUsd" value="0.04010335" />
   </component>
   <component name="RecapUselessUpdatesCounter">
-    <option name="suspendCountdown" value="3" />
+    <option name="suspendCountdown" value="0" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -83,8 +94,11 @@
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\.forgejo\workflows" />
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\schema" />
+    </key>
   </component>
-  <component name="RunManager" selected="Node.js.index.ts">
+  <component name="RunManager" selected="npm.prod">
     <configuration name="prod" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -92,13 +106,24 @@
         <script value="prod" />
       </scripts>
       <node-interpreter value="project" />
-      <envs />
+      <envs>
+        <env name="ADDITIONAL_RESOLVERS" value="SinglePanelDevice,FourPanelDevice,DistanceTrackerDevice" />
+        <env name="ADDITIONAL_SCHEMAS" value="./schema/extensions/display_devices.graphql,./schema/extensions/location_tracker_devices.graphql,./schema/extensions/location_tracker_commons.graphql" />
+        <env name="DEBUG" value="device-control-center-api:*" />
+        <env name="ZABBIX_AUTH_TOKEN" value="$ZABBIX_AUTH_TOKEN_VCR_DEV$" />
+        <env name="ZABBIX_BASE_URL" value="http://cockpit.vcr.develop.hilbigit.com/" />
+        <env name="ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX" value="Permissions" />
+        <env name="ZABBIX_ROADWORK_BASE_GROUP" value="Roadwork/Devices" />
+      </envs>
+      <EXTENSION ID="com.intellij.javascript.debugger.execution.StartBrowserRunConfigurationExtension">
+        <browser with-js-debugger="true" />
+      </EXTENSION>
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Node.js.index.ts" />
-      <item itemvalue="npm.codegen" />
       <item itemvalue="npm.compile" />
+      <item itemvalue="npm.codegen" />
       <item itemvalue="npm.prod" />
     </list>
     <recent_temporary>
@@ -121,7 +146,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1768273021451</updated>
-      <workItem from="1768273025985" duration="9671000" />
+      <workItem from="1768273025985" duration="11343000" />
+      <workItem from="1768380302361" duration="1020000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
       <option name="closed" value="true" />
@@ -171,7 +197,23 @@
       <option name="project" value="LOCAL" />
       <updated>1768312304586</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="chore: Add test for Zabbix API arguments parsing">
+      <option name="closed" value="true" />
+      <created>1768312871708</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1768312871708</updated>
+    </task>
+    <task id="LOCAL-00008" summary="chore: Replace copying of `schema.graphql` with `extensions` in Dockerfile">
+      <option name="closed" value="true" />
+      <created>1768313032612</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1768313032612</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -196,6 +238,8 @@
     <MESSAGE value="chore: Add missing &quot;.js&quot; extensions to imports and improve Node.js compatibility for dynamic schema loading" />
     <MESSAGE value="chore: Update IntelliJ workspace and fix Docker image tag in workflow" />
     <MESSAGE value="chore: Add dry-run mode and configure logger for operation mode logging" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: Add dry-run mode and configure logger for operation mode logging" />
+    <MESSAGE value="chore: Add test for Zabbix API arguments parsing" />
+    <MESSAGE value="chore: Replace copying of `schema.graphql` with `extensions` in Dockerfile" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: Replace copying of `schema.graphql` with `extensions` in Dockerfile" />
   </component>
 </project>
