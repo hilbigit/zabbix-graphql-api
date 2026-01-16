@@ -12,7 +12,7 @@ type SinglePanelDevice implements Host & Device {
     deviceType: String
     hostgroups: [HostGroup!]
     name: String
-    tags: JSONObject
+    tags: DeviceConfig
     state: PanelState
 }
 
@@ -53,7 +53,7 @@ type FourPanelDevice implements Host & Device {
     deviceType: String
     hostgroups: [HostGroup!]
     name: String
-    tags: JSONObject
+    tags: DeviceConfig
     state: FourPanelState
 }
 
@@ -72,3 +72,4 @@ type FourPanelValues {
     BOTTOM_LEFT: PanelValues
     BOTTOM_RIGHT: PanelValues
 }
+

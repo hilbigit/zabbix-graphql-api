@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: Add `copy-schema` script, update Dockerfile schema path, and adjust npm prod workflow">
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: Update Dockerfile CMD for schema path, log schema loading path in `schema.ts`, and adjust IntelliJ workspace">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/devices.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/extensions/display_devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/extensions/display_devices.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/extensions/location_tracker_devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/extensions/location_tracker_devices.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/zabbix.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/zabbix.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/resolver_helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolver_helpers.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,9 +57,11 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
     "go.import.settings.migrated": "true",
     "javascript.preferred.runtime.type.id": "node",
+    "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/src/test",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -68,6 +73,7 @@
     "npm.copy-schema.executor": "Run",
     "npm.prod.executor": "Run",
     "settings.editor.selected.configurable": "preferences.sourceCode.TypeScript",
+    "to.speed.mode.migration.done": "true",
     "ts.external.directory.path": "\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -89,7 +95,7 @@
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\schema" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.prod">
+  <component name="RunManager" selected="Node.js.index.ts">
     <configuration name="copy-schema" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -150,7 +156,8 @@
       <option name="presentableId" value="Default" />
       <updated>1768273021451</updated>
       <workItem from="1768273025985" duration="11343000" />
-      <workItem from="1768380302361" duration="6025000" />
+      <workItem from="1768380302361" duration="9751000" />
+      <workItem from="1768551040782" duration="4856000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
       <option name="closed" value="true" />
@@ -240,7 +247,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768388782068</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="chore: Update Dockerfile CMD for schema path, log schema loading path in `schema.ts`, and adjust IntelliJ workspace">
+      <option name="closed" value="true" />
+      <created>1768396879810</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1768396879810</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -269,6 +284,7 @@
     <MESSAGE value="chore: Replace copying of `schema.graphql` with `extensions` in Dockerfile" />
     <MESSAGE value="chore: Move schema directory away from src; Migrate `extensions` to `schema` directory, update Dockerfile and configuration paths" />
     <MESSAGE value="chore: Add `copy-schema` script, update Dockerfile schema path, and adjust npm prod workflow" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: Add `copy-schema` script, update Dockerfile schema path, and adjust npm prod workflow" />
+    <MESSAGE value="chore: Update Dockerfile CMD for schema path, log schema loading path in `schema.ts`, and adjust IntelliJ workspace" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: Update Dockerfile CMD for schema path, log schema loading path in `schema.ts`, and adjust IntelliJ workspace" />
   </component>
 </project>

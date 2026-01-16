@@ -1,7 +1,7 @@
 """
 DistanceTracker represents a device which can detect other devices around itself and estimate
-the distances, e.g. by using Bluetooth scanning technology and estimating the distance by .
-Optionally the
+the distances, e.g. by using Bluetooth scanning technology and estimating the distance.
+
 """
 type DistanceTrackerDevice implements Host & Device {
     hostid: ID!
@@ -12,7 +12,7 @@ type DistanceTrackerDevice implements Host & Device {
     deviceType: String
     hostgroups: [HostGroup!]
     name: String
-    tags: JSONObject
+    tags: DeviceConfig
     state: DistanceTrackerState
 }
 

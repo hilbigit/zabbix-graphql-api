@@ -2,8 +2,7 @@ import {isObjectType} from "graphql";
 import {logger} from "../logging/logger.js";
 import {Device, Host} from "../schema/generated/graphql.js";
 
-export const isDevice = (value: Host): value is Device => !!(value as Device).deviceType;
-
+export const isDevice = (value: Host | undefined): value is Device => !!(value as Device)?.deviceType;
 /*
     As a default all . - seperators within a key shall be replaced by a Capital letter of the following word
  */

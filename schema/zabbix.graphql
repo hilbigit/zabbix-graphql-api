@@ -15,7 +15,6 @@ interface Host {
     host: String!
     hostgroups: [HostGroup!]
     name: String
-    tags: JSONObject
     """
     Specifies the type or category of the device. Used to define the classification
     of a device in the system (capabilities, functionalities, or purpose).

@@ -12,9 +12,31 @@ interface Device implements Host {
     deviceType: String
     hostgroups: [HostGroup!]
     name: String
-    tags: JSONObject
+    tags: DeviceConfig
     state: DeviceState
 }
+
+type DeviceConfig {
+    deviceWidgetPreview: WidgetPreview
+}
+
+type WidgetPreview {
+    TOP_LEFT: DisplayFieldSpec
+    TOP_RIGHT: DisplayFieldSpec
+    BOTTOM_LEFT: DisplayFieldSpec
+    BOTTOM_RIGHT: DisplayFieldSpec
+}
+
+type DisplayFieldSpec {
+    key: String,
+    emptyValue: String
+    unit: String,
+    value_font_size: String
+    g_value_transform: String
+    unit_font_size: String
+    g_unit_transform: String
+}
+
 type OperationalDeviceData {
     temperature: Float
     voltage: Float
@@ -53,6 +75,6 @@ type GenericDevice implements Host & Device  {
     deviceType: String
     hostgroups: [HostGroup!]
     name: String
-    tags: JSONObject
+    tags: DeviceConfig
     state: GenericDeviceState
 }
