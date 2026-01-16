@@ -52,6 +52,7 @@ export async function schema_loader(): Promise<GraphQLSchema> {
     let genericResolvers: Record<string, any> = {
         Device: createZabbixHierarchicalDeviceFieldResolver("Device", originalSchema,additionalMappings ),
         GenericDevice: createZabbixHierarchicalDeviceFieldResolver("GenericDevice", originalSchema, additionalMappings),
+        DeviceConfig: createZabbixHierarchicalDeviceTagsResolver("DeviceConfig", originalSchema),
     }
     if (process.env.ADDITIONAL_RESOLVERS) {
         for (const resolver of process.env.ADDITIONAL_RESOLVERS.split(",")){
