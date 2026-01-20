@@ -1,4 +1,4 @@
-import {CreateHostResponse, Host, ZabbixHost} from "../schema/generated/graphql.js";
+import {CreateHostResponse, Device, Host, ZabbixHost} from "../schema/generated/graphql.js";
 import {ZabbixAPI} from "./zabbix-api.js";
 import {
     isZabbixErrorResult,
@@ -9,16 +9,17 @@ import {
     ZabbixResult
 } from "./zabbix-request.js";
 import {ZabbixHistoryGetParams, ZabbixQueryHistoryRequest} from "./zabbix-history.js";
+import {isArray} from "node:util";
 
 
-export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult> extends ZabbixRequest<T> {
+export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixRequest<T, A> {
     public static PATH = "host.get";
 
     constructor(path: string, authToken?: string | null, cookie?: string | null) {
         super(path, authToken, cookie);
     }
 
-    createZabbixParams(args?: ParsedArgs): ZabbixParams {
+    createZabbixParams(args?: A): ZabbixParams {
         return {
             ...super.createZabbixParams(args),
             selectParentTemplates: [
@@ -63,12 +64,12 @@ export class ZabbixQueryHostsMetaRequest extends ZabbixQueryHostsGenericRequest<
 }
 
 
-export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult> extends ZabbixQueryHostsGenericRequest<T> {
+export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixQueryHostsGenericRequest<T, A> {
     constructor(path: string, authToken?: string | null, cookie?: string) {
         super(path, authToken, cookie);
     }
 
-    createZabbixParams(args?: ParsedArgs): ZabbixParams {
+    createZabbixParams(args?: A): ZabbixParams {
         return {
             ...super.createZabbixParams(args),
             selectItems: [
@@ -93,7 +94,7 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult> ext
         };
     }
 
-    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: ParsedArgs): Promise<ZabbixErrorResult | T> {
+    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: A): Promise<ZabbixErrorResult | T> {
         let result = await super.executeRequestReturnError(zabbixAPI, args);
 
         if (result && !isZabbixErrorResult(result)) {
@@ -123,12 +124,12 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult> ext
     }
 }
 
-export class ZabbixQueryHostsGenericRequestWithItemsAndInventory<T extends ZabbixResult> extends ZabbixQueryHostsGenericRequestWithItems<T> {
+export class ZabbixQueryHostsGenericRequestWithItemsAndInventory<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixQueryHostsGenericRequestWithItems<T, A> {
     constructor(path: string, authToken?: string | null, cookie?: string) {
         super(path, authToken, cookie);
     }
 
-    createZabbixParams(args?: ParsedArgs): ZabbixParams {
+    createZabbixParams(args?: A): ZabbixParams {
         return {
             ...super.createZabbixParams(args),
             selectInventory: [
@@ -139,6 +140,22 @@ export class ZabbixQueryHostsGenericRequestWithItemsAndInventory<T extends Zabbi
 }
 
 export class ZabbixQueryHostsRequestWithItemsAndInventory extends ZabbixQueryHostsGenericRequestWithItemsAndInventory<ZabbixHost[]> {
+    constructor(authToken?: string | null, cookie?: string) {
+        super("host.get.with_items", authToken, cookie);
+    }
+}
+
+export class ZabbixQueryDevicesArgs extends ParsedArgs {
+    constructor(public args?: any) {
+        if (!args?.tag_deviceType ||
+            (Array.isArray(args.tag_deviceType) && !args.tag_deviceType.length)) {
+            args.tag_deviceType_exists = true;
+        }
+        super(args);
+    }
+}
+
+export class ZabbixQueryDevices  extends ZabbixQueryHostsGenericRequestWithItemsAndInventory<Device[], ZabbixQueryDevicesArgs> {
     constructor(authToken?: string | null, cookie?: string) {
         super("host.get.with_items", authToken, cookie);
     }

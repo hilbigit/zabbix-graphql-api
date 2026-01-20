@@ -93,10 +93,15 @@ export interface Device {
   hostid: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   state?: Maybe<DeviceState>;
-  tags?: Maybe<Scalars['JSONObject']['output']>;
+  tags?: Maybe<DeviceConfig>;
 }
 
 export { DeviceCommunicationType };
+
+export interface DeviceConfig {
+  __typename?: 'DeviceConfig';
+  deviceWidgetPreview?: Maybe<WidgetPreview>;
+}
 
 export interface DeviceState {
   operational?: Maybe<OperationalDeviceData>;
@@ -145,6 +150,17 @@ export interface DeviceValueMessage {
   value?: Maybe<DeviceValue>;
 }
 
+export interface DisplayFieldSpec {
+  __typename?: 'DisplayFieldSpec';
+  emptyValue?: Maybe<Scalars['String']['output']>;
+  g_unit_transform?: Maybe<Scalars['String']['output']>;
+  g_value_transform?: Maybe<Scalars['String']['output']>;
+  key?: Maybe<Scalars['String']['output']>;
+  unit?: Maybe<Scalars['String']['output']>;
+  unit_font_size?: Maybe<Scalars['String']['output']>;
+  value_font_size?: Maybe<Scalars['String']['output']>;
+}
+
 export interface Error {
   code?: Maybe<Scalars['Int']['output']>;
   data?: Maybe<Scalars['JSONObject']['output']>;
@@ -168,7 +184,7 @@ export interface GenericDevice extends Device, Host {
   hostid: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   state?: Maybe<GenericDeviceState>;
-  tags?: Maybe<Scalars['JSONObject']['output']>;
+  tags?: Maybe<DeviceConfig>;
 }
 
 export interface GenericDeviceState extends DeviceState {
@@ -200,7 +216,6 @@ export interface Host {
   hostgroups?: Maybe<Array<HostGroup>>;
   hostid: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
-  tags?: Maybe<Scalars['JSONObject']['output']>;
 }
 
 export interface HostGroup {
@@ -323,6 +338,14 @@ export interface PermissionRequest {
 export interface Query {
   __typename?: 'Query';
   /**
+   * Get all devices + corresponding items. Devices are modelled as hosts having a device type + a state.
+   * If with_items==true only hosts with attached items are delivered
+   * name_pattern: If provided this will perform a  LIKE "%…%" search on the name attribute within the database.
+   *
+   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   */
+  allDevices?: Maybe<Array<Maybe<Device>>>;
+  /**
    * Get all host groups.
    * If with_hosts==true only groups with attached hosts are delivered.
    *
@@ -385,6 +408,17 @@ export interface Query {
   userPermissions?: Maybe<Array<UserPermission>>;
   /** Get zabbix version */
   zabbixVersion?: Maybe<Scalars['String']['output']>;
+}
+
+
+export interface QueryAllDevicesArgs {
+  filter_host?: InputMaybe<Scalars['String']['input']>;
+  groupids?: InputMaybe<Array<Scalars['Int']['input']>>;
+  hostids?: InputMaybe<Scalars['Int']['input']>;
+  name_pattern?: InputMaybe<Scalars['String']['input']>;
+  tag_deviceType?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  tag_hostType?: InputMaybe<Array<Scalars['String']['input']>>;
+  with_items?: InputMaybe<Scalars['Boolean']['input']>;
 }
 
 
@@ -564,6 +598,14 @@ export interface UserRoleRulesInput {
   ui_default_access?: InputMaybe<Scalars['Int']['input']>;
 }
 
+export interface WidgetPreview {
+  __typename?: 'WidgetPreview';
+  BOTTOM_LEFT?: Maybe<DisplayFieldSpec>;
+  BOTTOM_RIGHT?: Maybe<DisplayFieldSpec>;
+  TOP_LEFT?: Maybe<DisplayFieldSpec>;
+  TOP_RIGHT?: Maybe<DisplayFieldSpec>;
+}
+
 export interface ZabbixGroupRight {
   __typename?: 'ZabbixGroupRight';
   id: Scalars['Int']['output'];
@@ -710,10 +752,12 @@ export type ResolversTypes = {
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   Device: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Device']>;
   DeviceCommunicationType: DeviceCommunicationType;
+  DeviceConfig: ResolverTypeWrapper<DeviceConfig>;
   DeviceState: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['DeviceState']>;
   DeviceStatus: DeviceStatus;
   DeviceValue: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['DeviceValue']>;
   DeviceValueMessage: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['DeviceValueMessage']>;
+  DisplayFieldSpec: ResolverTypeWrapper<DisplayFieldSpec>;
   Error: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Error']>;
   ErrorPayload: ResolverTypeWrapper<ErrorPayload>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
@@ -755,6 +799,7 @@ export type ResolversTypes = {
   UserRoleRuleInput: UserRoleRuleInput;
   UserRoleRules: ResolverTypeWrapper<UserRoleRules>;
   UserRoleRulesInput: UserRoleRulesInput;
+  WidgetPreview: ResolverTypeWrapper<WidgetPreview>;
   ZabbixGroupRight: ResolverTypeWrapper<ZabbixGroupRight>;
   ZabbixGroupRightInput: ZabbixGroupRightInput;
   ZabbixHost: ResolverTypeWrapper<Omit<ZabbixHost, 'items'> & { items?: Maybe<Array<ResolversTypes['ZabbixItem']>> }>;
@@ -771,9 +816,11 @@ export type ResolversParentTypes = {
   CreateHostResponse: CreateHostResponse;
   DateTime: Scalars['DateTime']['output'];
   Device: ResolversInterfaceTypes<ResolversParentTypes>['Device'];
+  DeviceConfig: DeviceConfig;
   DeviceState: ResolversInterfaceTypes<ResolversParentTypes>['DeviceState'];
   DeviceValue: ResolversInterfaceTypes<ResolversParentTypes>['DeviceValue'];
   DeviceValueMessage: ResolversInterfaceTypes<ResolversParentTypes>['DeviceValueMessage'];
+  DisplayFieldSpec: DisplayFieldSpec;
   Error: ResolversInterfaceTypes<ResolversParentTypes>['Error'];
   ErrorPayload: ErrorPayload;
   Float: Scalars['Float']['output'];
@@ -812,6 +859,7 @@ export type ResolversParentTypes = {
   UserRoleRuleInput: UserRoleRuleInput;
   UserRoleRules: UserRoleRules;
   UserRoleRulesInput: UserRoleRulesInput;
+  WidgetPreview: WidgetPreview;
   ZabbixGroupRight: ZabbixGroupRight;
   ZabbixGroupRightInput: ZabbixGroupRightInput;
   ZabbixHost: Omit<ZabbixHost, 'items'> & { items?: Maybe<Array<ResolversParentTypes['ZabbixItem']>> };
@@ -854,10 +902,15 @@ export type DeviceResolvers<ContextType = any, ParentType extends ResolversParen
   hostid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   state?: Resolver<Maybe<ResolversTypes['DeviceState']>, ParentType, ContextType>;
-  tags?: Resolver<Maybe<ResolversTypes['JSONObject']>, ParentType, ContextType>;
+  tags?: Resolver<Maybe<ResolversTypes['DeviceConfig']>, ParentType, ContextType>;
 };
 
 export type DeviceCommunicationTypeResolvers = EnumResolverSignature<{ DATABASE_MONITOR?: any, DEPENDANT_ITEM?: any, HTTP_AGENT?: any, IPMI_AGENT?: any, JMX_AGENT?: any, SIMPLE_CHECK?: any, SIMULATOR_CALCULATED?: any, SIMULATOR_JAVASCRIPT?: any, SNMP_AGENT?: any, SNMP_TRAP?: any, ZABBIX_AGENT?: any, ZABBIX_AGENT_ACTIVE?: any, ZABBIX_INTERNAL_ITEM?: any, ZABBIX_TRAP?: any }, ResolversTypes['DeviceCommunicationType']>;
+
+export type DeviceConfigResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeviceConfig'] = ResolversParentTypes['DeviceConfig']> = {
+  deviceWidgetPreview?: Resolver<Maybe<ResolversTypes['WidgetPreview']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export type DeviceStateResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeviceState'] = ResolversParentTypes['DeviceState']> = {
   __resolveType: TypeResolveFn<'GenericDeviceState', ParentType, ContextType>;
@@ -881,6 +934,17 @@ export type DeviceValueMessageResolvers<ContextType = any, ParentType extends Re
   value?: Resolver<Maybe<ResolversTypes['DeviceValue']>, ParentType, ContextType>;
 };
 
+export type DisplayFieldSpecResolvers<ContextType = any, ParentType extends ResolversParentTypes['DisplayFieldSpec'] = ResolversParentTypes['DisplayFieldSpec']> = {
+  emptyValue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  g_unit_transform?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  g_value_transform?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  key?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  unit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  unit_font_size?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  value_font_size?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Error'] = ResolversParentTypes['Error']> = {
   __resolveType: TypeResolveFn<'ApiError', ParentType, ContextType>;
   code?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -902,7 +966,7 @@ export type GenericDeviceResolvers<ContextType = any, ParentType extends Resolve
   hostid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   state?: Resolver<Maybe<ResolversTypes['GenericDeviceState']>, ParentType, ContextType>;
-  tags?: Resolver<Maybe<ResolversTypes['JSONObject']>, ParentType, ContextType>;
+  tags?: Resolver<Maybe<ResolversTypes['DeviceConfig']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -931,7 +995,6 @@ export type HostResolvers<ContextType = any, ParentType extends ResolversParentT
   hostgroups?: Resolver<Maybe<Array<ResolversTypes['HostGroup']>>, ParentType, ContextType>;
   hostid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  tags?: Resolver<Maybe<ResolversTypes['JSONObject']>, ParentType, ContextType>;
 };
 
 export type HostGroupResolvers<ContextType = any, ParentType extends ResolversParentTypes['HostGroup'] = ResolversParentTypes['HostGroup']> = {
@@ -998,6 +1061,7 @@ export type OperationalDeviceDataResolvers<ContextType = any, ParentType extends
 export type PermissionResolvers = EnumResolverSignature<{ DENY?: any, READ?: any, READ_WRITE?: any }, ResolversTypes['Permission']>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  allDevices?: Resolver<Maybe<Array<Maybe<ResolversTypes['Device']>>>, ParentType, ContextType, RequireFields<QueryAllDevicesArgs, 'filter_host' | 'groupids' | 'name_pattern' | 'tag_deviceType' | 'with_items'>>;
   allHostGroups?: Resolver<Maybe<Array<Maybe<ResolversTypes['HostGroup']>>>, ParentType, ContextType, RequireFields<QueryAllHostGroupsArgs, 'with_hosts'>>;
   allHosts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Host']>>>, ParentType, ContextType, RequireFields<QueryAllHostsArgs, 'filter_host' | 'groupids' | 'name_pattern' | 'tag_deviceType' | 'with_items'>>;
   apiVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1081,6 +1145,14 @@ export type UserRoleRulesResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type WidgetPreviewResolvers<ContextType = any, ParentType extends ResolversParentTypes['WidgetPreview'] = ResolversParentTypes['WidgetPreview']> = {
+  BOTTOM_LEFT?: Resolver<Maybe<ResolversTypes['DisplayFieldSpec']>, ParentType, ContextType>;
+  BOTTOM_RIGHT?: Resolver<Maybe<ResolversTypes['DisplayFieldSpec']>, ParentType, ContextType>;
+  TOP_LEFT?: Resolver<Maybe<ResolversTypes['DisplayFieldSpec']>, ParentType, ContextType>;
+  TOP_RIGHT?: Resolver<Maybe<ResolversTypes['DisplayFieldSpec']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ZabbixGroupRightResolvers<ContextType = any, ParentType extends ResolversParentTypes['ZabbixGroupRight'] = ResolversParentTypes['ZabbixGroupRight']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1124,10 +1196,12 @@ export type Resolvers<ContextType = any> = {
   DateTime?: GraphQLScalarType;
   Device?: DeviceResolvers<ContextType>;
   DeviceCommunicationType?: DeviceCommunicationTypeResolvers;
+  DeviceConfig?: DeviceConfigResolvers<ContextType>;
   DeviceState?: DeviceStateResolvers<ContextType>;
   DeviceStatus?: DeviceStatusResolvers;
   DeviceValue?: DeviceValueResolvers<ContextType>;
   DeviceValueMessage?: DeviceValueMessageResolvers<ContextType>;
+  DisplayFieldSpec?: DisplayFieldSpecResolvers<ContextType>;
   Error?: ErrorResolvers<ContextType>;
   ErrorPayload?: ErrorPayloadResolvers<ContextType>;
   GenericDevice?: GenericDeviceResolvers<ContextType>;
@@ -1156,6 +1230,7 @@ export type Resolvers<ContextType = any> = {
   UserRoleModule?: UserRoleModuleResolvers<ContextType>;
   UserRoleRule?: UserRoleRuleResolvers<ContextType>;
   UserRoleRules?: UserRoleRulesResolvers<ContextType>;
+  WidgetPreview?: WidgetPreviewResolvers<ContextType>;
   ZabbixGroupRight?: ZabbixGroupRightResolvers<ContextType>;
   ZabbixHost?: ZabbixHostResolvers<ContextType>;
   ZabbixItem?: ZabbixItemResolvers<ContextType>;

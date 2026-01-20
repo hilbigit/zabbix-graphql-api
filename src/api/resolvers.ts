@@ -1,4 +1,5 @@
 import {
+    Device,
     DeviceCommunicationType,
     DeviceStatus,
     Host,
@@ -6,7 +7,7 @@ import {
     MutationImportHostGroupsArgs,
     MutationImportHostsArgs,
     MutationImportUserRightsArgs,
-    Permission,
+    Permission, QueryAllDevicesArgs,
     QueryAllHostGroupsArgs,
     QueryAllHostsArgs,
     QueryExportHostValueHistoryArgs,
@@ -21,7 +22,11 @@ import {HostImporter} from "../execution/host_importer.js";
 import {HostValueExporter} from "../execution/host_exporter.js";
 import {logger} from "../logging/logger.js";
 import {ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
-import {ZabbixCreateHostRequest, ZabbixQueryHostsRequestWithItemsAndInventory,} from "../datasources/zabbix-hosts.js";
+import {
+    ZabbixCreateHostRequest,
+    ZabbixQueryDevices, ZabbixQueryDevicesArgs,
+    ZabbixQueryHostsRequestWithItemsAndInventory,
+} from "../datasources/zabbix-hosts.js";
 import {ZabbixQueryHostgroupsParams, ZabbixQueryHostgroupsRequest} from "../datasources/zabbix-hostgroups.js";
 import {
     ZabbixExportUserGroupArgs,
@@ -82,7 +87,17 @@ export function createResolvers(): Resolvers {
                         dataSources.zabbixAPI, new ParsedArgs(args)
                     )
             },
+            allDevices: async (_parent: any, args: QueryAllDevicesArgs, {
+                zabbixAuthToken,
+                cookie, dataSources
+            }: any) => {
+                args.tag_hostType ??= [ZABBIX_EDGE_DEVICE_BASE_GROUP];
 
+                return await new ZabbixQueryDevices(zabbixAuthToken, cookie)
+                    .executeRequestThrowError(
+                        dataSources.zabbixAPI, new ZabbixQueryDevicesArgs(args)
+                    )
+            },
             allHostGroups: async (_parent: any, args: QueryAllHostGroupsArgs, {
                 zabbixAuthToken,
                 cookie
@@ -169,6 +184,19 @@ export function createResolvers(): Resolvers {
 
                     return "ZabbixHost";
                 }
+                const deviceType = host.deviceType!;
+                logger.info(`checking host ${host.name} for deviceType - found ${deviceType}`);
+                let interfaceType: GraphQLInterfaceType = (info.returnType instanceof GraphQLList ?
+                    info.returnType.ofType : info.returnType) as GraphQLInterfaceType
+                if (info.schema.getImplementations(interfaceType).objects.some((impl: { name: string; }) => impl.name === deviceType)) {
+                    return deviceType;
+                }
+                return "GenericDevice"
+            }
+        },
+        Device: {
+            // @ts-ignore
+            __resolveType: function (host: Device, _context, info ): string {
                 const deviceType = host.deviceType!;
                 logger.info(`checking host ${host.name} for deviceType - found ${deviceType}`);
                 let interfaceType: GraphQLInterfaceType = (info.returnType instanceof GraphQLList ?

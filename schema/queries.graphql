@@ -35,6 +35,16 @@ type Query {
         groupids:[Int!] = null, with_items: Boolean = false, tag_deviceType:[String]=[], tag_hostType:[String!]): [Host]
 
     """
+    Get all devices + corresponding items. Devices are modelled as hosts having a device type + a state.
+    If with_items==true only hosts with attached items are delivered
+    name_pattern: If provided this will perform a  LIKE "%…%" search on the name attribute within the database.
+
+    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    """
+    allDevices(name_pattern: String = "", filter_host: String = null, hostids: Int,
+        groupids:[Int!] = null, with_items: Boolean = false, tag_deviceType:[String]=[], tag_hostType:[String!]): [Device]
+
+    """
     Get all host groups.
     If with_hosts==true only groups with attached hosts are delivered.
 

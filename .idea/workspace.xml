@@ -4,8 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: Update `tags` field schema to use `DeviceConfig`, enhance `isDevice` type check, and adjust IntelliJ workspace">
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: Enhance schema with `DeviceConfig` tags resolver and update IntelliJ workspace adjustments">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/devices.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/queries.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/queries.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/resolvers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolvers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-hosts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-hosts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-request.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-request.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schema/generated/graphql.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schema/generated/graphql.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +52,7 @@
     "NIXITCH_NIX_PROFILES": "",
     "NIXITCH_NIX_REMOTE": "",
     "NIXITCH_NIX_USER_PROFILE_DIR": "",
-    "Node.js.index.ts.executor": "Run",
+    "Node.js.index.ts.executor": "Debug",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -64,6 +70,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node",
     "nodejs_package_manager_path": "npm",
+    "npm.codegen.executor": "Run",
     "npm.compile.executor": "Run",
     "npm.copy-schema.executor": "Run",
     "npm.prod.executor": "Run",
@@ -152,7 +159,8 @@
       <updated>1768273021451</updated>
       <workItem from="1768273025985" duration="11343000" />
       <workItem from="1768380302361" duration="9751000" />
-      <workItem from="1768551040782" duration="5628000" />
+      <workItem from="1768551040782" duration="6556000" />
+      <workItem from="1768913192173" duration="7156000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
       <option name="closed" value="true" />
@@ -258,7 +266,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768591454965</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="chore: Enhance schema with `DeviceConfig` tags resolver and update IntelliJ workspace adjustments">
+      <option name="closed" value="true" />
+      <created>1768592274523</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1768592274523</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -291,6 +307,19 @@
     <MESSAGE value="chore: Use DeviceConfig type instead of JSONObject scalar for tags - attribute of devices" />
     <MESSAGE value="chore: Use DeviceConfig type instead of JSONObject scalar for tags - attribute of devices " />
     <MESSAGE value="chore: Update `tags` field schema to use `DeviceConfig`, enhance `isDevice` type check, and adjust IntelliJ workspace" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: Update `tags` field schema to use `DeviceConfig`, enhance `isDevice` type check, and adjust IntelliJ workspace" />
+    <MESSAGE value="chore: Enhance schema with `DeviceConfig` tags resolver and update IntelliJ workspace adjustments" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: Enhance schema with `DeviceConfig` tags resolver and update IntelliJ workspace adjustments" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/datasources/zabbix-hosts.ts</url>
+          <line>149</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

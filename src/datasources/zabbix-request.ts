@@ -28,7 +28,7 @@ export interface ZabbixParams {
 }
 
 export interface ZabbixWithTagsParams extends ZabbixParams {
-    tags?: { tag: string; operator: number; value: any; }[]
+    tags?: { tag: string; operator: number; value?: any; }[]
 }
 
 export class ParsedArgs {
@@ -72,20 +72,28 @@ export class ParsedArgs {
                 }
                 delete args.groupidsbase
             }
-            let filterTagStatements: { tag: string; operator: number; value: any; }[] = []
+            let filterTagStatements: { tag: string; operator: number; value?: any; }[] = []
             let filterStatements = {}
             for (let argsKey in args) {
                 // @ts-ignore
                 let argsValue = args[argsKey]
-                if (argsKey.startsWith("tag_") && argsValue !== null) {
-                    let argsArray = Array.isArray(argsValue) ? argsValue : [argsValue]
-                    argsArray.forEach((tagValue) => {
+                if (argsKey.startsWith("tag_")) {
+                    if (argsKey.endsWith("_exists")) {
                         filterTagStatements.push({
-                            "tag": argsKey.slice(4),
-                            "operator": 1,
-                            "value": tagValue,
+                            "tag": argsKey.slice(4, -7),
+                            "operator": argsValue ? 4 : 5
                         })
-                    })
+                    } else if (argsValue !== null) {
+                        let argsArray = Array.isArray(argsValue) ? argsValue : [argsValue]
+                        argsArray.forEach((tagValue) => {
+                            filterTagStatements.push({
+                                "tag": argsKey.slice(4),
+                                "operator": 1,
+                                "value": tagValue,
+                            })
+                        })
+                    }
+
                     // @ts-ignore
                     delete args[argsKey]
                 }
@@ -121,9 +129,9 @@ export class ParsedArgs {
 
         if (this.name_pattern) {
             if ("search" in result) {
-                (<any> result.search).name = this.name_pattern
+                (<any>result.search).name = this.name_pattern
             } else {
-                (<any> result).search = {
+                (<any>result).search = {
                     name: this.name_pattern,
                 }
             }
@@ -182,7 +190,6 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
         }
         return headers
     }
-
 
 
     async prepare(zabbixAPI: ZabbixAPI, _args?: A): Promise<T | ZabbixErrorResult | undefined> {
