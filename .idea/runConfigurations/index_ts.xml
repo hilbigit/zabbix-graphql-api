@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="index.ts" type="NodeJSConfigurationType" path-to-node="wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node" nameIsGenerated="true" path-to-js-file="src/index.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$">
+  <configuration default="false" name="index.ts" type="NodeJSConfigurationType" path-to-node="wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node" nameIsGenerated="true" path-to-js-file="src/index.ts" node-parameters="--import tsx" working-dir="$PROJECT_DIR$">
     <envs>
       <env name="ADDITIONAL_RESOLVERS" value="SinglePanelDevice,FourPanelDevice,DistanceTrackerDevice" />
       <env name="ADDITIONAL_SCHEMAS" value="./schema/extensions/display_devices.graphql,./schema/extensions/location_tracker_devices.graphql,./schema/extensions/location_tracker_commons.graphql" />

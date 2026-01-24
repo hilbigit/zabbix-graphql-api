@@ -81,6 +81,94 @@ export interface CreateHostResponse {
   itemids?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
 }
 
+export interface CreateItemPreprocessing {
+  error_handler?: InputMaybe<Scalars['Int']['input']>;
+  error_handler_params?: InputMaybe<Scalars['String']['input']>;
+  params: Array<Scalars['String']['input']>;
+  type: Scalars['Int']['input'];
+}
+
+export interface CreateLinkedTemplate {
+  name: Scalars['String']['input'];
+}
+
+export interface CreateMasterItem {
+  key: Scalars['String']['input'];
+}
+
+export interface CreateTag {
+  tag: Scalars['String']['input'];
+  value?: InputMaybe<Scalars['String']['input']>;
+}
+
+export interface CreateTemplate {
+  /**
+   * groupNames is used to assign the created object
+   * to a template group.
+   */
+  groupNames: Array<Scalars['String']['input']>;
+  /**
+   * Optionally the internal groupids can be passed - in this case the
+   * groupName is ignored
+   */
+  groupids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  /** Name of the template */
+  host: Scalars['String']['input'];
+  /** Template items */
+  items?: InputMaybe<Array<CreateTemplateItem>>;
+  /** Visible name of the template */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Template tags */
+  tags?: InputMaybe<Array<CreateTag>>;
+  /** Linked templates */
+  templates?: InputMaybe<Array<CreateLinkedTemplate>>;
+  /**
+   * Internally used unique id
+   * (will be assigned by Zabbix if empty)
+   */
+  uuid?: InputMaybe<Scalars['String']['input']>;
+}
+
+export interface CreateTemplateGroup {
+  /** Name of the template group */
+  groupName: Scalars['String']['input'];
+  /**
+   * Internally used unique id
+   * (will be assigned by Zabbix if empty)
+   */
+  uuid?: InputMaybe<Scalars['String']['input']>;
+}
+
+export interface CreateTemplateGroupResponse {
+  __typename?: 'CreateTemplateGroupResponse';
+  error?: Maybe<ApiError>;
+  groupName: Scalars['String']['output'];
+  groupid?: Maybe<Scalars['Int']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+}
+
+export interface CreateTemplateItem {
+  delay?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  history?: InputMaybe<Scalars['String']['input']>;
+  key: Scalars['String']['input'];
+  master_item?: InputMaybe<CreateMasterItem>;
+  name: Scalars['String']['input'];
+  preprocessing?: InputMaybe<Array<CreateItemPreprocessing>>;
+  tags?: InputMaybe<Array<CreateTag>>;
+  type?: InputMaybe<Scalars['Int']['input']>;
+  units?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['String']['input']>;
+  value_type?: InputMaybe<Scalars['Int']['input']>;
+}
+
+export interface DeleteResponse {
+  __typename?: 'DeleteResponse';
+  error?: Maybe<ApiError>;
+  id: Scalars['Int']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+}
+
 /**
  * (IoT / Edge - ) Devices are hosts having a state containing the "output" / the business data which is exposed
  * besides monitoring information.
@@ -232,6 +320,14 @@ export interface ImportHostResponse {
   message?: Maybe<Scalars['String']['output']>;
 }
 
+export interface ImportTemplateResponse {
+  __typename?: 'ImportTemplateResponse';
+  error?: Maybe<ApiError>;
+  host: Scalars['String']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  templateid?: Maybe<Scalars['String']['output']>;
+}
+
 export interface ImportUserRightResult {
   __typename?: 'ImportUserRightResult';
   errors?: Maybe<Array<ApiError>>;
@@ -269,6 +365,18 @@ export interface Mutation {
   /** Authentication: By zbx_session - cookie or zabbix-auth-token - header */
   createHost?: Maybe<CreateHostResponse>;
   /**
+   * Delete template groups.
+   *
+   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   */
+  deleteTemplateGroups?: Maybe<Array<DeleteResponse>>;
+  /**
+   * Delete templates.
+   *
+   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   */
+  deleteTemplates?: Maybe<Array<DeleteResponse>>;
+  /**
    * (Mass) Import zabbix groups
    * and assign them to the corresponding hosts by groupid or groupName.
    *
@@ -287,6 +395,25 @@ export interface Mutation {
    * Authentication: By zbx_session - cookie or zabbix-auth-token - header
    */
   importHosts?: Maybe<Array<ImportHostResponse>>;
+  /**
+   * (Mass) Import template groups
+   * and assign them by groupid or name.
+   *
+   * Return value: If no error occurs a groupid be returned for each created group,
+   * otherwise the return object will contain an error message
+   *
+   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   */
+  importTemplateGroups?: Maybe<Array<CreateTemplateGroupResponse>>;
+  /**
+   * (Mass) Import templates.
+   *
+   * Return value: If no error occurs a templateid will be returned for each created template,
+   * otherwise the return object will contain an error message.
+   *
+   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   */
+  importTemplates?: Maybe<Array<ImportTemplateResponse>>;
   importUserRights?: Maybe<ImportUserRightsResult>;
 }
 
@@ -299,6 +426,18 @@ export interface MutationCreateHostArgs {
 }
 
 
+export interface MutationDeleteTemplateGroupsArgs {
+  groupids?: InputMaybe<Array<Scalars['Int']['input']>>;
+  name_pattern?: InputMaybe<Scalars['String']['input']>;
+}
+
+
+export interface MutationDeleteTemplatesArgs {
+  name_pattern?: InputMaybe<Scalars['String']['input']>;
+  templateids?: InputMaybe<Array<Scalars['Int']['input']>>;
+}
+
+
 export interface MutationImportHostGroupsArgs {
   hostGroups: Array<CreateHostGroup>;
 }
@@ -306,6 +445,16 @@ export interface MutationImportHostGroupsArgs {
 
 export interface MutationImportHostsArgs {
   hosts: Array<CreateHost>;
+}
+
+
+export interface MutationImportTemplateGroupsArgs {
+  templateGroups: Array<CreateTemplateGroup>;
+}
+
+
+export interface MutationImportTemplatesArgs {
+  templates: Array<CreateTemplate>;
 }
 
 
@@ -359,6 +508,8 @@ export interface Query {
    * Authentication: By zbx_session - cookie or zabbix-auth-token - header
    */
   allHosts?: Maybe<Array<Maybe<Host>>>;
+  /** Get template groups. */
+  allTemplateGroups?: Maybe<Array<Maybe<HostGroup>>>;
   /** Get api (build) version */
   apiVersion: Scalars['String']['output'];
   /**
@@ -401,6 +552,8 @@ export interface Query {
    * operation. Returns true on success
    */
   logout?: Maybe<Scalars['Boolean']['output']>;
+  /** Get templates. */
+  templates?: Maybe<Array<Maybe<Template>>>;
   /**
    * Return all user permissions. If objectNames is provided return only the permissions related to the objects within
    * the objectNames - list
@@ -439,6 +592,11 @@ export interface QueryAllHostsArgs {
 }
 
 
+export interface QueryAllTemplateGroupsArgs {
+  name_pattern?: InputMaybe<Scalars['String']['input']>;
+}
+
+
 export interface QueryExportHostValueHistoryArgs {
   host_filter?: InputMaybe<Array<Scalars['String']['input']>>;
   itemKey_filter?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -471,6 +629,12 @@ export interface QueryLocationsArgs {
 export interface QueryLoginArgs {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
+}
+
+
+export interface QueryTemplatesArgs {
+  hostids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  name_pattern?: InputMaybe<Scalars['String']['input']>;
 }
 
 
@@ -749,7 +913,16 @@ export type ResolversTypes = {
   CreateHostGroup: CreateHostGroup;
   CreateHostGroupResponse: ResolverTypeWrapper<CreateHostGroupResponse>;
   CreateHostResponse: ResolverTypeWrapper<CreateHostResponse>;
+  CreateItemPreprocessing: CreateItemPreprocessing;
+  CreateLinkedTemplate: CreateLinkedTemplate;
+  CreateMasterItem: CreateMasterItem;
+  CreateTag: CreateTag;
+  CreateTemplate: CreateTemplate;
+  CreateTemplateGroup: CreateTemplateGroup;
+  CreateTemplateGroupResponse: ResolverTypeWrapper<CreateTemplateGroupResponse>;
+  CreateTemplateItem: CreateTemplateItem;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
+  DeleteResponse: ResolverTypeWrapper<DeleteResponse>;
   Device: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Device']>;
   DeviceCommunicationType: DeviceCommunicationType;
   DeviceConfig: ResolverTypeWrapper<DeviceConfig>;
@@ -769,6 +942,7 @@ export type ResolversTypes = {
   HostGroup: ResolverTypeWrapper<HostGroup>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   ImportHostResponse: ResolverTypeWrapper<ImportHostResponse>;
+  ImportTemplateResponse: ResolverTypeWrapper<ImportTemplateResponse>;
   ImportUserRightResult: ResolverTypeWrapper<ImportUserRightResult>;
   ImportUserRightsResult: ResolverTypeWrapper<ImportUserRightsResult>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
@@ -814,7 +988,16 @@ export type ResolversParentTypes = {
   CreateHostGroup: CreateHostGroup;
   CreateHostGroupResponse: CreateHostGroupResponse;
   CreateHostResponse: CreateHostResponse;
+  CreateItemPreprocessing: CreateItemPreprocessing;
+  CreateLinkedTemplate: CreateLinkedTemplate;
+  CreateMasterItem: CreateMasterItem;
+  CreateTag: CreateTag;
+  CreateTemplate: CreateTemplate;
+  CreateTemplateGroup: CreateTemplateGroup;
+  CreateTemplateGroupResponse: CreateTemplateGroupResponse;
+  CreateTemplateItem: CreateTemplateItem;
   DateTime: Scalars['DateTime']['output'];
+  DeleteResponse: DeleteResponse;
   Device: ResolversInterfaceTypes<ResolversParentTypes>['Device'];
   DeviceConfig: DeviceConfig;
   DeviceState: ResolversInterfaceTypes<ResolversParentTypes>['DeviceState'];
@@ -832,6 +1015,7 @@ export type ResolversParentTypes = {
   HostGroup: HostGroup;
   ID: Scalars['ID']['output'];
   ImportHostResponse: ImportHostResponse;
+  ImportTemplateResponse: ImportTemplateResponse;
   ImportUserRightResult: ImportUserRightResult;
   ImportUserRightsResult: ImportUserRightsResult;
   Int: Scalars['Int']['output'];
@@ -890,9 +1074,24 @@ export type CreateHostResponseResolvers<ContextType = any, ParentType extends Re
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreateTemplateGroupResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateTemplateGroupResponse'] = ResolversParentTypes['CreateTemplateGroupResponse']> = {
+  error?: Resolver<Maybe<ResolversTypes['ApiError']>, ParentType, ContextType>;
+  groupName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  groupid?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
+
+export type DeleteResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteResponse'] = ResolversParentTypes['DeleteResponse']> = {
+  error?: Resolver<Maybe<ResolversTypes['ApiError']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export type DeviceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Device'] = ResolversParentTypes['Device']> = {
   __resolveType: TypeResolveFn<'GenericDevice', ParentType, ContextType>;
@@ -1011,6 +1210,14 @@ export type ImportHostResponseResolvers<ContextType = any, ParentType extends Re
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ImportTemplateResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ImportTemplateResponse'] = ResolversParentTypes['ImportTemplateResponse']> = {
+  error?: Resolver<Maybe<ResolversTypes['ApiError']>, ParentType, ContextType>;
+  host?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  templateid?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ImportUserRightResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['ImportUserRightResult'] = ResolversParentTypes['ImportUserRightResult']> = {
   errors?: Resolver<Maybe<Array<ResolversTypes['ApiError']>>, ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1043,8 +1250,12 @@ export type LocationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createHost?: Resolver<Maybe<ResolversTypes['CreateHostResponse']>, ParentType, ContextType, RequireFields<MutationCreateHostArgs, 'host' | 'hostgroupids' | 'templateids'>>;
+  deleteTemplateGroups?: Resolver<Maybe<Array<ResolversTypes['DeleteResponse']>>, ParentType, ContextType, Partial<MutationDeleteTemplateGroupsArgs>>;
+  deleteTemplates?: Resolver<Maybe<Array<ResolversTypes['DeleteResponse']>>, ParentType, ContextType, Partial<MutationDeleteTemplatesArgs>>;
   importHostGroups?: Resolver<Maybe<Array<ResolversTypes['CreateHostGroupResponse']>>, ParentType, ContextType, RequireFields<MutationImportHostGroupsArgs, 'hostGroups'>>;
   importHosts?: Resolver<Maybe<Array<ResolversTypes['ImportHostResponse']>>, ParentType, ContextType, RequireFields<MutationImportHostsArgs, 'hosts'>>;
+  importTemplateGroups?: Resolver<Maybe<Array<ResolversTypes['CreateTemplateGroupResponse']>>, ParentType, ContextType, RequireFields<MutationImportTemplateGroupsArgs, 'templateGroups'>>;
+  importTemplates?: Resolver<Maybe<Array<ResolversTypes['ImportTemplateResponse']>>, ParentType, ContextType, RequireFields<MutationImportTemplatesArgs, 'templates'>>;
   importUserRights?: Resolver<Maybe<ResolversTypes['ImportUserRightsResult']>, ParentType, ContextType, RequireFields<MutationImportUserRightsArgs, 'dryRun' | 'input'>>;
 };
 
@@ -1064,6 +1275,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   allDevices?: Resolver<Maybe<Array<Maybe<ResolversTypes['Device']>>>, ParentType, ContextType, RequireFields<QueryAllDevicesArgs, 'filter_host' | 'groupids' | 'name_pattern' | 'tag_deviceType' | 'with_items'>>;
   allHostGroups?: Resolver<Maybe<Array<Maybe<ResolversTypes['HostGroup']>>>, ParentType, ContextType, RequireFields<QueryAllHostGroupsArgs, 'with_hosts'>>;
   allHosts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Host']>>>, ParentType, ContextType, RequireFields<QueryAllHostsArgs, 'filter_host' | 'groupids' | 'name_pattern' | 'tag_deviceType' | 'with_items'>>;
+  allTemplateGroups?: Resolver<Maybe<Array<Maybe<ResolversTypes['HostGroup']>>>, ParentType, ContextType, Partial<QueryAllTemplateGroupsArgs>>;
   apiVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   exportHostValueHistory?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, RequireFields<QueryExportHostValueHistoryArgs, 'sortOrder' | 'type'>>;
   exportUserRights?: Resolver<Maybe<ResolversTypes['UserRights']>, ParentType, ContextType, RequireFields<QueryExportUserRightsArgs, 'exclude_hostgroups_pattern' | 'name_pattern'>>;
@@ -1071,6 +1283,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   locations?: Resolver<Maybe<Array<Maybe<ResolversTypes['Location']>>>, ParentType, ContextType, RequireFields<QueryLocationsArgs, 'distinct_by_name' | 'name_pattern' | 'templateids'>>;
   login?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QueryLoginArgs, 'password' | 'username'>>;
   logout?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  templates?: Resolver<Maybe<Array<Maybe<ResolversTypes['Template']>>>, ParentType, ContextType, Partial<QueryTemplatesArgs>>;
   userPermissions?: Resolver<Maybe<Array<ResolversTypes['UserPermission']>>, ParentType, ContextType, Partial<QueryUserPermissionsArgs>>;
   zabbixVersion?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
@@ -1193,7 +1406,9 @@ export type Resolvers<ContextType = any> = {
   ApiError?: ApiErrorResolvers<ContextType>;
   CreateHostGroupResponse?: CreateHostGroupResponseResolvers<ContextType>;
   CreateHostResponse?: CreateHostResponseResolvers<ContextType>;
+  CreateTemplateGroupResponse?: CreateTemplateGroupResponseResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
+  DeleteResponse?: DeleteResponseResolvers<ContextType>;
   Device?: DeviceResolvers<ContextType>;
   DeviceCommunicationType?: DeviceCommunicationTypeResolvers;
   DeviceConfig?: DeviceConfigResolvers<ContextType>;
@@ -1211,6 +1426,7 @@ export type Resolvers<ContextType = any> = {
   Host?: HostResolvers<ContextType>;
   HostGroup?: HostGroupResolvers<ContextType>;
   ImportHostResponse?: ImportHostResponseResolvers<ContextType>;
+  ImportTemplateResponse?: ImportTemplateResponseResolvers<ContextType>;
   ImportUserRightResult?: ImportUserRightResultResolvers<ContextType>;
   ImportUserRightsResult?: ImportUserRightsResultResolvers<ContextType>;
   Inventory?: InventoryResolvers<ContextType>;

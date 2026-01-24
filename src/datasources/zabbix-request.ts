@@ -39,7 +39,7 @@ export class ParsedArgs {
     constructor(params?: any) {
         if (Array.isArray(params)) {
             this.zabbix_params = params.map(arg => this.parseArgObject(arg))
-        } else if (params instanceof Object) {
+        } else {
             this.zabbix_params = this.parseArgObject(params)
         }
     }
@@ -52,9 +52,12 @@ export class ParsedArgs {
         return paramName in this.zabbix_params ? this.zabbix_params[paramName] : undefined
     }
 
-    parseArgObject(args?: Object) {
+    parseArgObject(args?: any) {
+        if (args && (typeof args !== 'object' || args.constructor !== Object)) {
+            return args;
+        }
         let result: ZabbixParams
-        if (args) {
+        if (args && typeof args === 'object' && args.constructor === Object) {
             if ("name_pattern" in args && typeof args["name_pattern"] == "string") {
                 if (args["name_pattern"]) {
                     this.name_pattern = args["name_pattern"]
@@ -159,7 +162,10 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
         let params: ZabbixParams
         if (Array.isArray(args?.zabbix_params)) {
             params = args?.zabbix_params.map(paramsObj => {
-                return {...this.requestBodyTemplate.params, ...paramsObj}
+                if (paramsObj !== null && typeof paramsObj === 'object' && paramsObj.constructor === Object) {
+                    return {...this.requestBodyTemplate.params, ...paramsObj}
+                }
+                return paramsObj;
             })
         } else {
             params = {...this.requestBodyTemplate.params, ...zabbixParams ?? this.createZabbixParams(args)}

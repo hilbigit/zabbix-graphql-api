@@ -1,0 +1,30 @@
+### Mutation
+Use this mutation to delete template groups by their numeric IDs or by a name pattern.
+
+```graphql
+mutation DeleteTemplateGroups($groupids: [Int!], $name_pattern: String) {
+  deleteTemplateGroups(groupids: $groupids, name_pattern: $name_pattern) {
+    id
+    message
+    error {
+      message
+      code
+      data
+    }
+  }
+}
+```
+
+### Variables (by ID)
+```json
+{
+  "groupids": [201]
+}
+```
+
+### Variables (by name pattern)
+```json
+{
+  "name_pattern": "Templates/Roadwork/%"
+}
+```

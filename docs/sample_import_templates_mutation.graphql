@@ -1,0 +1,97 @@
+### Mutation
+Use this mutation to import templates along with their items, tags, and linked templates.
+
+```graphql
+mutation ImportTemplates($templates: [CreateTemplate!]!) {
+  importTemplates(templates: $templates) {
+    host
+    templateid
+    message
+    error {
+      message
+      code
+      data
+    }
+  }
+}
+```
+
+### Variables
+This sample data is based on the `BT_DEVICE_TRACKER` template from `src/testdata/templates/zbx_default_templates_vcr.yaml`.
+
+```json
+{
+  "templates": [
+    {
+      "uuid": "27474f627cb344b782a81c16d7e0c7d1",
+      "host": "BT_DEVICE_TRACKER",
+      "name": "BT_DEVICE_TRACKER",
+      "groupNames": ["Templates/Roadwork/Devices"],
+      "templates": [
+        { "name": "ROADWORK_DEVICE" }
+      ],
+      "tags": [
+        { "tag": "class", "value": "roadwork" },
+        { "tag": "deviceType", "value": "bt_device_tracker_generic" }
+      ],
+      "items": [
+        {
+          "uuid": "d4d3ec9f3ca940a39a721b6cfd2f3471",
+          "name": "location",
+          "type": 18,
+          "key": "location",
+          "value_type": 4,
+          "history": "2d",
+          "preprocessing": [
+            {
+              "type": 21,
+              "params": [
+                "var obj=JSON.parse(value);\n\nif (obj[\"isFiltered\"]) {\n  throw \"Result is filtered\";\n  return \"filtered\";\n}\n\nreturn value;"
+              ]
+            },
+            {
+              "type": 15,
+              "params": ["filtered"],
+              "error_handler": 1
+            }
+          ],
+          "master_item": {
+            "key": "mqtt.trap[deviceValue/location]"
+          }
+        },
+        {
+          "uuid": "380c4a7d752848cba3b5a59a0f9b13c0",
+          "name": "MQTT_LOCATION",
+          "type": 2,
+          "key": "mqtt.trap[deviceValue/location]",
+          "value_type": 4,
+          "history": "0"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Mapping Reference
+When converting from Zabbix YAML/XML exports, use the following numeric mappings for items and preprocessing:
+
+#### Item Type (`type`)
+- `2`: ZABBIX_TRAP (TRAP)
+- `18`: DEPENDANT_ITEM (DEPENDENT)
+- `21`: SIMULATOR_JAVASCRIPT (JAVASCRIPT)
+
+#### Value Type (`value_type`)
+- `0`: Float
+- `3`: Int (Numeric unsigned)
+- `4`: Text
+
+#### Preprocessing Type (`type`)
+- `12`: JSONPATH
+- `15`: NOT_MATCHES_REGEX
+- `21`: JAVASCRIPT
+
+#### Error Handler (`error_handler`)
+- `1`: DISCARD_VALUE
+- `2`: SET_VALUE
+- `3`: SET_ERROR

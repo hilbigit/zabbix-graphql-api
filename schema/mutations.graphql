@@ -29,11 +29,151 @@ type Mutation {
     importHosts(hosts: [CreateHost!]!):[ImportHostResponse!]
 
     importUserRights(input: UserRightsInput!, dryRun: Boolean! = true): ImportUserRightsResult
+
+    """
+    (Mass) Import template groups
+    and assign them by groupid or name.
+
+    Return value: If no error occurs a groupid be returned for each created group,
+    otherwise the return object will contain an error message
+
+    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    """
+    importTemplateGroups(templateGroups: [CreateTemplateGroup!]!):[CreateTemplateGroupResponse!]
+
+    """
+    (Mass) Import templates.
+
+    Return value: If no error occurs a templateid will be returned for each created template,
+    otherwise the return object will contain an error message.
+
+    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    """
+    importTemplates(templates: [CreateTemplate!]!):[ImportTemplateResponse!]
+
+    """
+    Delete templates.
+
+    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    """
+    deleteTemplates(templateids: [Int!], name_pattern: String): [DeleteResponse!]
+
+    """
+    Delete template groups.
+
+    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    """
+    deleteTemplateGroups(groupids: [Int!], name_pattern: String): [DeleteResponse!]
 }
 
 ####################################################################
 # Input types used for importXXX - and storeXXX - Mutations
 ####################################################################
+
+type DeleteResponse {
+    id: Int!
+    message: String
+    error: ApiError
+}
+
+input CreateTemplateGroup {
+    """
+    Name of the template group
+    """
+    groupName: String!
+    """
+    Internally used unique id
+    (will be assigned by Zabbix if empty)
+    """
+    uuid: String
+}
+
+input CreateTemplate {
+    """
+    Name of the template
+    """
+    host: String!
+    """
+    Visible name of the template
+    """
+    name: String
+    """
+    groupNames is used to assign the created object
+    to a template group.
+    """
+    groupNames: [String!]!
+    """
+    Optionally the internal groupids can be passed - in this case the
+    groupName is ignored
+    """
+    groupids: [Int]
+    """
+    Internally used unique id
+    (will be assigned by Zabbix if empty)
+    """
+    uuid: String
+    """
+    Template items
+    """
+    items: [CreateTemplateItem!]
+    """
+    Linked templates
+    """
+    templates: [CreateLinkedTemplate!]
+    """
+    Template tags
+    """
+    tags: [CreateTag!]
+}
+
+input CreateTemplateItem {
+    uuid: String
+    name: String!
+    type: Int
+    key: String!
+    value_type: Int
+    history: String
+    units: String
+    delay: String
+    description: String
+    preprocessing: [CreateItemPreprocessing!]
+    tags: [CreateTag!]
+    master_item: CreateMasterItem
+}
+
+input CreateMasterItem {
+    key: String!
+}
+
+input CreateItemPreprocessing {
+    type: Int!
+    params: [String!]!
+    error_handler: Int
+    error_handler_params: String
+}
+
+input CreateLinkedTemplate {
+    name: String!
+}
+
+input CreateTag {
+    tag: String!
+    value: String
+}
+
+type ImportTemplateResponse {
+    host: String!
+    templateid: String
+    message: String
+    error: ApiError
+}
+
+type CreateTemplateGroupResponse {
+    groupName: String!
+    groupid: Int
+    message: String
+    error: ApiError
+}
 
 input CreateHostGroup {
     """

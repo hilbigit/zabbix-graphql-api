@@ -1,0 +1,59 @@
+### Mutation
+Use this mutation to import template groups.
+
+```graphql
+mutation ImportTemplateGroups($templateGroups: [CreateTemplateGroup!]!) {
+  importTemplateGroups(templateGroups: $templateGroups) {
+    groupName
+    groupid
+    message
+    error {
+      message
+      code
+      data
+    }
+  }
+}
+```
+
+### Variables
+This sample data is based on the `template_groups` from `src/testdata/templates/zbx_default_templates_vcr.yaml`.
+
+```json
+{
+  "templateGroups": [
+    {
+      "uuid": "43aab460fe444f18886b19948413b7e3",
+      "groupName": "Permissions/ConstructionSite"
+    },
+    {
+      "uuid": "376524057e094c07aaa0cf7f524849dc",
+      "groupName": "Templates/Roadwork/Controller"
+    },
+    {
+      "uuid": "7d83c76454564390bb0e34600780eaec",
+      "groupName": "Templates/Roadwork/Device-Capabilities"
+    },
+    {
+      "uuid": "48d5d2a18a08448c96a931b63bb2c97d",
+      "groupName": "Templates/Roadwork/Device-Capabilities/FLASH_ATTACHABLE"
+    },
+    {
+      "uuid": "785986b84892468ea2e92d912747b1d3",
+      "groupName": "Templates/Roadwork/Device-Capabilities/GEOLOCALIZABLE"
+    },
+    {
+      "uuid": "a4b79479e97a4b48972dcb476d45e55a",
+      "groupName": "Templates/Roadwork/Device-Capabilities/HAS_OPERATIONAL_DATA"
+    },
+    {
+      "uuid": "3604af8102644bee9dcaf0f9c1ee93a1",
+      "groupName": "Templates/Roadwork/Devices"
+    },
+    {
+      "uuid": "5ad0bd9e42a4487e869e9e41b38fe553",
+      "groupName": "Templates/Roadwork/DisplayLibrary"
+    }
+  ]
+}
+```

@@ -6,6 +6,10 @@ import {
     MutationCreateHostArgs,
     MutationImportHostGroupsArgs,
     MutationImportHostsArgs,
+    MutationImportTemplateGroupsArgs,
+    MutationImportTemplatesArgs,
+    MutationDeleteTemplatesArgs,
+    MutationDeleteTemplateGroupsArgs,
     MutationImportUserRightsArgs,
     Permission, QueryAllDevicesArgs,
     QueryAllHostGroupsArgs,
@@ -13,12 +17,15 @@ import {
     QueryExportHostValueHistoryArgs,
     QueryExportUserRightsArgs,
     QueryHasPermissionsArgs,
+    QueryTemplatesArgs,
     QueryUserPermissionsArgs,
     Resolvers,
     StorageItemType,
 } from "../schema/generated/graphql.js";
 
 import {HostImporter} from "../execution/host_importer.js";
+import {TemplateImporter} from "../execution/template_importer.js";
+import {TemplateDeleter} from "../execution/template_deleter.js";
 import {HostValueExporter} from "../execution/host_exporter.js";
 import {logger} from "../logging/logger.js";
 import {ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
@@ -39,6 +46,14 @@ import {
     ZabbixImportUserRolesRequest,
     ZabbixQueryUserRolesRequest
 } from "../datasources/zabbix-userroles.js";
+import {
+    ZabbixCreateItemRequest,
+    ZabbixCreateTemplateGroupRequest,
+    ZabbixCreateTemplateRequest,
+    ZabbixQueryItemRequest,
+    ZabbixQueryTemplateGroupRequest,
+    ZabbixQueryTemplatesRequest
+} from "../datasources/zabbix-templates.js";
 import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api.js";
 import {GraphQLInterfaceType, GraphQLList} from "graphql/type/index.js";
 import {isDevice} from "./resolver_helpers.js";
@@ -129,6 +144,37 @@ export function createResolvers(): Resolvers {
                     userGroups: groups,
                     userRoles: roles
                 }
+            },
+
+            templates: async (_parent: any, args: QueryTemplatesArgs, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                let params: any = {}
+                if (args.hostids) {
+                    params.templateids = args.hostids
+                }
+                if (args.name_pattern) {
+                    params.search = {
+                        name: args.name_pattern
+                    }
+                }
+                return await new ZabbixQueryTemplatesRequest(zabbixAuthToken, cookie)
+                    .executeRequestThrowError(zabbixAPI, new ParsedArgs(params));
+            },
+
+            allTemplateGroups: async (_parent: any, args: any, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                let params: any = {}
+                if (args.name_pattern) {
+                    params.search = {
+                        name: args.name_pattern
+                    }
+                }
+                return await new ZabbixQueryTemplateGroupRequest(zabbixAuthToken, cookie)
+                    .executeRequestThrowError(zabbixAPI, new ParsedArgs(params));
             }
         },
         Mutation: {
@@ -172,6 +218,30 @@ export function createResolvers(): Resolvers {
                     userRoles: userRolesImport,
                     userGroups: userGroupsImport
                 }
+            },
+            importTemplateGroups: async (_parent: any, args: MutationImportTemplateGroupsArgs, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                return TemplateImporter.importTemplateGroups(args.templateGroups, zabbixAuthToken, cookie)
+            },
+            importTemplates: async (_parent: any, args: MutationImportTemplatesArgs, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                return TemplateImporter.importTemplates(args.templates, zabbixAuthToken, cookie)
+            },
+            deleteTemplates: async (_parent: any, args: MutationDeleteTemplatesArgs, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                return TemplateDeleter.deleteTemplates(args.templateids, args.name_pattern, zabbixAuthToken, cookie)
+            },
+            deleteTemplateGroups: async (_parent: any, args: MutationDeleteTemplateGroupsArgs, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                return TemplateDeleter.deleteTemplateGroups(args.groupids, args.name_pattern, zabbixAuthToken, cookie)
             }
         },
 

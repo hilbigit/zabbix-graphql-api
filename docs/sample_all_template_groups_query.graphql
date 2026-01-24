@@ -1,0 +1,18 @@
+### Query
+Use this query to list all template groups.
+
+```graphql
+query AllTemplateGroups($name_pattern: String) {
+  allTemplateGroups(name_pattern: $name_pattern) {
+    groupid
+    name
+  }
+}
+```
+
+### Variables
+```json
+{
+  "name_pattern": "Templates/Roadwork/*"
+}
+```

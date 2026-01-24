@@ -1,0 +1,670 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 43aab460fe444f18886b19948413b7e3
+      name: Permissions/ConstructionSite
+    - uuid: 376524057e094c07aaa0cf7f524849dc
+      name: Templates/Roadwork/Controller
+    - uuid: 7d83c76454564390bb0e34600780eaec
+      name: Templates/Roadwork/Device-Capabilities
+    - uuid: 48d5d2a18a08448c96a931b63bb2c97d
+      name: Templates/Roadwork/Device-Capabilities/FLASH_ATTACHABLE
+    - uuid: 785986b84892468ea2e92d912747b1d3
+      name: Templates/Roadwork/Device-Capabilities/GEOLOCALIZABLE
+    - uuid: a4b79479e97a4b48972dcb476d45e55a
+      name: Templates/Roadwork/Device-Capabilities/HAS_OPERATIONAL_DATA
+    - uuid: 3604af8102644bee9dcaf0f9c1ee93a1
+      name: Templates/Roadwork/Devices
+    - uuid: 5ad0bd9e42a4487e869e9e41b38fe553
+      name: Templates/Roadwork/DisplayLibrary
+  templates:
+    - uuid: 27474f627cb344b782a81c16d7e0c7d1
+      template: BT_DEVICE_TRACKER
+      name: BT_DEVICE_TRACKER
+      vendor:
+        name: 'Hilbig IT GmbH'
+        version: 2.1.1
+      templates:
+        - name: ROADWORK_DEVICE
+      groups:
+        - name: Templates/Roadwork/Devices
+      items:
+        - uuid: d4d3ec9f3ca940a39a721b6cfd2f3471
+          name: location
+          type: DEPENDENT
+          key: location
+          history: 2d
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var obj=JSON.parse(value);
+                  
+                  if (obj["isFiltered"]) {
+                    throw "Result is filtered";
+                    return "filtered";
+                  }
+                  
+                  return value;
+            - type: NOT_MATCHES_REGEX
+              parameters:
+                - filtered
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: 'mqtt.trap[deviceValue/location]'
+        - uuid: 380c4a7d752848cba3b5a59a0f9b13c0
+          name: MQTT_LOCATION
+          type: TRAP
+          key: 'mqtt.trap[deviceValue/location]'
+          history: '0'
+          value_type: TEXT
+        - uuid: 29faf53c033840c0b1405f8240e30312
+          name: coords
+          type: DEPENDENT
+          key: state.current.values.coords
+          history: 2d
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var obj=JSON.parse(value);
+                  var location = obj["location"];
+                  var coords = location["coords"];
+                  return JSON.stringify({
+                  	"btDeviceKey": obj["btDeviceKey"],
+                  	"timestamp": location["timestamp"],
+                      "deviceName": obj["deviceName"],
+                  	"latitude": coords[1],
+                  	"longitude": coords[0],
+                  	"coords": coords
+                  });
+          master_item:
+            key: location
+          tags:
+            - tag: hasValue
+              value: 'true'
+        - uuid: 1ae9486c18394e56b114c9cb4546deaf
+          name: geojson
+          type: DEPENDENT
+          key: state.current.values.geojson
+          history: 2d
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.location.setup
+          master_item:
+            key: location
+          tags:
+            - tag: hasValue
+              value: 'true'
+      tags:
+        - tag: class
+          value: roadwork
+        - tag: deviceType
+          value: bt_device_tracker_generic
+    - uuid: e6905dc6122944f3829ad28a9739e269
+      template: BT_TRACKER
+      name: BT_TRACKER
+      vendor:
+        name: 'Hilbig IT GmbH'
+        version: 2.1.1
+      templates:
+        - name: ROADWORK_DEVICE
+      groups:
+        - name: Templates/Roadwork/Devices
+      items:
+        - uuid: b1e3062d67f94f7c8d064eff36a58b13
+          name: MQTT_STATE
+          type: DEPENDENT
+          key: currentstate
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var v = JSON.parse(value);
+                  return JSON.stringify({
+                  	"count": v.count,
+                  	"timeFrom": v.timeFrom,
+                  	"timeUntil": v.timeUntil
+                  });
+          master_item:
+            key: 'mqtt.trap[deviceValue/count]'
+        - uuid: 905c5f1b6e524bd2b227769a59f4df1b
+          name: MQTT_COUNT
+          type: TRAP
+          key: 'mqtt.trap[deviceValue/count]'
+          history: '0'
+          value_type: TEXT
+        - uuid: 6fa441872c3140f4adecf39956245603
+          name: MQTT_DISTANCE
+          type: TRAP
+          key: 'mqtt.trap[deviceValue/distance]'
+          value_type: TEXT
+        - uuid: 69d2afa4a0324d818150e9473c3264f3
+          name: MQTT_NAME
+          type: TRAP
+          key: 'mqtt.trap[deviceValue/name]'
+          value_type: TEXT
+        - uuid: 45ff9430d27f47a492c98fce03fc7962
+          name: MQTT_SERVICE_DATA
+          type: TRAP
+          key: 'mqtt.trap[deviceValue/ServiceData]'
+          value_type: TEXT
+        - uuid: 3bf0d3017ea54e1da2a764c3f96bf97e
+          name: count
+          type: DEPENDENT
+          key: state.current.values.count
+          trends: '0'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.count
+          master_item:
+            key: 'mqtt.trap[deviceValue/count]'
+        - uuid: f0d1fc72e2154613b349be86c6bdcfd6
+          name: timeFrom
+          type: DEPENDENT
+          key: state.current.values.timeFrom
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.timeFrom
+            - type: REGEX
+              parameters:
+                - 'T(\d\d:\d\d:\d\d):'
+                - \1
+          master_item:
+            key: 'mqtt.trap[deviceValue/count]'
+        - uuid: e55bf604808f4eb4a964ebeefdd9eb9e
+          name: timeUntil
+          type: DEPENDENT
+          key: state.current.values.timeUntil
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.timeUntil
+            - type: REGEX
+              parameters:
+                - 'T(\d\d:\d\d:\d\d):'
+                - \1
+          master_item:
+            key: 'mqtt.trap[deviceValue/count]'
+      tags:
+        - tag: class
+          value: roadwork
+        - tag: deviceType
+          value: bt_tracker_generic
+        - tag: deviceWidgetPreview.BOTTOM_LEFT.key
+          value: timeFrom
+        - tag: deviceWidgetPreview.BOTTOM_LEFT.unit
+          value: Startzeit
+        - tag: deviceWidgetPreview.BOTTOM_LEFT.unit_font_size
+          value: '8'
+        - tag: deviceWidgetPreview.BOTTOM_LEFT.value_font_size
+          value: '16'
+        - tag: deviceWidgetPreview.BOTTOM_RIGHT.key
+          value: timeUntil
+        - tag: deviceWidgetPreview.BOTTOM_RIGHT.unit
+          value: Endezeit
+        - tag: deviceWidgetPreview.BOTTOM_RIGHT.unit_font_size
+          value: '8'
+        - tag: deviceWidgetPreview.BOTTOM_RIGHT.value_font_size
+          value: '16'
+        - tag: deviceWidgetPreview.TOP_LEFT.key
+          value: count
+        - tag: deviceWidgetPreview.TOP_LEFT.unit
+          value: Geräte
+        - tag: deviceWidgetPreview.TOP_LEFT.unit_font_size
+          value: '8'
+        - tag: deviceWidgetPreview.TOP_LEFT.value_font_size
+          value: '24'
+    - uuid: 6490907a74964d0797c7acd1938bc553
+      template: GEOLOCATION
+      name: GEOLOCATION
+      vendor:
+        name: 'Hilbig IT GmbH'
+        version: 2.1.1
+      groups:
+        - name: Templates/Roadwork/Device-Capabilities
+        - name: Templates/Roadwork/Device-Capabilities/GEOLOCALIZABLE
+      items:
+        - uuid: 4ad4d9a769744615816d190c34cb49c7
+          name: GPS_LOCATION_MQTT
+          type: TRAP
+          key: 'mqtt.trap[operationalValue/location]'
+          history: '0'
+          value_type: TEXT
+          description: 'old value: mqtt.get["rabbitmq","operationalValue/{$DEVICETYPE}/{HOST.HOST}/location","voltra_dev:voltradev","rabbit4voltra"]'
+        - uuid: 0e0012933b2345d4b119fdc50c526c73
+          name: GPS_LOCATION
+          type: DEPENDENT
+          key: state.operational.location.json
+          history: 90d
+          value_type: TEXT
+          master_item:
+            key: 'mqtt.trap[operationalValue/location]'
+          tags:
+            - tag: attributeName
+              value: location
+            - tag: hasValue
+              value: 'true'
+            - tag: topicType
+              value: operationalValue
+        - uuid: e9dcf0279afc4ed4a23e274df4c98356
+          name: LATITUDE
+          type: DEPENDENT
+          key: state.operational.location.latitude
+          history: 90d
+          value_type: FLOAT
+          inventory_link: LOCATION_LAT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.latitude
+          master_item:
+            key: state.operational.location.json
+        - uuid: 49d1677d3a4a4cfab23b2e8e50533833
+          name: LONGITUDE
+          type: DEPENDENT
+          key: state.operational.location.longitude
+          history: 90d
+          value_type: FLOAT
+          inventory_link: LOCATION_LON
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.longitude
+          master_item:
+            key: state.operational.location.json
+        - uuid: d7203eaab36749798014b6d3b1a43e24
+          name: LOCATION_NAME
+          type: DEPENDENT
+          key: state.operational.location.name
+          history: 90d
+          value_type: TEXT
+          inventory_link: LOCATION
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var json = JSON.parse(value);
+                  var lat = "lat=" + json.latitude;
+                  var lon = "lon=" + json.longitude;
+                  
+                  return lon + ", " + lat;
+                  var geocoderURL = "https://photon.komoot.io/reverse?" + lon + "&" + lat;
+                  
+                  var req = new HttpRequest();
+                    
+                  req.addHeader('Content-Type: application/json');
+                    
+                  resp = req.get(geocoderURL);
+                    
+                  if (req.getStatus() != 200) {
+                          throw 'Response code: '+req.getStatus();
+                  }
+                    
+                  var resultJson = JSON.parse(resp);
+                  
+                  var features = resultJson.features;
+                  if (features.length && features[0].properties) {
+                    var props = features[0].properties;
+                    return props.postcode + " " + props.city;
+                  }
+                  return value;
+          master_item:
+            key: state.operational.location.json
+      tags:
+        - tag: class
+          value: roadwork
+      macros:
+        - macro: '{$DEVICEKEY}'
+          value: '{HOST.HOST}'
+    - uuid: fe8bac9ac30f411cb5a322817760e71d
+      template: OPERATIONAL_DATA
+      name: OPERATIONAL_DATA
+      vendor:
+        name: 'Hilbig IT GmbH'
+        version: 2.1.1
+      groups:
+        - name: Templates/Roadwork/Device-Capabilities
+        - name: Templates/Roadwork/Device-Capabilities/HAS_OPERATIONAL_DATA
+      items:
+        - uuid: 602290e9f42f4135b548e1cd45abe135
+          name: DENSITY_MQTT
+          type: TRAP
+          key: 'mqtt.trap[operationalValue/density]'
+          history: '0'
+          value_type: TEXT
+        - uuid: 87e0a14266984247b81fdc757dea5bde
+          name: ERROR_MQTT
+          type: TRAP
+          key: 'mqtt.trap[operationalValue/error]'
+          history: '0'
+          value_type: TEXT
+        - uuid: 644b0ec2e3d9448da1a69561ec10d19d
+          name: SIGNALSTRENGTH_MQTT
+          type: TRAP
+          key: 'mqtt.trap[operationalValue/signalstrength]'
+          history: '0'
+          value_type: TEXT
+        - uuid: 67c01d7334a24823832bba74073cf356
+          name: TEMPERATURE_MQTT
+          type: TRAP
+          key: 'mqtt.trap[operationalValue/temperature]'
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: attributeName
+              value: temperature
+            - tag: GRAPHQL_TYPE
+              value: Int
+            - tag: hasValue
+              value: 'true'
+            - tag: subscribeMqtt
+              value: 'true'
+            - tag: topicType
+              value: operationalValue
+        - uuid: 0352c80c749d4d91b386dab9c74ef3c6
+          name: VOLTAGE_MQTT
+          type: TRAP
+          key: 'mqtt.trap[operationalValue/voltage]'
+          history: '0'
+          value_type: TEXT
+        - uuid: 7aac8212c94044d28ada982c422f2bf7
+          name: DENSITY
+          type: DEPENDENT
+          key: state.operational.density
+          units: Kfz/Min
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.density
+          master_item:
+            key: 'mqtt.trap[operationalValue/density]'
+          tags:
+            - tag: attributeName
+              value: density
+            - tag: hasValue
+              value: 'true'
+            - tag: topicType
+              value: operationalValue
+        - uuid: 6c8c2f4cdc304b019d02026e7c3225ce
+          name: ERROR_HIGH
+          type: DEPENDENT
+          key: state.operational.errorHigh
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[?(@.code>=1000)]'
+              error_handler: CUSTOM_VALUE
+          master_item:
+            key: state.operational.json_error
+          triggers:
+            - uuid: bc381851c3d84534866f3262828817a9
+              expression: 'last(/OPERATIONAL_DATA/state.operational.errorHigh)<>""'
+              name: DEVICE_ERROR_HIGH
+              event_name: DEVICE_ERROR_HIGH
+              priority: HIGH
+              manual_close: 'YES'
+        - uuid: 7634372683af42e7bb807bd2ee0e600a
+          name: ERROR_INFO
+          type: DEPENDENT
+          key: state.operational.errorInfo
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[?(@.code=0)]'
+              error_handler: CUSTOM_VALUE
+          master_item:
+            key: state.operational.json_error
+          triggers:
+            - uuid: 201be3f4fd484651a0d2bb34586b408b
+              expression: 'last(/OPERATIONAL_DATA/state.operational.errorInfo)<>""'
+              name: DEVICE_ERROR_INFO
+              event_name: DEVICE_ERROR_INFO
+              priority: INFO
+              manual_close: 'YES'
+        - uuid: 58beaf63a07c44bd918f3f7c93be6d16
+          name: ERROR_WARNING
+          type: DEPENDENT
+          key: state.operational.errorWarning
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$[?(@.code>0&&@.code<1000)]'
+              error_handler: CUSTOM_VALUE
+          master_item:
+            key: state.operational.json_error
+          triggers:
+            - uuid: 208ef0feec0b469c8b3a8edc3ef12680
+              expression: 'last(/OPERATIONAL_DATA/state.operational.errorWarning)<>""'
+              name: DEVICE_ERROR_WARNING
+              event_name: DEVICE_ERROR_WARNING
+              priority: WARNING
+              manual_close: 'YES'
+        - uuid: cf7b08cec47a46ddb7ea110feab42c94
+          name: ERROR
+          type: DEPENDENT
+          key: state.operational.json_error
+          history: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.error
+          master_item:
+            key: 'mqtt.trap[operationalValue/error]'
+          tags:
+            - tag: attributeName
+              value: error
+            - tag: hasValue
+              value: 'true'
+            - tag: topicType
+              value: operationalValue
+        - uuid: a711e858297e4c80a61952b9848dd217
+          name: SIGNALSTRENGTH
+          type: DEPENDENT
+          key: state.operational.signalstrength
+          history: 90d
+          value_type: FLOAT
+          trends: '0'
+          units: dBm
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.signalstrength
+          master_item:
+            key: 'mqtt.trap[operationalValue/signalstrength]'
+          tags:
+            - tag: attributeName
+              value: signalstrength
+            - tag: hasValue
+              value: 'true'
+          triggers:
+            - uuid: 610d7f2cd5db4dc8938a61ffe81eb8e3
+              expression: 'nodata(/OPERATIONAL_DATA/state.operational.signalstrength,70s)=1'
+              name: NO_OPERATIONAL_VALUE
+              priority: WARNING
+        - uuid: 93df1a6ad1d640c883f446c85a220bd3
+          name: TEMPERATURE
+          type: DEPENDENT
+          key: state.operational.temperature
+          history: 90d
+          value_type: FLOAT
+          trends: '0'
+          units: °C
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.temperature
+          master_item:
+            key: 'mqtt.trap[operationalValue/temperature]'
+          tags:
+            - tag: attributeName
+              value: temperature
+            - tag: hasValue
+              value: 'true'
+          triggers:
+            - uuid: 8bc17b97d7fe4e4f9ac236e90d0b315d
+              expression: 'last(/OPERATIONAL_DATA/state.operational.temperature,#3)>60'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/OPERATIONAL_DATA/state.operational.temperature,#3)<=60'
+              name: TEMPERATURE_HIGH
+              event_name: TEMPERATURE_HIGH
+              priority: HIGH
+              dependencies:
+                - name: TEMPERATURE_WARNING
+                  expression: 'last(/OPERATIONAL_DATA/state.operational.temperature,#3)>50'
+                  recovery_expression: 'last(/OPERATIONAL_DATA/state.operational.temperature,#3)<=50'
+            - uuid: 086f026b15e5410793d0604b4c7d51f6
+              expression: 'last(/OPERATIONAL_DATA/state.operational.temperature,#3)>50'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/OPERATIONAL_DATA/state.operational.temperature,#3)<=50'
+              name: TEMPERATURE_WARNING
+              event_name: TEMPERATURE_WARNING
+              priority: AVERAGE
+        - uuid: cbc60c96e65d4111b902e3b133681067
+          name: TIMESTAMP
+          type: CALCULATED
+          key: state.operational.timestamp
+          value_type: TEXT
+          params: 'max(last(/{HOST.HOST}/state.operational.timestampSignalstrength),last(/{HOST.HOST}/state.operational.timestampVoltage))'
+          inventory_link: POC_2_NOTES
+        - uuid: ca1a1397f1aa458b88e531f699cacfeb
+          name: TIMESTAMP_SIGNALSTRENGTH
+          type: DEPENDENT
+          key: state.operational.timestampSignalstrength
+          history: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.timestamp
+          master_item:
+            key: 'mqtt.trap[operationalValue/signalstrength]'
+          tags:
+            - tag: attributeName
+              value: timestamp
+            - tag: hasValue
+              value: 'true'
+            - tag: subscribeMqtt
+              value: 'false'
+        - uuid: 919a09b55b304fc391bcd569f444b979
+          name: TIMESTAMP_VOLTAGE
+          type: DEPENDENT
+          key: state.operational.timestampVoltage
+          history: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.timestamp
+          master_item:
+            key: 'mqtt.trap[operationalValue/voltage]'
+          tags:
+            - tag: attributeName
+              value: timestamp
+            - tag: hasValue
+              value: 'true'
+            - tag: subscribeMqtt
+              value: 'false'
+        - uuid: 3363ed4409b545b48ae7c6197a56aae2
+          name: VOLTAGE
+          type: DEPENDENT
+          key: state.operational.voltage
+          history: 90d
+          value_type: FLOAT
+          trends: '0'
+          units: V
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.voltage
+          master_item:
+            key: 'mqtt.trap[operationalValue/voltage]'
+          tags:
+            - tag: attributeName
+              value: voltage
+            - tag: hasValue
+              value: 'true'
+            - tag: topicType
+              value: operationalValue
+          triggers:
+            - uuid: b411e1c0527a470184cac731c072fec2
+              expression: 'last(/OPERATIONAL_DATA/state.operational.voltage,#3)<=12'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/OPERATIONAL_DATA/state.operational.voltage,#3)>=12'
+              name: VOLTAGE_LOW
+              event_name: VOLTAGE_LOW
+              priority: WARNING
+              description: |
+                warning  if voltage < 24 of last 3 values
+                recovery if voltage >=24 of last 3 values
+            - uuid: f5c351920d544fc6abcf00fd9b26f51b
+              expression: 'last(/OPERATIONAL_DATA/state.operational.voltage,#3)<=11'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/OPERATIONAL_DATA/state.operational.voltage,#3)>=11'
+              name: VOLTAGE_TOO_LOW
+              priority: DISASTER
+      tags:
+        - tag: class
+          value: roadwork
+      macros:
+        - macro: '{$DEVICEKEY}'
+          value: '{HOST.HOST}'
+    - uuid: 2b814a4751b745bcb08b5ee98f295dc9
+      template: ROADWORK_DEVICE
+      name: ROADWORK_DEVICE
+      vendor:
+        name: 'Hilbig IT GmbH'
+        version: 2.1.1
+      groups:
+        - name: Templates/Roadwork/Devices
+      tags:
+        - tag: class
+          value: roadwork
+        - tag: hostType
+          value: Roadwork/Devices
+    - uuid: c53977cb7c6a45b18700502fd841db56
+      template: TEMPLATEGROUP_EXPORT_DUMMY_TEMPLATE
+      name: TEMPLATEGROUP_EXPORT_DUMMY_TEMPLATE
+      description: 'This template is linked to all template group which shall be part of the export templates - action because empty template groups will not be exported'
+      vendor:
+        name: 'Hilbig IT GmbH'
+        version: 2.1.1
+      groups:
+        - name: Permissions/Automatism
+        - name: Permissions/Automatism/Status
+        - name: Permissions/ConstructionSite
+        - name: Permissions/Library
+        - name: Permissions/Library/Item
+        - name: Templates/Roadwork/Controller
+        - name: Templates/Roadwork/Device-Capabilities
+        - name: Templates/Roadwork/Device-Capabilities/FLASH_ATTACHABLE
+        - name: Templates/Roadwork/Device-Capabilities/GEOLOCALIZABLE
+        - name: Templates/Roadwork/Device-Capabilities/HAS_OPERATIONAL_DATA
+        - name: Templates/Roadwork/Devices
+        - name: Templates/Roadwork/DisplayLibrary
+      tags:
+        - tag: class
+          value: roadwork
+  graphs:
+    - uuid: 2c8b16c6937a4d07912b6485ac8a1339
+      name: 'Mac address count'
+      graph_items:
+        - drawtype: GRADIENT_LINE
+          color: 1A7C11
+          calc_fnc: ALL
+          item:
+            host: BT_TRACKER
+            key: state.current.values.count

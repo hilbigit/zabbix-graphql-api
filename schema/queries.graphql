@@ -113,5 +113,15 @@ type Query {
     exclude_groups_pattern: Regex allowing to exclude all matching hostgroups from group permissions
     """
     exportUserRights(name_pattern: String = "" exclude_hostgroups_pattern: String = ""): UserRights
+
+    """
+    Get templates.
+    """
+    templates(hostids: [Int], name_pattern: String): [Template]
+
+    """
+    Get template groups.
+    """
+    allTemplateGroups(name_pattern: String): [HostGroup]
 }
 
