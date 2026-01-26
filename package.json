@@ -14,6 +14,7 @@
     "copy-schema": "cp -R schema ./dist/"
   },
   "keywords": [],
+  "license": "AGPL-3.0-only",
   "author": "Andreas Hilbig",
   "copyright": "All rights reserved by Hilbig IT GmbH",
   "dependencies": {
