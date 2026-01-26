@@ -1,0 +1,125 @@
+### Mutation
+Use this mutation to import a template specifically designed to work with the `DistanceTrackerDevice` type provided in the `location_tracker_devices.graphql` schema extension.
+
+This template uses Zabbix Agent 2 MQTT keys (`mqtt.get`) to subscribe to a broker and retrieve device data, which is then parsed into a hierarchical structure compatible with the GraphQL API's dynamic resolvers.
+
+```graphql
+mutation ImportDistanceTrackerTemplate($templates: [CreateTemplate!]!) {
+  importTemplates(templates: $templates) {
+    host
+    templateid
+    message
+    error {
+      message
+      code
+      data
+    }
+  }
+}
+```
+
+### Variables
+The following sample defines the `DISTANCE_TRACKER` template. Note the `deviceType` tag set to `DistanceTrackerDevice`, which instructs the GraphQL API to resolve this host using the specialized `DistanceTrackerDevice` type.
+
+The item keys use the `json_` prefix where appropriate (e.g., `state.current.json_distances`) to ensure that the JSON strings received from Zabbix are automatically parsed into objects/arrays by the GraphQL resolver.
+
+```json
+{
+  "templates": [
+    {
+      "host": "DISTANCE_TRACKER",
+      "name": "Distance Tracker Device Template",
+      "groupNames": ["Templates/Roadwork/Devices"],
+      "templates": [
+        { "name": "ROADWORK_DEVICE" }
+      ],
+      "tags": [
+        { "tag": "class", "value": "roadwork" },
+        { "tag": "deviceType", "value": "DistanceTrackerDevice" }
+      ],
+      "items": [
+        {
+          "name": "MQTT Master Data",
+          "type": 0,
+          "key": "mqtt.get[\"tcp://mqtt-broker:1883\",\"device/distance_tracker/data\"]",
+          "value_type": 4,
+          "history": "0",
+          "description": "Master item receiving full JSON payload via MQTT Agent 2"
+        },
+        {
+          "name": "Device Count",
+          "type": 18,
+          "key": "state.current.count",
+          "value_type": 3,
+          "history": "7d",
+          "master_item": {
+            "key": "mqtt.get[\"tcp://mqtt-broker:1883\",\"device/distance_tracker/data\"]"
+          },
+          "preprocessing": [
+            {
+              "type": 12,
+              "params": ["$.count"]
+            }
+          ]
+        },
+        {
+          "name": "Time From",
+          "type": 18,
+          "key": "state.current.timeFrom",
+          "value_type": 4,
+          "history": "7d",
+          "master_item": {
+            "key": "mqtt.get[\"tcp://mqtt-broker:1883\",\"device/distance_tracker/data\"]"
+          },
+          "preprocessing": [
+            {
+              "type": 12,
+              "params": ["$.timeFrom"]
+            }
+          ]
+        },
+        {
+          "name": "Time Until",
+          "type": 18,
+          "key": "state.current.timeUntil",
+          "value_type": 4,
+          "history": "7d",
+          "master_item": {
+            "key": "mqtt.get[\"tcp://mqtt-broker:1883\",\"device/distance_tracker/data\"]"
+          },
+          "preprocessing": [
+            {
+              "type": 12,
+              "params": ["$.timeUntil"]
+            }
+          ]
+        },
+        {
+          "name": "Nearby Distances",
+          "type": 18,
+          "key": "state.current.json_distances",
+          "value_type": 4,
+          "history": "7d",
+          "master_item": {
+            "key": "mqtt.get[\"tcp://mqtt-broker:1883\",\"device/distance_tracker/data\"]"
+          },
+          "preprocessing": [
+            {
+              "type": 12,
+              "params": ["$.distances"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Technical Note: Hierarchical Mapping
+The `DistanceTrackerDevice` type in the schema extension is mapped using `createHierarchicalValueFieldResolver`. This resolver expects Zabbix items to follow a naming convention that mirrors the GraphQL structure:
+
+- `state.current.count` maps to `state { current { count } }`
+- `state.current.json_distances` maps to `state { current { distances } }` (with automatic JSON parsing due to the `json_` prefix)
+
+The `mqtt.get` keys replace the older `mqtt.trap` style, leveraging the Zabbix Agent 2 MQTT plugin for active topic subscriptions.

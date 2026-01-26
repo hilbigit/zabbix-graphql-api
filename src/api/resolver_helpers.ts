@@ -16,6 +16,21 @@ function defaultKeyMappingFunction(key: string): string {
     return words.join("")
 }
 
+/**
+ * Creates a resolver for an object type where each field is resolved by mapping Zabbix items or tags
+ * to a hierarchical structure based on field names or Zabbix keys.
+ *
+ * This function iterates over all fields of the specified GraphQL type and assigns a resolver
+ * that uses the provided `sourceFieldMapper` to retrieve the value. It automatically detects
+ * whether a field is a scalar or an object type to guide the mapping process.
+ *
+ * @param schema - The executable GraphQL schema.
+ * @param typename - The name of the GraphQL type for which to create the resolver.
+ * @param sourceFieldMapper - A function that maps a field name to its value from the parent object.
+ *                            It receives the field name, the parent object, and a boolean indicating
+ *                            if the requested field is an object type.
+ * @returns A resolver object containing field-to-function mappings for the specified type.
+ */
 export function createHierarchicalValueFieldResolver(
     schema: any, typename: string,
     sourceFieldMapper: (fieldname: string, parent: any, objectTypeRequested: boolean) => { [p: string]: any } | null): {

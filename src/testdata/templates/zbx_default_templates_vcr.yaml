@@ -52,11 +52,11 @@ zabbix_export:
                 - filtered
               error_handler: DISCARD_VALUE
           master_item:
-            key: 'mqtt.trap[deviceValue/location]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/location"]'
         - uuid: 380c4a7d752848cba3b5a59a0f9b13c0
           name: MQTT_LOCATION
-          type: TRAP
-          key: 'mqtt.trap[deviceValue/location]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/location"]'
           history: '0'
           value_type: TEXT
         - uuid: 29faf53c033840c0b1405f8240e30312
@@ -132,27 +132,27 @@ zabbix_export:
                   	"timeUntil": v.timeUntil
                   });
           master_item:
-            key: 'mqtt.trap[deviceValue/count]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/count"]'
         - uuid: 905c5f1b6e524bd2b227769a59f4df1b
           name: MQTT_COUNT
-          type: TRAP
-          key: 'mqtt.trap[deviceValue/count]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/count"]'
           history: '0'
           value_type: TEXT
         - uuid: 6fa441872c3140f4adecf39956245603
           name: MQTT_DISTANCE
-          type: TRAP
-          key: 'mqtt.trap[deviceValue/distance]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/distance"]'
           value_type: TEXT
         - uuid: 69d2afa4a0324d818150e9473c3264f3
           name: MQTT_NAME
-          type: TRAP
-          key: 'mqtt.trap[deviceValue/name]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/name"]'
           value_type: TEXT
         - uuid: 45ff9430d27f47a492c98fce03fc7962
           name: MQTT_SERVICE_DATA
-          type: TRAP
-          key: 'mqtt.trap[deviceValue/ServiceData]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/ServiceData"]'
           value_type: TEXT
         - uuid: 3bf0d3017ea54e1da2a764c3f96bf97e
           name: count
@@ -164,7 +164,7 @@ zabbix_export:
               parameters:
                 - $.count
           master_item:
-            key: 'mqtt.trap[deviceValue/count]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/count"]'
         - uuid: f0d1fc72e2154613b349be86c6bdcfd6
           name: timeFrom
           type: DEPENDENT
@@ -179,7 +179,7 @@ zabbix_export:
                 - 'T(\d\d:\d\d:\d\d):'
                 - \1
           master_item:
-            key: 'mqtt.trap[deviceValue/count]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/count"]'
         - uuid: e55bf604808f4eb4a964ebeefdd9eb9e
           name: timeUntil
           type: DEPENDENT
@@ -194,7 +194,7 @@ zabbix_export:
                 - 'T(\d\d:\d\d:\d\d):'
                 - \1
           master_item:
-            key: 'mqtt.trap[deviceValue/count]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/count"]'
       tags:
         - tag: class
           value: roadwork
@@ -236,8 +236,8 @@ zabbix_export:
       items:
         - uuid: 4ad4d9a769744615816d190c34cb49c7
           name: GPS_LOCATION_MQTT
-          type: TRAP
-          key: 'mqtt.trap[operationalValue/location]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/location"]'
           history: '0'
           value_type: TEXT
           description: 'old value: mqtt.get["rabbitmq","operationalValue/{$DEVICETYPE}/{HOST.HOST}/location","voltra_dev:voltradev","rabbit4voltra"]'
@@ -248,7 +248,7 @@ zabbix_export:
           history: 90d
           value_type: TEXT
           master_item:
-            key: 'mqtt.trap[operationalValue/location]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/location"]'
           tags:
             - tag: attributeName
               value: location
@@ -338,26 +338,26 @@ zabbix_export:
       items:
         - uuid: 602290e9f42f4135b548e1cd45abe135
           name: DENSITY_MQTT
-          type: TRAP
-          key: 'mqtt.trap[operationalValue/density]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/density"]'
           history: '0'
           value_type: TEXT
         - uuid: 87e0a14266984247b81fdc757dea5bde
           name: ERROR_MQTT
-          type: TRAP
-          key: 'mqtt.trap[operationalValue/error]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/error"]'
           history: '0'
           value_type: TEXT
         - uuid: 644b0ec2e3d9448da1a69561ec10d19d
           name: SIGNALSTRENGTH_MQTT
-          type: TRAP
-          key: 'mqtt.trap[operationalValue/signalstrength]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/signalstrength"]'
           history: '0'
           value_type: TEXT
         - uuid: 67c01d7334a24823832bba74073cf356
           name: TEMPERATURE_MQTT
-          type: TRAP
-          key: 'mqtt.trap[operationalValue/temperature]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/temperature"]'
           history: '0'
           value_type: TEXT
           tags:
@@ -373,8 +373,8 @@ zabbix_export:
               value: operationalValue
         - uuid: 0352c80c749d4d91b386dab9c74ef3c6
           name: VOLTAGE_MQTT
-          type: TRAP
-          key: 'mqtt.trap[operationalValue/voltage]'
+          type: ZABBIX_AGENT
+          key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/voltage"]'
           history: '0'
           value_type: TEXT
         - uuid: 7aac8212c94044d28ada982c422f2bf7
@@ -387,7 +387,7 @@ zabbix_export:
               parameters:
                 - $.density
           master_item:
-            key: 'mqtt.trap[operationalValue/density]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/density"]'
           tags:
             - tag: attributeName
               value: density
@@ -463,7 +463,7 @@ zabbix_export:
               parameters:
                 - $.error
           master_item:
-            key: 'mqtt.trap[operationalValue/error]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/error"]'
           tags:
             - tag: attributeName
               value: error
@@ -484,7 +484,7 @@ zabbix_export:
               parameters:
                 - $.signalstrength
           master_item:
-            key: 'mqtt.trap[operationalValue/signalstrength]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/signalstrength"]'
           tags:
             - tag: attributeName
               value: signalstrength
@@ -508,7 +508,7 @@ zabbix_export:
               parameters:
                 - $.temperature
           master_item:
-            key: 'mqtt.trap[operationalValue/temperature]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/temperature"]'
           tags:
             - tag: attributeName
               value: temperature
@@ -551,7 +551,7 @@ zabbix_export:
               parameters:
                 - $.timestamp
           master_item:
-            key: 'mqtt.trap[operationalValue/signalstrength]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/signalstrength"]'
           tags:
             - tag: attributeName
               value: timestamp
@@ -570,7 +570,7 @@ zabbix_export:
               parameters:
                 - $.timestamp
           master_item:
-            key: 'mqtt.trap[operationalValue/voltage]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/voltage"]'
           tags:
             - tag: attributeName
               value: timestamp
@@ -591,7 +591,7 @@ zabbix_export:
               parameters:
                 - $.voltage
           master_item:
-            key: 'mqtt.trap[operationalValue/voltage]'
+            key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/voltage"]'
           tags:
             - tag: attributeName
               value: voltage
