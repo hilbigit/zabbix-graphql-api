@@ -1,5 +1,5 @@
 ### Mutation
-Use this mutation to import template groups.
+Use this mutation to import template groups for hosts and templates.
 
 ```graphql
 mutation ImportTemplateGroups($templateGroups: [CreateTemplateGroup!]!) {
@@ -17,15 +17,11 @@ mutation ImportTemplateGroups($templateGroups: [CreateTemplateGroup!]!) {
 ```
 
 ### Variables
-This sample data is based on the `template_groups` from `src/testdata/templates/zbx_default_templates_vcr.yaml`.
+This sample data is based on the `template_groups` from `src/testdata/templates/zbx_default_templates_vcr.yaml`, excluding the permission groups.
 
 ```json
 {
   "templateGroups": [
-    {
-      "uuid": "43aab460fe444f18886b19948413b7e3",
-      "groupName": "Permissions/ConstructionSite"
-    },
     {
       "uuid": "376524057e094c07aaa0cf7f524849dc",
       "groupName": "Templates/Roadwork/Controller"

@@ -136,12 +136,12 @@ describe("Template Integration Tests", () => {
     });
 
     test("Import and Export template groups comparison", async () => {
-        // 1. Import
-        const importSample = readFileSync(join(process.cwd(), 'docs', 'sample_import_template_groups_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        // 1. Import (Host Template Groups)
+        const importSample = readFileSync(join(process.cwd(), 'docs', 'sample_import_host_template_groups_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         const importMutation = importSample.match(/```graphql\n([\s\S]*?)\n```/)![1];
         const importVariables = JSON.parse(importSample.match(/```json\n([\s\S]*?)\n```/)![1]);
 
-        // Mock for import (8 groups in sample)
+        // Mock for import
         for (const group of importVariables.templateGroups) {
             // Mock lookup (not found)
             (zabbixAPI.post as jest.Mock).mockResolvedValueOnce([]);
@@ -163,13 +163,41 @@ describe("Template Integration Tests", () => {
         expect(importResult.errors).toBeUndefined();
         expect(importResult.data.importTemplateGroups).toHaveLength(importVariables.templateGroups.length);
 
-        // 2. Export (Query)
+        // 2. Import (Permissions Template Groups)
+        const permImportSample = readFileSync(join(process.cwd(), 'docs', 'sample_import_permissions_template_groups_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        const permImportMutation = permImportSample.match(/```graphql\n([\s\S]*?)\n```/)![1];
+        const permImportVariables = JSON.parse(permImportSample.match(/```json\n([\s\S]*?)\n```/)![1]);
+
+        // Mock for import
+        for (const group of permImportVariables.templateGroups) {
+            (zabbixAPI.post as jest.Mock).mockResolvedValueOnce([]);
+            const mockGroupId = Math.floor(Math.random() * 1000).toString();
+            (zabbixAPI.post as jest.Mock).mockResolvedValueOnce({ groupids: [mockGroupId] });
+        }
+
+        const permImportResponse = await server.executeOperation({
+            query: permImportMutation,
+            variables: permImportVariables,
+        }, {
+            contextValue: { zabbixAuthToken: 'test-token' }
+        });
+
+        expect(permImportResponse.body.kind).toBe('single');
+        // @ts-ignore
+        const permImportResult = permImportResponse.body.singleResult;
+        expect(permImportResult.errors).toBeUndefined();
+        expect(permImportResult.data.importTemplateGroups).toHaveLength(permImportVariables.templateGroups.length);
+
+        // 3. Export (Query)
         const querySample = readFileSync(join(process.cwd(), 'docs', 'sample_all_template_groups_query.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         const query = querySample.match(/```graphql\n([\s\S]*?)\n```/)![1];
         const queryVariables = JSON.parse(querySample.match(/```json\n([\s\S]*?)\n```/)![1]);
 
+        // Combine all groups for mock query response
+        const allGroups = [...importVariables.templateGroups, ...permImportVariables.templateGroups];
+
         // Mock for query
-        const mockGroupsResponse = importVariables.templateGroups.map((g: any, index: number) => ({
+        const mockGroupsResponse = allGroups.map((g: any, index: number) => ({
             groupid: (index + 1000).toString(),
             name: g.groupName
         }));
@@ -186,14 +214,14 @@ describe("Template Integration Tests", () => {
         // @ts-ignore
         const queryResult = queryResponse.body.singleResult;
         expect(queryResult.errors).toBeUndefined();
-        expect(queryResult.data.allTemplateGroups).toHaveLength(importVariables.templateGroups.length);
+        expect(queryResult.data.allTemplateGroups).toHaveLength(allGroups.length);
         
         // Verify names match
-        const importedNames = importVariables.templateGroups.map((g: any) => g.groupName).sort();
+        const importedNames = allGroups.map((g: any) => g.groupName).sort();
         const exportedNames = queryResult.data.allTemplateGroups.map((g: any) => g.name).sort();
         expect(exportedNames).toEqual(importedNames);
 
-        // 3. Delete Template Groups
+        // 4. Delete Template Groups
         const groupidsToDelete = queryResult.data.allTemplateGroups.map((g: any) => parseInt(g.groupid));
         // Mock for query (for name_pattern)
         (zabbixAPI.post as jest.Mock).mockResolvedValueOnce(queryResult.data.allTemplateGroups.map((g: any) => ({ groupid: g.groupid, name: g.name })));
@@ -214,7 +242,7 @@ describe("Template Integration Tests", () => {
 
         const deleteResponse = await server.executeOperation({
             query: deleteMutation,
-            variables: { name_pattern: "Templates/Roadwork/%" },
+            variables: { name_pattern: "%" },
         }, {
             contextValue: { zabbixAuthToken: 'test-token' }
         });
