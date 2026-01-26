@@ -24,6 +24,7 @@ Compared to the original Zabbix API, this GraphQL API provides several key enhan
 *   **Improved Error Reporting**: Detailed error data from Zabbix is appended to GraphQL error messages, making debugging significantly easier.
 *   **Strongly Typed Schema**: Leverages GraphQL's type system for clear API documentation and client-side code generation.
 *   **Dynamic Schema Extensibility**: Easily extend the API with custom schema snippets and dynamic resolvers for specialized device types without modifying the core code.
+*   **CI/CD Integration**: Includes a ready-to-use Forgejo/Gitea/GitHub Actions workflow for automated building, testing, and deployment.
 
 ## How to Install and Start
 
@@ -71,6 +72,46 @@ npm run prod
 ```
 
 The API will be available at `http://localhost:4000/`.
+
+## Running with Docker
+
+### Using the Pre-built Image
+
+You can run the API without building it locally by pulling the latest image from the Hilbig IT Forgejo infrastructure:
+
+```bash
+docker pull forgejo.tooling.hilbigit.com/vcr/zabbix-graphql-api:latest
+```
+
+Start the container by passing the required environment variables:
+
+```bash
+docker run -d \
+  --name zabbix-graphql-api \
+  -p 4000:4000 \
+  -e ZABBIX_BASE_URL=http://your-zabbix-instance/zabbix \
+  -e ZABBIX_AUTH_TOKEN=your-super-admin-token \
+  forgejo.tooling.hilbigit.com/vcr/zabbix-graphql-api:latest
+```
+
+### Building Locally
+
+If you prefer to build the image yourself using the provided `Dockerfile`:
+
+1.  Build the image (ensure you provide an `API_VERSION`):
+    ```bash
+    docker build -t zabbix-graphql-api --build-arg API_VERSION=1.0.0 .
+    ```
+
+2.  Run the container:
+    ```bash
+    docker run -d \
+      --name zabbix-graphql-api \
+      -p 4000:4000 \
+      -e ZABBIX_BASE_URL=http://your-zabbix-instance/zabbix \
+      -e ZABBIX_AUTH_TOKEN=your-super-admin-token \
+      zabbix-graphql-api
+    ```
 
 ## Extending the Schema
 
