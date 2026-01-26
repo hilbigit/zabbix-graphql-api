@@ -1,311 +1,647 @@
 type Mutation {
 
     """
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    Creates a single host in Zabbix.
+    
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
     """
-    createHost(host: String!, hostgroupids:[Int!]!, templateids: [Int!]!,
-        location: LocationInput): CreateHostResponse
+    createHost(
+        """Hostname of the new host."""
+        host: String!, 
+        """List of host group IDs to assign the host to."""
+        hostgroupids:[Int!]!, 
+        """List of template IDs to link to the host."""
+        templateids: [Int!]!,
+        """Optional location information for the host inventory."""
+        location: LocationInput
+    ): CreateHostResponse
 
     """
-    (Mass) Import zabbix groups
-    and assign them to the corresponding hosts by groupid or groupName.
+    (Mass) Import Zabbix host groups and assign them to the corresponding hosts by groupid or groupName.
 
-    Return value: If no error occurs a groupid be returned for each created group,
-    otherwise the return object will contain an error message
+    Return value: If no error occurs, a groupid is returned for each created group; otherwise, the return object contains an error message.
 
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
     """
-    importHostGroups(hostGroups: [CreateHostGroup!]!):[CreateHostGroupResponse!]
+    importHostGroups(
+        """List of host groups to import."""
+        hostGroups: [CreateHostGroup!]!
+    ):[CreateHostGroupResponse!]
 
 
     """
     (Mass) Import hosts and assign them to host groups by groupid or groupName.
 
-    Return value: If no error occurs a hostid will be returned for each created host,
-    otherwise the return object will contain an error message.
+    Return value: If no error occurs, a hostid is returned for each created host; otherwise, the return object contains an error message.
 
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
     """
-    importHosts(hosts: [CreateHost!]!):[ImportHostResponse!]
-
-    importUserRights(input: UserRightsInput!, dryRun: Boolean! = true): ImportUserRightsResult
+    importHosts(
+        """List of hosts to import."""
+        hosts: [CreateHost!]!
+    ):[ImportHostResponse!]
 
     """
-    (Mass) Import template groups
-    and assign them by groupid or name.
-
-    Return value: If no error occurs a groupid be returned for each created group,
-    otherwise the return object will contain an error message
-
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    Import user rights (roles and groups) into Zabbix.
+    
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
     """
-    importTemplateGroups(templateGroups: [CreateTemplateGroup!]!):[CreateTemplateGroupResponse!]
+    importUserRights(
+        """User rights configuration to import."""
+        input: UserRightsInput!, 
+        """If true, only validates the input without applying changes."""
+        dryRun: Boolean! = true
+    ): ImportUserRightsResult
+
+    """
+    (Mass) Import template groups and assign them by groupid or name.
+
+    Return value: If no error occurs, a groupid is returned for each created group; otherwise, the return object contains an error message.
+
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+    """
+    importTemplateGroups(
+        """List of template groups to import."""
+        templateGroups: [CreateTemplateGroup!]!
+    ):[CreateTemplateGroupResponse!]
 
     """
     (Mass) Import templates.
 
-    Return value: If no error occurs a templateid will be returned for each created template,
-    otherwise the return object will contain an error message.
+    Return value: If no error occurs, a templateid is returned for each created template; otherwise, the return object contains an error message.
 
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
     """
-    importTemplates(templates: [CreateTemplate!]!):[ImportTemplateResponse!]
-
-    """
-    Delete templates.
-
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
-    """
-    deleteTemplates(templateids: [Int!], name_pattern: String): [DeleteResponse!]
+    importTemplates(
+        """List of templates to import."""
+        templates: [CreateTemplate!]!
+    ):[ImportTemplateResponse!]
 
     """
-    Delete template groups.
+    Delete templates by their IDs or by a name pattern.
 
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
     """
-    deleteTemplateGroups(groupids: [Int!], name_pattern: String): [DeleteResponse!]
+    deleteTemplates(
+        """List of template IDs to delete."""
+        templateids: [Int!], 
+        """Wildcard name pattern for templates to delete (e.g., 'Template%')."""
+        name_pattern: String
+    ): [DeleteResponse!]
+
+    """
+    Delete template groups by their IDs or by a name pattern.
+
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+    """
+    deleteTemplateGroups(
+        """List of template group IDs to delete."""
+        groupids: [Int!], 
+        """Wildcard name pattern for template groups to delete."""
+        name_pattern: String
+    ): [DeleteResponse!]
 }
 
 ####################################################################
 # Input types used for importXXX - and storeXXX - Mutations
 ####################################################################
 
+"""
+Response object for delete operations.
+"""
 type DeleteResponse {
+    """
+    ID of the deleted entity.
+    """
     id: Int!
+    """
+    Status message for the delete operation.
+    """
     message: String
+    """
+    Error information if the deletion failed.
+    """
     error: ApiError
 }
 
+"""
+Input for creating or identifying a template group.
+"""
 input CreateTemplateGroup {
     """
-    Name of the template group
+    Name of the template group.
     """
     groupName: String!
     """
-    Internally used unique id
-    (will be assigned by Zabbix if empty)
+    Internally used unique id (will be assigned by Zabbix if empty).
     """
     uuid: String
 }
 
+"""
+Input for creating or updating a template.
+"""
 input CreateTemplate {
     """
-    Name of the template
+    Technical name of the template.
     """
     host: String!
     """
-    Visible name of the template
+    Visible name of the template.
     """
     name: String
     """
-    groupNames is used to assign the created object
-    to a template group.
+    List of template group names to assign the template to.
     """
     groupNames: [String!]!
     """
-    Optionally the internal groupids can be passed - in this case the
-    groupName is ignored
+    Optionally, internal group IDs can be provided instead of group names.
     """
     groupids: [Int]
     """
-    Internally used unique id
-    (will be assigned by Zabbix if empty)
+    Internally used unique id (will be assigned by Zabbix if empty).
     """
     uuid: String
     """
-    Template items
+    List of items to create within the template.
     """
     items: [CreateTemplateItem!]
     """
-    Linked templates
+    List of other templates to link to this template.
     """
     templates: [CreateLinkedTemplate!]
     """
-    Template tags
+    Tags to assign to the template.
     """
     tags: [CreateTag!]
 }
 
+"""
+Input for creating an item within a template.
+"""
 input CreateTemplateItem {
+    """
+    Internally used unique id.
+    """
     uuid: String
+    """
+    Name of the item.
+    """
     name: String!
+    """
+    Zabbix item type (e.g., 0 for Zabbix Agent, 18 for Dependent).
+    """
     type: Int
+    """
+    Technical key of the item.
+    """
     key: String!
+    """
+    Type of information (e.g., 0 for Float, 3 for Int, 4 for Text).
+    """
     value_type: Int
+    """
+    History storage period (e.g., '2d', '90d').
+    """
     history: String
+    """
+    Units of the value.
+    """
     units: String
+    """
+    Update interval.
+    """
     delay: String
+    """
+    Description of the item.
+    """
     description: String
+    """
+    Preprocessing steps for the item values.
+    """
     preprocessing: [CreateItemPreprocessing!]
+    """
+    Tags to assign to the item.
+    """
     tags: [CreateTag!]
+    """
+    Reference to a master item if this is a dependent item.
+    """
     master_item: CreateMasterItem
 }
 
+"""
+Reference to a master item for dependent items.
+"""
 input CreateMasterItem {
+    """
+    The technical key of the master item.
+    """
     key: String!
 }
 
+"""
+Input for an item preprocessing step.
+"""
 input CreateItemPreprocessing {
+    """
+    Type of preprocessing step (e.g., 12 for JSONPath, 21 for JavaScript).
+    """
     type: Int!
+    """
+    Parameters for the preprocessing step.
+    """
     params: [String!]!
+    """
+    Error handling behavior.
+    """
     error_handler: Int
+    """
+    Error handling parameters.
+    """
     error_handler_params: String
 }
 
+"""
+Reference to a template to be linked.
+"""
 input CreateLinkedTemplate {
+    """
+    The technical name of the template to link.
+    """
     name: String!
 }
 
+"""
+Input for a tag.
+"""
 input CreateTag {
+    """
+    Tag name.
+    """
     tag: String!
+    """
+    Tag value.
+    """
     value: String
 }
 
+"""
+Response for a template import operation.
+"""
 type ImportTemplateResponse {
+    """
+    The technical name of the imported template.
+    """
     host: String!
+    """
+    The Zabbix template ID assigned to the template.
+    """
     templateid: String
+    """
+    Status message for the import.
+    """
     message: String
+    """
+    Error information if the import failed.
+    """
     error: ApiError
 }
 
+"""
+Response for a template group import operation.
+"""
 type CreateTemplateGroupResponse {
+    """
+    Name of the imported template group.
+    """
     groupName: String!
+    """
+    The Zabbix group ID assigned to the group.
+    """
     groupid: Int
+    """
+    Status message for the import.
+    """
     message: String
+    """
+    Error information if the import failed.
+    """
     error: ApiError
 }
 
+"""
+Input for creating or identifying a host group.
+"""
 input CreateHostGroup {
     """
-    Name of the host group
+    Name of the host group.
     """
     groupName: String!
     """
-    Internally used unique id
-    (will be assigned by Zabbix if empty)
+    Internally used unique id (will be assigned by Zabbix if empty).
     """
     uuid: String
 }
+
+"""
+Response for a host import operation.
+"""
 type ImportHostResponse {
-    deviceKey: String!
-    hostid: String
-    message: String
-    error: ApiError
-}
-
-
-type CreateHostGroupResponse {
-    groupName: String!
-    groupid: Int
-    message: String
-    error: ApiError
-}
-
-input CreateHost {
+    """
+    The device key (technical name) of the imported host.
+    """
     deviceKey: String!
     """
-    Optional display name of the device (must be unique if provided - default is to set display name to deviceKey)
+    The Zabbix host ID assigned to the host.
+    """
+    hostid: String
+    """
+    Status message for the import.
+    """
+    message: String
+    """
+    Error information if the import failed.
+    """
+    error: ApiError
+}
+
+"""
+Response for a host group import operation.
+"""
+type CreateHostGroupResponse {
+    """
+    Name of the imported host group.
+    """
+    groupName: String!
+    """
+    The Zabbix group ID assigned to the group.
+    """
+    groupid: Int
+    """
+    Status message for the import.
+    """
+    message: String
+    """
+    Error information if the import failed.
+    """
+    error: ApiError
+}
+
+"""
+Input for creating a new host.
+"""
+input CreateHost {
+    """
+    Technical name of the host/device.
+    """
+    deviceKey: String!
+    """
+    Optional display name of the device (must be unique if provided - default is to set display name to deviceKey).
     """
     name: String
+    """
+    Classification or category of the device.
+    """
     deviceType: String!
     """
-    groupNames is used to assign the created object
-    to a host group. It is mandatory but
-    can also be blank. This is usefull in case of
-    passing a groupid instead which is
-    the zabbix internal key for storing the group.
-    If a groupid is provided the passed groupName is ignored
+    List of host group names to assign the host to.
     """
     groupNames: [String!]!
     """
-    Optionally the internal groupids can be passed - in this case the
-    groupName is ignored
+    Optionally, internal group IDs can be provided instead of group names.
     """
     groupids: [Int]
+    """
+    Location information for the host.
+    """
     location: LocationInput
 }
 
+"""
+Response for a single host creation operation.
+"""
 type CreateHostResponse {
+    """
+    List of created host IDs.
+    """
     hostids: [Int]
+    """
+    List of created item IDs.
+    """
     itemids: [Int]
+    """
+    Error information if the creation failed.
+    """
     error: ApiError
 }
+
+"""
+Input for host location information.
+"""
 input LocationInput {
+    """
+    Name of the location.
+    """
     name: String
+    """
+    Latitude coordinate.
+    """
     location_lat: String
+    """
+    Longitude coordinate.
+    """
     location_lon: String
 }
 
-#######################################
-# Permission related input
-#######################################
+"""
+Input for importing user rights.
+"""
 input UserRightsInput {
+    """
+    List of user roles to import.
+    """
     userRoles: [UserRoleInput!]
+    """
+    List of user groups to import.
+    """
     userGroups: [UserGroupInput!]
 }
 
+"""
+Input for a user role.
+"""
 input UserRoleInput {
+    """
+    Name of the role.
+    """
     name: String
+    """
+    Type of role (e.g., 1 for User, 2 for Admin, 3 for Super Admin).
+    """
     type: Int
+    """
+    Whether the role is read-only (1) or not (0).
+    """
     readonly: Int
+    """
+    Specific rules for the role.
+    """
     rules: UserRoleRulesInput
 }
 
+"""
+Input for user role rules.
+"""
 input UserRoleRulesInput {
+    """
+    UI access rules.
+    """
     ui: [UserRoleRuleInput!]
+    """
+    Default access for UI elements.
+    """
     ui_default_access: Int
+    """
+    Module access rules.
+    """
     modules:[UserRoleModuleInput!]
+    """
+    Default access for modules.
+    """
     modules_default_access: Int
+    """
+    Whether API access is enabled (1) or not (0).
+    """
     api_access: Int
+    """
+    API mode (e.g., 0 for white-list, 1 for black-list).
+    """
     api_mode: Int
+    """
+    List of API methods allowed/denied.
+    """
     api: [String!]
+    """
+    Action rules.
+    """
     actions: [UserRoleRuleInput!]
+    """
+    Default access for actions.
+    """
     actions_default_access: Int
 }
 
+"""
+Input for a single user role rule.
+"""
 input UserRoleRuleInput {
+    """
+    Name of the rule/element.
+    """
     name: String
+    """
+    Status (e.g., 1 for enabled, 0 for disabled).
+    """
     status: Int
 }
+
+"""
+Input for user role module access.
+"""
 input UserRoleModuleInput {
+    """
+    The internal Zabbix module ID.
+    """
     moduleid: String
+    """
+    Status of the module.
+    """
     status: Int
+    """
+    Technical ID of the module.
+    """
     id: String
 }
 
+"""
+Input for a user group.
+"""
 input UserGroupInput {
+    """
+    Name of the user group.
+    """
     name: String!
+    """
+    Frontend access level.
+    """
     gui_access: Int
+    """
+    Status of the users in the group.
+    """
     users_status: Int
+    """
+    Permissions for host groups.
+    """
     hostgroup_rights: [ZabbixGroupRightInput!]
+    """
+    Permissions for template groups.
+    """
     templategroup_rights: [ZabbixGroupRightInput!]
 }
 
-
+"""
+Input for a Zabbix group permission right.
+"""
 input ZabbixGroupRightInput {
+    """
+    The unique ID of the group.
+    """
     uuid: String
     """
-    name may optionally be specified for documentation purpose,
+    Name may optionally be specified for documentation purpose,
     but the master for setting the user right is the uuid.
-    If a uuid is found and the corresponding group
-    has a deviating name this will be documented within a message
-    with errorcode = 0 (OK) but the permission will be set (
-    the reason is that names for groups may deviate between several
-    instances of the control center although the semantic is the same -
-    while the semantic is identified by uuid.
     """
     name: String
+    """
+    The permission level to assign.
+    """
     permission: Permission
 }
 
+"""
+Result of a user rights import operation.
+"""
 type ImportUserRightsResult {
+    """
+    Results for the imported user roles.
+    """
     userRoles: [ImportUserRightResult!]
+    """
+    Results for the imported user groups.
+    """
     userGroups: [ImportUserRightResult!]
 }
+
+"""
+Result of a single user right (role or group) import.
+"""
 type ImportUserRightResult {
+    """
+    The ID of the imported/updated entity.
+    """
     id: String
+    """
+    The name of the entity.
+    """
     name: String
+    """
+    Status message for the import.
+    """
     message: String
+    """
+    List of errors encountered during import.
+    """
     errors: [ApiError!]
 }
 

@@ -2,22 +2,61 @@
 #  Request/response
 ########################################################
 
+"""
+Generic response wrapper containing either the result data or an error.
+"""
 type GenericResponse {
+    """
+    The result data, typically a list of JSON objects.
+    """
     result: [JSONObject!]
+    """
+    Error information if the operation failed.
+    """
     error: ApiError
 }
 
+"""
+Detailed error information returned by the API.
+"""
 type ApiError implements Error {
+    """
+    Error code.
+    """
     code: Int
+    """
+    Error message.
+    """
     message: String
+    """
+    Additional error data.
+    """
     data: JSONObject
+    """
+    Path to the field that caused the error.
+    """
     path: String
+    """
+    Arguments passed to the operation that failed.
+    """
     args: JSONObject
 }
 
+"""
+Common error interface.
+"""
 interface Error {
+    """
+    Error code.
+    """
     code: Int
+    """
+    Error message.
+    """
     message: String
+    """
+    Additional error data.
+    """
     data: JSONObject
 }
 
@@ -26,7 +65,13 @@ interface Error {
 #  User permissions
 ########################################################
 
+"""
+Request for checking specific user permissions.
+"""
 input PermissionRequest {
+    """
+    The required permission level (DENY, READ, or READ_WRITE).
+    """
     permission: Permission!,
     """
     objectName maps to name / path suffix of the template group representing the permission in Zabbix:
@@ -89,7 +134,13 @@ enum Permission {
     READ_WRITE
 }
 
+"""
+Represents a permission assigned to a user for a specific object.
+"""
 type UserPermission {
+    """
+    The assigned permission level.
+    """
     permission: Permission!,
     """
     objectName maps to name / path suffix of the template group representing the permission in Zabbix:

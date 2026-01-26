@@ -2,18 +2,39 @@
 # Hosts, items + groups, templates
 ###################################
 
+"""
+Represents a host group in Zabbix.
+"""
 type HostGroup {
+    """
+    Internal Zabbix ID of the host group.
+    """
     groupid: ID!
+    """
+    Name of the host group.
+    """
     name: String
 }
 
+"""
+Common interface for all host-like entities in Zabbix.
+"""
 interface Host {
+    """
+    Internal Zabbix ID of the host.
+    """
     hostid: ID!
     """
-    The host field contains the "hostname" in Zabbix
+    Technical name of the host (the 'hostname' in Zabbix).
     """
     host: String!
+    """
+    List of host groups this host belongs to.
+    """
     hostgroups: [HostGroup!]
+    """
+    Visible name of the host.
+    """
     name: String
     """
     Specifies the type or category of the device. Used to define the classification
@@ -22,42 +43,113 @@ interface Host {
     deviceType: String
 }
 
+"""
+Represents a Zabbix item (a single data point being monitored).
+"""
 type ZabbixItem {
+    """
+    Internal Zabbix ID of the item.
+    """
     itemid: Int!
+    """
+    Visible name of the item.
+    """
     name: String!
+    """
+    Technical key of the item.
+    """
     key_: String!
+    """
+    Internal Zabbix ID of the host this item belongs to.
+    """
     hostid: Int
+    """
+    Unix timestamp of the last time the item value was updated.
+    """
     lastclock: Int
+    """
+    Last value retrieved for this item.
+    """
     lastvalue: String
+    """
+    Type of information (e.g., 0 for Float, 3 for Int, 4 for Text).
+    """
     value_type: Int!
+    """
+    Attribute name if this item is part of a hierarchical mapping.
+    """
     attributeName: String
+    """
+    Status of the item (ENABLED or DISABLED).
+    """
     status: DeviceStatus
+    """
+    Communication type used by the item.
+    """
     type: DeviceCommunicationType
+    """
+    Hosts that this item is linked to.
+    """
     hosts: [Host!]
 }
 
+"""
+Enum representing the different communication methods Zabbix uses to collect data.
+"""
 enum DeviceCommunicationType {
+    """Zabbix agent."""
     ZABBIX_AGENT
+    """Zabbix agent (active)."""
     ZABBIX_AGENT_ACTIVE
+    """Zabbix trapper."""
     ZABBIX_TRAP
+    """Zabbix internal."""
     ZABBIX_INTERNAL_ITEM
+    """Simple check."""
     SIMPLE_CHECK
+    """Dependent item."""
     DEPENDANT_ITEM
+    """Calculated item."""
     SIMULATOR_CALCULATED
+    """JavaScript item."""
     SIMULATOR_JAVASCRIPT
+    """HTTP agent."""
     HTTP_AGENT
+    """IPMI agent."""
     IPMI_AGENT
+    """JMX agent."""
     JMX_AGENT
+    """SNMP agent."""
     SNMP_AGENT
+    """SNMP trap."""
     SNMP_TRAP
+    """Database monitor."""
     DATABASE_MONITOR
 }
 
+"""
+Concrete implementation of a Zabbix host.
+"""
 type ZabbixHost implements Host {
+    """
+    Internal Zabbix ID of the host.
+    """
     hostid: ID!
+    """
+    Technical name of the host.
+    """
     host: String!
+    """
+    List of host groups this host belongs to.
+    """
     hostgroups: [HostGroup!]
+    """
+    Visible name of the host.
+    """
     name: String
+    """
+    Tags assigned to the host as a JSON object.
+    """
     tags: JSONObject
 
     """
@@ -66,36 +158,85 @@ type ZabbixHost implements Host {
     """
     deviceType: String
 
+    """
+    List of monitored items for this host.
+    """
     items: [ZabbixItem!]
+    """
+    Host inventory data.
+    """
     inventory: Inventory
+    """
+    List of templates linked to this host.
+    """
     parentTemplates: [Template!]
 }
 
 
+"""
+Represents a Zabbix template.
+"""
 type Template {
+    """
+    Internal Zabbix ID of the template.
+    """
     templateid: String!
+    """
+    Name of the template.
+    """
     name: String
 }
 
+"""
+Represents host inventory information.
+"""
 type Inventory {
+    """
+    Location data for the host.
+    """
     location: Location
 }
 
 """
-Hint: WGS84[dd.ddddd] coordinates are used
+Interface for entities that have GPS coordinates.
+Hint: WGS84[dd.ddddd] coordinates are used.
 """
 interface GpsPosition {
+    """
+    Latitude coordinate.
+    """
     latitude: Float
-    longitude: Float
-}
-type Location implements GpsPosition {
-    name: String
-    latitude: Float
+    """
+    Longitude coordinate.
+    """
     longitude: Float
 }
 
+"""
+Represents a geographical location.
+"""
+type Location implements GpsPosition {
+    """
+    Name of the location.
+    """
+    name: String
+    """
+    Latitude coordinate.
+    """
+    latitude: Float
+    """
+    Longitude coordinate.
+    """
+    longitude: Float
+}
+
+"""
+Status of a Zabbix device/item.
+"""
 enum DeviceStatus {
+    """The device/item is enabled."""
     ENABLED
+    """The device/item is disabled."""
     DISABLED
 }
 
@@ -103,62 +244,124 @@ enum DeviceStatus {
 #  History / Values
 ########################################################
 
+"""
+Enum representing the storage data types for monitored items.
+"""
 enum StorageItemType {
+    """Floating point number."""
     FLOAT
+    """Unsigned integer."""
     INT
+    """Textual data."""
     TEXT
 }
+
 ############################
 # Permissions
 ############################
+
+"""
+Represents the combined user rights (groups and roles).
+"""
 type UserRights {
+    """List of user groups."""
     userGroups: [UserGroup!]
+    """List of user roles."""
     userRoles: [UserRole!]
 }
 
+"""
+Represents a Zabbix user role.
+"""
 type UserRole {
+    """Internal Zabbix ID of the role."""
     roleid: Int!
+    """Name of the role."""
     name: String
+    """Type of the role."""
     type: Int
+    """Whether the role is read-only."""
     readonly: Int
+    """Rules assigned to the role."""
     rules: UserRoleRules
 }
 
+"""
+Represents the rules assigned to a user role.
+"""
 type UserRoleRules {
+    """UI access rules."""
     ui: [UserRoleRule!]
+    """Default access for UI elements."""
     ui_default_access: Int
+    """Module access rules."""
     modules:[UserRoleModule!]
+    """Default access for modules."""
     modules_default_access: Int
+    """Whether API access is enabled."""
     api_access: Int
+    """API mode."""
     api_mode: Int
+    """List of API methods allowed/denied."""
     api: [String!]
+    """Action rules."""
     actions: [UserRoleRule!]
+    """Default access for actions."""
     actions_default_access: Int
 }
 
+"""
+Represents a single rule within a user role.
+"""
 type UserRoleRule {
+    """Name of the rule."""
     name: String
+    """Status of the rule."""
     status: Int
 }
+
+"""
+Represents a module assigned to a user role.
+"""
 type UserRoleModule {
+    """Internal Zabbix module ID."""
     moduleid: String
+    """Status of the module."""
     status: Int
+    """Technical ID of the module."""
     id: String
+    """Relative path to the module."""
     relative_path: String
 }
 
+"""
+Represents a Zabbix user group.
+"""
 type UserGroup {
+    """Internal Zabbix ID of the user group."""
     usrgrpid: Int!
+    """Name of the user group."""
     name: String!
+    """Frontend access level."""
     gui_access: Int
+    """Status of users in the group."""
     users_status: Int
+    """Permissions for host groups."""
     hostgroup_rights: [ZabbixGroupRight!]
+    """Permissions for template groups."""
     templategroup_rights: [ZabbixGroupRight!]
 }
 
+"""
+Represents a specific permission right for a group.
+"""
 type ZabbixGroupRight {
+    """ID of the group the right applies to."""
     id: Int!
+    """Unique ID of the group."""
     uuid: String
+    """Name of the group."""
     name: String
+    """Assigned permission level."""
     permission: Permission
 }

@@ -1,45 +1,55 @@
 """
 DistanceTracker represents a device which can detect other devices around itself and estimate
 the distances, e.g. by using Bluetooth scanning technology and estimating the distance.
-
 """
 type DistanceTrackerDevice implements Host & Device {
+    """Internal Zabbix ID of the device."""
     hostid: ID!
     """
-    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname
+    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname.
     """
     host: String!
+    """Classification of the device."""
     deviceType: String
+    """List of host groups this device belongs to."""
     hostgroups: [HostGroup!]
+    """Visible name of the device."""
     name: String
+    """Device configuration tags."""
     tags: DeviceConfig
+    """State of the distance tracker device."""
     state: DistanceTrackerState
 }
 
+"""
+Represents the state of a distance tracker device.
+"""
 type DistanceTrackerState implements DeviceState {
+    """Operational data (telemetry)."""
     operational: OperationalDeviceData
+    """Current business values (detected devices and distances)."""
     current: DistanceTrackerValues
 }
 
 """
-Aggregated information of devices detected around the tracker
+Aggregated information of devices detected around the tracker.
 """
 type DistanceTrackerValues {
     """
-    Start of time interval for the delivered device counting value
+    Start of time interval for the delivered device counting value.
     """
     timeFrom: Time
     """
-    End of time interval for the delivered device counting value
+    End of time interval for the delivered device counting value.
     """
     timeUntil: Time
 
     """
-    Number of unique deviceKeys detected between timeFrom and timeUnti
+    Number of unique device keys detected between timeFrom and timeUntil.
     """
     count: Int
     """
-    Detailed information about devices detected nearby
+    Detailed information about devices detected nearby.
     """
     distances: [SensorDistanceValue!]
 }

@@ -4,124 +4,170 @@ scalar Time
 scalar JSONObject
 
 type Query {
-    "Get api (build) version"
+    """
+    Returns the API build version.
+    """
     apiVersion: String!
-    "Get zabbix version"
-    zabbixVersion: String
-    """
-    Login to zabbix - provided for debugging and testing purpose. The result of the login operation is
-    authentication token returned may be passed as
-    header 'zabbix-auth-token' for authenticating future API requests.
-    As an alternative to the cookie 'zbx_session' may be set which is automatically set after login to
-    the cockpit - this is the standard way to authenticate api calls initiated by the cockpit frontend
-    because the frontend is always embedded into the Zabbix portal which is only accessible after logging in and
-    obtainind the zbx_session - cookie.
-    """
-    login(username: String!, password: String!): String
 
     """
-    Logout from  zabbix - provided for debugging and testing purpose. This invalidates the token received by the login
-    operation. Returns true on success
+    Returns the version of the connected Zabbix instance.
+    """
+    zabbixVersion: String
+
+    """
+    Logs in to Zabbix. This is primarily for debugging and testing.
+    The returned authentication token can be passed in the `zabbix-auth-token` header for future requests.
+    Alternatively, the `zbx_session` cookie can be used for authentication.
+    """
+    login(
+        """Zabbix username."""
+        username: String!, 
+        """Zabbix password."""
+        password: String!
+    ): String
+
+    """
+    Logs out from Zabbix, invalidating the current session/token.
     """
     logout: Boolean
 
     """
-    Get all hosts + corresponding items. If with_items==true only hosts with attached items are delivered
-    name_pattern: If provided this will perform a  LIKE "%…%" search on the name attribute within the database.
-
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    Returns all hosts and their items.
+    
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
     """
-    allHosts(name_pattern: String = "", filter_host: String = null, hostids: Int,
-        groupids:[Int!] = null, with_items: Boolean = false, tag_deviceType:[String]=[], tag_hostType:[String!]): [Host]
-
-    """
-    Get all devices + corresponding items. Devices are modelled as hosts having a device type + a state.
-    If with_items==true only hosts with attached items are delivered
-    name_pattern: If provided this will perform a  LIKE "%…%" search on the name attribute within the database.
-
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
-    """
-    allDevices(name_pattern: String = "", filter_host: String = null, hostids: Int,
-        groupids:[Int!] = null, with_items: Boolean = false, tag_deviceType:[String]=[], tag_hostType:[String!]): [Device]
-
-    """
-    Get all host groups.
-    If with_hosts==true only groups with attached hosts are delivered.
-
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
-    """
-    allHostGroups(search_name: String, with_hosts: Boolean = true): [HostGroup]
-
+    allHosts(
+        """Wildcard name pattern for filtering hosts (LIKE '%...%')."""
+        name_pattern: String = "", 
+        """Filter hosts by their technical name."""
+        filter_host: String = null, 
+        """Filter by a specific host ID."""
+        hostids: Int,
+        """Filter by host group IDs."""
+        groupids:[Int!] = null, 
+        """If true, only returns hosts that have items attached."""
+        with_items: Boolean = false, 
+        """Filter by `deviceType` tag."""
+        tag_deviceType:[String]=[], 
+        """Filter by `hostType` tag."""
+        tag_hostType:[String!]
+    ): [Host]
 
     """
-    Get all locations used by hosts.
-    distinct_by_name=true means that the result is filtered for distinct names (default)
-    name_pattern: If provided this will perform a Regex search on the name attribute within the database.
-
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+    Returns all devices and their items. Devices are hosts with a `deviceType` and a state.
+    
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
     """
-    locations(name_pattern: String = "", distinct_by_name: Boolean = true, templateids:[String] = null): [Location]
+    allDevices(
+        """Wildcard name pattern for filtering devices (LIKE '%...%')."""
+        name_pattern: String = "", 
+        """Filter devices by their technical name."""
+        filter_host: String = null, 
+        """Filter by a specific host ID."""
+        hostids: Int,
+        """Filter by host group IDs."""
+        groupids:[Int!] = null, 
+        """If true, only returns devices that have items attached."""
+        with_items: Boolean = false, 
+        """Filter by `deviceType` tag."""
+        tag_deviceType:[String]=[], 
+        """Filter by `hostType` tag."""
+        tag_hostType:[String!]
+    ): [Device]
 
     """
-    Export history from Zabbix items
+    Returns all host groups.
+    
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+    """
+    allHostGroups(
+        """Search for host groups by name (supports wildcards)."""
+        search_name: String, 
+        """If true, only returns groups that have hosts attached."""
+        with_hosts: Boolean = true
+    ): [HostGroup]
 
-    Authentication: By zbx_session - cookie or zabbix-auth-token - header
+
+    """
+    Returns all locations used by hosts.
+    
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+    """
+    locations(
+        """Regex name pattern for filtering locations."""
+        name_pattern: String = "", 
+        """If true, filters the result for distinct names."""
+        distinct_by_name: Boolean = true, 
+        """Filter by template IDs used by the hosts."""
+        templateids:[String] = null
+    ): [Location]
+
+    """
+    Exports value history for Zabbix items.
+    
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
     """
     exportHostValueHistory(
-        "(Optional) list of hostnames to be included in the result"
+        """Optional list of hostnames to be included in the result."""
         host_filter: [String!],
-        "(Optional) list of item keys to be included in the result"
+        """Optional list of item keys to be included in the result."""
         itemKey_filter: [String!],
-        """
-        (Optional) timestamp of earliest value"""
+        """Timestamp of the earliest value to include."""
         time_from: DateTime,
-        """(Optional) timestamp of last value """
+        """Timestamp of the last value to include."""
         time_until: DateTime,
-        """Results are sorted by timestamps - ascending or descending order may be specified
-        using this parameter"""
+        """Sort order for the results (asc or desc)."""
         sortOrder: SortOrder=desc,
-        """
-        Maximum number of records to be delivered. Hint: This might be useful, because the
-        current version of Zabbix delivers a 500 - error in case of requesting too much data
-        """
-        limit: Int
-        """
-        As values are stored in different data structures depending on their type
-        the type information must be specified in advance, although
-        each value (also if number) is converted into a string afterwards
-        """
+        """Maximum number of records to return."""
+        limit: Int,
+        """The data type of the values being retrieved."""
         type: StorageItemType = FLOAT
-
-    ):GenericResponse
-
-    """
-    Return all user permissions. If objectNames is provided return only the permissions related to the objects within
-    the objectNames - list
-    """
-    userPermissions(objectNames: [String!]): [UserPermission!]
+    ): GenericResponse
 
     """
-    Return true if and only if the current user (identified by token / cookie)
-    has all requested permissions (minimum - if READ is requested and the user has READ_WRITE
-    the response will be true)
+    Returns all user permissions. 
+    If `objectNames` is provided, returns only the permissions related to those objects.
     """
-    hasPermissions(permissions: [PermissionRequest!]!): Boolean
+    userPermissions(
+        """Optional list of object names to filter by."""
+        objectNames: [String!]
+    ): [UserPermission!]
+
+    """
+    Checks if the current user has the requested permissions.
+    """
+    hasPermissions(
+        """List of permissions to check."""
+        permissions: [PermissionRequest!]!
+    ): Boolean
 
 
     """
-    name_pattern: If provided this will perform a  LIKE "%…%" search on the name attribute within the database.
-    exclude_groups_pattern: Regex allowing to exclude all matching hostgroups from group permissions
+    Exports user rights (roles and groups).
     """
-    exportUserRights(name_pattern: String = "" exclude_hostgroups_pattern: String = ""): UserRights
+    exportUserRights(
+        """Wildcard name pattern for filtering (LIKE '%...%')."""
+        name_pattern: String = "" 
+        """Regex to exclude matching host groups from group permissions."""
+        exclude_hostgroups_pattern: String = ""
+    ): UserRights
 
     """
-    Get templates.
+    Returns templates.
     """
-    templates(hostids: [Int], name_pattern: String): [Template]
+    templates(
+        """Filter by specific template IDs."""
+        hostids: [Int], 
+        """Wildcard name pattern for filtering templates."""
+        name_pattern: String
+    ): [Template]
 
     """
-    Get template groups.
+    Returns all template groups.
     """
-    allTemplateGroups(name_pattern: String): [HostGroup]
+    allTemplateGroups(
+        """Wildcard name pattern for filtering template groups."""
+        name_pattern: String
+    ): [HostGroup]
 }
 

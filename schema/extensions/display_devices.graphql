@@ -16,60 +16,94 @@ type SinglePanelDevice implements Host & Device {
     state: PanelState
 }
 
+"""
+Represents the state of a single panel device.
+"""
 type PanelState implements DeviceState {
+    """Operational data (telemetry)."""
     operational: OperationalDeviceData
+    """Current display state."""
     current: PanelCurrentState
 }
 
+"""
+Represents the current state of a panel.
+"""
 type PanelCurrentState {
+    """The current values being displayed on the panel."""
     values: PanelValues
 }
 
+"""
+Specific values displayed on a panel.
+"""
 type PanelValues {
     """
-    Index of the bitmap which is displayed
+    Index of the bitmap which is displayed.
     """
     contentIndex: Int
     """
-    Hash of the bitmap which is displayed
+    Hash of the bitmap which is displayed.
     """
     contentKey: String
     """
-    Text representation of what is displayed
+    Text representation of what is displayed.
     """
     contentText: String
 }
 
 """
 The FourPanelDevice is a panel which allows to define pictures in 4
-subpanels, called TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+subpanels, called TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT.
 """
 type FourPanelDevice implements Host & Device {
+    """Internal Zabbix ID of the device."""
     hostid: ID!
     """
-    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname
+    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname.
     """
     host: String!
+    """Classification of the device."""
     deviceType: String
+    """List of host groups this device belongs to."""
     hostgroups: [HostGroup!]
+    """Visible name of the device."""
     name: String
+    """Device configuration tags."""
     tags: DeviceConfig
+    """State of the four-panel device."""
     state: FourPanelState
 }
 
+"""
+Represents the state of a four-panel device.
+"""
 type FourPanelState implements DeviceState {
+    """Operational data (telemetry)."""
     operational: OperationalDeviceData
+    """Current state of all four panels."""
     current: FourPanelCurrentState
 }
 
+"""
+Represents the combined current state of four panels.
+"""
 type FourPanelCurrentState {
+    """The values for each of the four panels."""
     values: FourPanelValues
 }
 
+"""
+Values for each of the four panels in a FourPanelDevice.
+"""
 type FourPanelValues {
+    """State of the top-left panel."""
     TOP_LEFT: PanelValues
+    """State of the top-right panel."""
     TOP_RIGHT: PanelValues
+    """State of the bottom-left panel."""
     BOTTOM_LEFT: PanelValues
+    """State of the bottom-right panel."""
     BOTTOM_RIGHT: PanelValues
 }
 

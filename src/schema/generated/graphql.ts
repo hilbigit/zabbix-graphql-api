@@ -25,147 +25,178 @@ export interface Scalars {
   Time: { input: any; output: any; }
 }
 
+/** Detailed error information returned by the API. */
 export interface ApiError extends Error {
   __typename?: 'ApiError';
+  /** Arguments passed to the operation that failed. */
   args?: Maybe<Scalars['JSONObject']['output']>;
+  /** Error code. */
   code?: Maybe<Scalars['Int']['output']>;
+  /** Additional error data. */
   data?: Maybe<Scalars['JSONObject']['output']>;
+  /** Error message. */
   message?: Maybe<Scalars['String']['output']>;
+  /** Path to the field that caused the error. */
   path?: Maybe<Scalars['String']['output']>;
 }
 
+/** Input for creating a new host. */
 export interface CreateHost {
+  /** Technical name of the host/device. */
   deviceKey: Scalars['String']['input'];
+  /** Classification or category of the device. */
   deviceType: Scalars['String']['input'];
-  /**
-   * groupNames is used to assign the created object
-   * to a host group. It is mandatory but
-   * can also be blank. This is usefull in case of
-   * passing a groupid instead which is
-   * the zabbix internal key for storing the group.
-   * If a groupid is provided the passed groupName is ignored
-   */
+  /** List of host group names to assign the host to. */
   groupNames: Array<Scalars['String']['input']>;
-  /**
-   * Optionally the internal groupids can be passed - in this case the
-   * groupName is ignored
-   */
+  /** Optionally, internal group IDs can be provided instead of group names. */
   groupids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  /** Location information for the host. */
   location?: InputMaybe<LocationInput>;
-  /** Optional display name of the device (must be unique if provided - default is to set display name to deviceKey) */
+  /** Optional display name of the device (must be unique if provided - default is to set display name to deviceKey). */
   name?: InputMaybe<Scalars['String']['input']>;
 }
 
+/** Input for creating or identifying a host group. */
 export interface CreateHostGroup {
-  /** Name of the host group */
+  /** Name of the host group. */
   groupName: Scalars['String']['input'];
-  /**
-   * Internally used unique id
-   * (will be assigned by Zabbix if empty)
-   */
+  /** Internally used unique id (will be assigned by Zabbix if empty). */
   uuid?: InputMaybe<Scalars['String']['input']>;
 }
 
+/** Response for a host group import operation. */
 export interface CreateHostGroupResponse {
   __typename?: 'CreateHostGroupResponse';
+  /** Error information if the import failed. */
   error?: Maybe<ApiError>;
+  /** Name of the imported host group. */
   groupName: Scalars['String']['output'];
+  /** The Zabbix group ID assigned to the group. */
   groupid?: Maybe<Scalars['Int']['output']>;
+  /** Status message for the import. */
   message?: Maybe<Scalars['String']['output']>;
 }
 
+/** Response for a single host creation operation. */
 export interface CreateHostResponse {
   __typename?: 'CreateHostResponse';
+  /** Error information if the creation failed. */
   error?: Maybe<ApiError>;
+  /** List of created host IDs. */
   hostids?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
+  /** List of created item IDs. */
   itemids?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
 }
 
+/** Input for an item preprocessing step. */
 export interface CreateItemPreprocessing {
+  /** Error handling behavior. */
   error_handler?: InputMaybe<Scalars['Int']['input']>;
+  /** Error handling parameters. */
   error_handler_params?: InputMaybe<Scalars['String']['input']>;
+  /** Parameters for the preprocessing step. */
   params: Array<Scalars['String']['input']>;
+  /** Type of preprocessing step (e.g., 12 for JSONPath, 21 for JavaScript). */
   type: Scalars['Int']['input'];
 }
 
+/** Reference to a template to be linked. */
 export interface CreateLinkedTemplate {
+  /** The technical name of the template to link. */
   name: Scalars['String']['input'];
 }
 
+/** Reference to a master item for dependent items. */
 export interface CreateMasterItem {
+  /** The technical key of the master item. */
   key: Scalars['String']['input'];
 }
 
+/** Input for a tag. */
 export interface CreateTag {
+  /** Tag name. */
   tag: Scalars['String']['input'];
+  /** Tag value. */
   value?: InputMaybe<Scalars['String']['input']>;
 }
 
+/** Input for creating or updating a template. */
 export interface CreateTemplate {
-  /**
-   * groupNames is used to assign the created object
-   * to a template group.
-   */
+  /** List of template group names to assign the template to. */
   groupNames: Array<Scalars['String']['input']>;
-  /**
-   * Optionally the internal groupids can be passed - in this case the
-   * groupName is ignored
-   */
+  /** Optionally, internal group IDs can be provided instead of group names. */
   groupids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  /** Name of the template */
+  /** Technical name of the template. */
   host: Scalars['String']['input'];
-  /** Template items */
+  /** List of items to create within the template. */
   items?: InputMaybe<Array<CreateTemplateItem>>;
-  /** Visible name of the template */
+  /** Visible name of the template. */
   name?: InputMaybe<Scalars['String']['input']>;
-  /** Template tags */
+  /** Tags to assign to the template. */
   tags?: InputMaybe<Array<CreateTag>>;
-  /** Linked templates */
+  /** List of other templates to link to this template. */
   templates?: InputMaybe<Array<CreateLinkedTemplate>>;
-  /**
-   * Internally used unique id
-   * (will be assigned by Zabbix if empty)
-   */
+  /** Internally used unique id (will be assigned by Zabbix if empty). */
   uuid?: InputMaybe<Scalars['String']['input']>;
 }
 
+/** Input for creating or identifying a template group. */
 export interface CreateTemplateGroup {
-  /** Name of the template group */
+  /** Name of the template group. */
   groupName: Scalars['String']['input'];
-  /**
-   * Internally used unique id
-   * (will be assigned by Zabbix if empty)
-   */
+  /** Internally used unique id (will be assigned by Zabbix if empty). */
   uuid?: InputMaybe<Scalars['String']['input']>;
 }
 
+/** Response for a template group import operation. */
 export interface CreateTemplateGroupResponse {
   __typename?: 'CreateTemplateGroupResponse';
+  /** Error information if the import failed. */
   error?: Maybe<ApiError>;
+  /** Name of the imported template group. */
   groupName: Scalars['String']['output'];
+  /** The Zabbix group ID assigned to the group. */
   groupid?: Maybe<Scalars['Int']['output']>;
+  /** Status message for the import. */
   message?: Maybe<Scalars['String']['output']>;
 }
 
+/** Input for creating an item within a template. */
 export interface CreateTemplateItem {
+  /** Update interval. */
   delay?: InputMaybe<Scalars['String']['input']>;
+  /** Description of the item. */
   description?: InputMaybe<Scalars['String']['input']>;
+  /** History storage period (e.g., '2d', '90d'). */
   history?: InputMaybe<Scalars['String']['input']>;
+  /** Technical key of the item. */
   key: Scalars['String']['input'];
+  /** Reference to a master item if this is a dependent item. */
   master_item?: InputMaybe<CreateMasterItem>;
+  /** Name of the item. */
   name: Scalars['String']['input'];
+  /** Preprocessing steps for the item values. */
   preprocessing?: InputMaybe<Array<CreateItemPreprocessing>>;
+  /** Tags to assign to the item. */
   tags?: InputMaybe<Array<CreateTag>>;
+  /** Zabbix item type (e.g., 0 for Zabbix Agent, 18 for Dependent). */
   type?: InputMaybe<Scalars['Int']['input']>;
+  /** Units of the value. */
   units?: InputMaybe<Scalars['String']['input']>;
+  /** Internally used unique id. */
   uuid?: InputMaybe<Scalars['String']['input']>;
+  /** Type of information (e.g., 0 for Float, 3 for Int, 4 for Text). */
   value_type?: InputMaybe<Scalars['Int']['input']>;
 }
 
+/** Response object for delete operations. */
 export interface DeleteResponse {
   __typename?: 'DeleteResponse';
+  /** Error information if the deletion failed. */
   error?: Maybe<ApiError>;
+  /** ID of the deleted entity. */
   id: Scalars['Int']['output'];
+  /** Status message for the delete operation. */
   message?: Maybe<Scalars['String']['output']>;
 }
 
@@ -174,24 +205,34 @@ export interface DeleteResponse {
  * besides monitoring information.
  */
 export interface Device {
+  /** Classification of the device. */
   deviceType?: Maybe<Scalars['String']['output']>;
-  /** Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname */
+  /** Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname. */
   host: Scalars['String']['output'];
+  /** List of host groups this device belongs to. */
   hostgroups?: Maybe<Array<HostGroup>>;
+  /** Internal Zabbix ID of the device. */
   hostid: Scalars['ID']['output'];
+  /** Visible name of the device. */
   name?: Maybe<Scalars['String']['output']>;
+  /** State of the device. */
   state?: Maybe<DeviceState>;
+  /** Device configuration tags. */
   tags?: Maybe<DeviceConfig>;
 }
 
 export { DeviceCommunicationType };
 
+/** Configuration settings for a device. */
 export interface DeviceConfig {
   __typename?: 'DeviceConfig';
+  /** Configuration for the device widget preview in the cockpit. */
   deviceWidgetPreview?: Maybe<WidgetPreview>;
 }
 
+/** Common interface for device state. */
 export interface DeviceState {
+  /** Operational data (telemetry). */
   operational?: Maybe<OperationalDeviceData>;
 }
 
@@ -199,6 +240,7 @@ export { DeviceStatus };
 
 /** Marker-interface for device-related data values. */
 export interface DeviceValue {
+  /** Dummy field to allow for empty interfaces. */
   _empty?: Maybe<Scalars['String']['output']>;
 }
 
@@ -238,182 +280,253 @@ export interface DeviceValueMessage {
   value?: Maybe<DeviceValue>;
 }
 
+/** Specification for a display field in a widget. */
 export interface DisplayFieldSpec {
   __typename?: 'DisplayFieldSpec';
+  /** Value to display if the data is missing. */
   emptyValue?: Maybe<Scalars['String']['output']>;
+  /** Optional transformation for the unit. */
   g_unit_transform?: Maybe<Scalars['String']['output']>;
+  /** Optional transformation for the value. */
   g_value_transform?: Maybe<Scalars['String']['output']>;
+  /** Key of the data to display. */
   key?: Maybe<Scalars['String']['output']>;
+  /** Unit string to append to the value. */
   unit?: Maybe<Scalars['String']['output']>;
+  /** Font size for the unit. */
   unit_font_size?: Maybe<Scalars['String']['output']>;
+  /** Font size for the value. */
   value_font_size?: Maybe<Scalars['String']['output']>;
 }
 
+/** Common error interface. */
 export interface Error {
+  /** Error code. */
   code?: Maybe<Scalars['Int']['output']>;
+  /** Additional error data. */
   data?: Maybe<Scalars['JSONObject']['output']>;
+  /** Error message. */
   message?: Maybe<Scalars['String']['output']>;
 }
 
+/** Payload for a single error or status message. */
 export interface ErrorPayload {
   __typename?: 'ErrorPayload';
+  /** Additional contextual information about the error. */
   additionalInfo?: Maybe<Scalars['JSONObject']['output']>;
+  /** Error code. */
   code: Scalars['Int']['output'];
+  /** Human-readable error message. */
   message?: Maybe<Scalars['String']['output']>;
 }
 
-/** Device represents generic IoT / Edge - devices providing their state as generic "state.current" - JSON Object */
+/** Device represents generic IoT / Edge - devices providing their state as generic "state.current" - JSON Object. */
 export interface GenericDevice extends Device, Host {
   __typename?: 'GenericDevice';
+  /** Classification of the device. */
   deviceType?: Maybe<Scalars['String']['output']>;
-  /** Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname */
+  /** Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname. */
   host: Scalars['String']['output'];
+  /** List of host groups this device belongs to. */
   hostgroups?: Maybe<Array<HostGroup>>;
+  /** Internal Zabbix ID of the device. */
   hostid: Scalars['ID']['output'];
+  /** Visible name of the device. */
   name?: Maybe<Scalars['String']['output']>;
+  /** State of the generic device. */
   state?: Maybe<GenericDeviceState>;
+  /** Device configuration tags. */
   tags?: Maybe<DeviceConfig>;
 }
 
+/** Generic implementation of device state using a JSON object for current values. */
 export interface GenericDeviceState extends DeviceState {
   __typename?: 'GenericDeviceState';
+  /** Current business data as a generic JSON object. */
   current?: Maybe<Scalars['JSONObject']['output']>;
+  /** Operational data (telemetry). */
   operational?: Maybe<OperationalDeviceData>;
 }
 
+/** Generic response wrapper containing either the result data or an error. */
 export interface GenericResponse {
   __typename?: 'GenericResponse';
+  /** Error information if the operation failed. */
   error?: Maybe<ApiError>;
+  /** The result data, typically a list of JSON objects. */
   result?: Maybe<Array<Scalars['JSONObject']['output']>>;
 }
 
-/** Hint: WGS84[dd.ddddd] coordinates are used */
+/**
+ * Interface for entities that have GPS coordinates.
+ * Hint: WGS84[dd.ddddd] coordinates are used.
+ */
 export interface GpsPosition {
+  /** Latitude coordinate. */
   latitude?: Maybe<Scalars['Float']['output']>;
+  /** Longitude coordinate. */
   longitude?: Maybe<Scalars['Float']['output']>;
 }
 
+/** Common interface for all host-like entities in Zabbix. */
 export interface Host {
   /**
    * Specifies the type or category of the device. Used to define the classification
    * of a device in the system (capabilities, functionalities, or purpose).
    */
   deviceType?: Maybe<Scalars['String']['output']>;
-  /** The host field contains the "hostname" in Zabbix */
+  /** Technical name of the host (the 'hostname' in Zabbix). */
   host: Scalars['String']['output'];
+  /** List of host groups this host belongs to. */
   hostgroups?: Maybe<Array<HostGroup>>;
+  /** Internal Zabbix ID of the host. */
   hostid: Scalars['ID']['output'];
+  /** Visible name of the host. */
   name?: Maybe<Scalars['String']['output']>;
 }
 
+/** Represents a host group in Zabbix. */
 export interface HostGroup {
   __typename?: 'HostGroup';
+  /** Internal Zabbix ID of the host group. */
   groupid: Scalars['ID']['output'];
+  /** Name of the host group. */
   name?: Maybe<Scalars['String']['output']>;
 }
 
+/** Response for a host import operation. */
 export interface ImportHostResponse {
   __typename?: 'ImportHostResponse';
+  /** The device key (technical name) of the imported host. */
   deviceKey: Scalars['String']['output'];
+  /** Error information if the import failed. */
   error?: Maybe<ApiError>;
+  /** The Zabbix host ID assigned to the host. */
   hostid?: Maybe<Scalars['String']['output']>;
+  /** Status message for the import. */
   message?: Maybe<Scalars['String']['output']>;
 }
 
+/** Response for a template import operation. */
 export interface ImportTemplateResponse {
   __typename?: 'ImportTemplateResponse';
+  /** Error information if the import failed. */
   error?: Maybe<ApiError>;
+  /** The technical name of the imported template. */
   host: Scalars['String']['output'];
+  /** Status message for the import. */
   message?: Maybe<Scalars['String']['output']>;
+  /** The Zabbix template ID assigned to the template. */
   templateid?: Maybe<Scalars['String']['output']>;
 }
 
+/** Result of a single user right (role or group) import. */
 export interface ImportUserRightResult {
   __typename?: 'ImportUserRightResult';
+  /** List of errors encountered during import. */
   errors?: Maybe<Array<ApiError>>;
+  /** The ID of the imported/updated entity. */
   id?: Maybe<Scalars['String']['output']>;
+  /** Status message for the import. */
   message?: Maybe<Scalars['String']['output']>;
+  /** The name of the entity. */
   name?: Maybe<Scalars['String']['output']>;
 }
 
+/** Result of a user rights import operation. */
 export interface ImportUserRightsResult {
   __typename?: 'ImportUserRightsResult';
+  /** Results for the imported user groups. */
   userGroups?: Maybe<Array<ImportUserRightResult>>;
+  /** Results for the imported user roles. */
   userRoles?: Maybe<Array<ImportUserRightResult>>;
 }
 
+/** Represents host inventory information. */
 export interface Inventory {
   __typename?: 'Inventory';
+  /** Location data for the host. */
   location?: Maybe<Location>;
 }
 
+/** Represents a geographical location. */
 export interface Location extends GpsPosition {
   __typename?: 'Location';
+  /** Latitude coordinate. */
   latitude?: Maybe<Scalars['Float']['output']>;
+  /** Longitude coordinate. */
   longitude?: Maybe<Scalars['Float']['output']>;
+  /** Name of the location. */
   name?: Maybe<Scalars['String']['output']>;
 }
 
+/** Input for host location information. */
 export interface LocationInput {
+  /** Latitude coordinate. */
   location_lat?: InputMaybe<Scalars['String']['input']>;
+  /** Longitude coordinate. */
   location_lon?: InputMaybe<Scalars['String']['input']>;
+  /** Name of the location. */
   name?: InputMaybe<Scalars['String']['input']>;
 }
 
 export interface Mutation {
   __typename?: 'Mutation';
-  /** Authentication: By zbx_session - cookie or zabbix-auth-token - header */
+  /**
+   * Creates a single host in Zabbix.
+   *
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+   */
   createHost?: Maybe<CreateHostResponse>;
   /**
-   * Delete template groups.
+   * Delete template groups by their IDs or by a name pattern.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   deleteTemplateGroups?: Maybe<Array<DeleteResponse>>;
   /**
-   * Delete templates.
+   * Delete templates by their IDs or by a name pattern.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   deleteTemplates?: Maybe<Array<DeleteResponse>>;
   /**
-   * (Mass) Import zabbix groups
-   * and assign them to the corresponding hosts by groupid or groupName.
+   * (Mass) Import Zabbix host groups and assign them to the corresponding hosts by groupid or groupName.
    *
-   * Return value: If no error occurs a groupid be returned for each created group,
-   * otherwise the return object will contain an error message
+   * Return value: If no error occurs, a groupid is returned for each created group; otherwise, the return object contains an error message.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   importHostGroups?: Maybe<Array<CreateHostGroupResponse>>;
   /**
    * (Mass) Import hosts and assign them to host groups by groupid or groupName.
    *
-   * Return value: If no error occurs a hostid will be returned for each created host,
-   * otherwise the return object will contain an error message.
+   * Return value: If no error occurs, a hostid is returned for each created host; otherwise, the return object contains an error message.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   importHosts?: Maybe<Array<ImportHostResponse>>;
   /**
-   * (Mass) Import template groups
-   * and assign them by groupid or name.
+   * (Mass) Import template groups and assign them by groupid or name.
    *
-   * Return value: If no error occurs a groupid be returned for each created group,
-   * otherwise the return object will contain an error message
+   * Return value: If no error occurs, a groupid is returned for each created group; otherwise, the return object contains an error message.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   importTemplateGroups?: Maybe<Array<CreateTemplateGroupResponse>>;
   /**
    * (Mass) Import templates.
    *
-   * Return value: If no error occurs a templateid will be returned for each created template,
-   * otherwise the return object will contain an error message.
+   * Return value: If no error occurs, a templateid is returned for each created template; otherwise, the return object contains an error message.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   importTemplates?: Maybe<Array<ImportTemplateResponse>>;
+  /**
+   * Import user rights (roles and groups) into Zabbix.
+   *
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+   */
   importUserRights?: Maybe<ImportUserRightsResult>;
 }
 
@@ -463,103 +576,92 @@ export interface MutationImportUserRightsArgs {
   input: UserRightsInput;
 }
 
+/** Operational data common to most devices. */
 export interface OperationalDeviceData {
   __typename?: 'OperationalDeviceData';
+  /** List of active errors or status messages. */
   error?: Maybe<Array<ErrorPayload>>;
+  /** Current location of the device. */
   location?: Maybe<Location>;
+  /** Signal strength (e.g., WiFi or GSM). */
   signalstrength?: Maybe<Scalars['Float']['output']>;
+  /** Device temperature. */
   temperature?: Maybe<Scalars['Float']['output']>;
+  /** Timestamp of the operational data. */
   timestamp?: Maybe<Scalars['DateTime']['output']>;
+  /** Device voltage. */
   voltage?: Maybe<Scalars['Float']['output']>;
 }
 
 export { Permission };
 
+/** Request for checking specific user permissions. */
 export interface PermissionRequest {
   /**
    * objectName maps to name / path suffix of the template group representing the permission in Zabbix:
    * Permissions/{objectName}
    */
   objectName: Scalars['String']['input'];
+  /** The required permission level (DENY, READ, or READ_WRITE). */
   permission: Permission;
 }
 
 export interface Query {
   __typename?: 'Query';
   /**
-   * Get all devices + corresponding items. Devices are modelled as hosts having a device type + a state.
-   * If with_items==true only hosts with attached items are delivered
-   * name_pattern: If provided this will perform a  LIKE "%…%" search on the name attribute within the database.
+   * Returns all devices and their items. Devices are hosts with a `deviceType` and a state.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   allDevices?: Maybe<Array<Maybe<Device>>>;
   /**
-   * Get all host groups.
-   * If with_hosts==true only groups with attached hosts are delivered.
+   * Returns all host groups.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   allHostGroups?: Maybe<Array<Maybe<HostGroup>>>;
   /**
-   * Get all hosts + corresponding items. If with_items==true only hosts with attached items are delivered
-   * name_pattern: If provided this will perform a  LIKE "%…%" search on the name attribute within the database.
+   * Returns all hosts and their items.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   allHosts?: Maybe<Array<Maybe<Host>>>;
-  /** Get template groups. */
+  /** Returns all template groups. */
   allTemplateGroups?: Maybe<Array<Maybe<HostGroup>>>;
-  /** Get api (build) version */
+  /** Returns the API build version. */
   apiVersion: Scalars['String']['output'];
   /**
-   * Export history from Zabbix items
+   * Exports value history for Zabbix items.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   exportHostValueHistory?: Maybe<GenericResponse>;
-  /**
-   * name_pattern: If provided this will perform a  LIKE "%…%" search on the name attribute within the database.
-   * exclude_groups_pattern: Regex allowing to exclude all matching hostgroups from group permissions
-   */
+  /** Exports user rights (roles and groups). */
   exportUserRights?: Maybe<UserRights>;
-  /**
-   * Return true if and only if the current user (identified by token / cookie)
-   * has all requested permissions (minimum - if READ is requested and the user has READ_WRITE
-   * the response will be true)
-   */
+  /** Checks if the current user has the requested permissions. */
   hasPermissions?: Maybe<Scalars['Boolean']['output']>;
   /**
-   * Get all locations used by hosts.
-   * distinct_by_name=true means that the result is filtered for distinct names (default)
-   * name_pattern: If provided this will perform a Regex search on the name attribute within the database.
+   * Returns all locations used by hosts.
    *
-   * Authentication: By zbx_session - cookie or zabbix-auth-token - header
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   locations?: Maybe<Array<Maybe<Location>>>;
   /**
-   * Login to zabbix - provided for debugging and testing purpose. The result of the login operation is
-   * authentication token returned may be passed as
-   * header 'zabbix-auth-token' for authenticating future API requests.
-   * As an alternative to the cookie 'zbx_session' may be set which is automatically set after login to
-   * the cockpit - this is the standard way to authenticate api calls initiated by the cockpit frontend
-   * because the frontend is always embedded into the Zabbix portal which is only accessible after logging in and
-   * obtainind the zbx_session - cookie.
+   * Logs in to Zabbix. This is primarily for debugging and testing.
+   * The returned authentication token can be passed in the `zabbix-auth-token` header for future requests.
+   * Alternatively, the `zbx_session` cookie can be used for authentication.
    */
   login?: Maybe<Scalars['String']['output']>;
-  /**
-   * Logout from  zabbix - provided for debugging and testing purpose. This invalidates the token received by the login
-   * operation. Returns true on success
-   */
+  /** Logs out from Zabbix, invalidating the current session/token. */
   logout?: Maybe<Scalars['Boolean']['output']>;
-  /** Get templates. */
+  /** Returns templates. */
   templates?: Maybe<Array<Maybe<Template>>>;
   /**
-   * Return all user permissions. If objectNames is provided return only the permissions related to the objects within
-   * the objectNames - list
+   * Returns all user permissions.
+   * If `objectNames` is provided, returns only the permissions related to those objects.
    */
   userPermissions?: Maybe<Array<UserPermission>>;
-  /** Get zabbix version */
+  /** Returns the version of the connected Zabbix instance. */
   zabbixVersion?: Maybe<Scalars['String']['output']>;
 }
 
@@ -651,30 +753,47 @@ export enum SortOrder {
 
 export { StorageItemType };
 
+/** Represents a Zabbix template. */
 export interface Template {
   __typename?: 'Template';
+  /** Name of the template. */
   name?: Maybe<Scalars['String']['output']>;
+  /** Internal Zabbix ID of the template. */
   templateid: Scalars['String']['output'];
 }
 
+/** Represents a Zabbix user group. */
 export interface UserGroup {
   __typename?: 'UserGroup';
+  /** Frontend access level. */
   gui_access?: Maybe<Scalars['Int']['output']>;
+  /** Permissions for host groups. */
   hostgroup_rights?: Maybe<Array<ZabbixGroupRight>>;
+  /** Name of the user group. */
   name: Scalars['String']['output'];
+  /** Permissions for template groups. */
   templategroup_rights?: Maybe<Array<ZabbixGroupRight>>;
+  /** Status of users in the group. */
   users_status?: Maybe<Scalars['Int']['output']>;
+  /** Internal Zabbix ID of the user group. */
   usrgrpid: Scalars['Int']['output'];
 }
 
+/** Input for a user group. */
 export interface UserGroupInput {
+  /** Frontend access level. */
   gui_access?: InputMaybe<Scalars['Int']['input']>;
+  /** Permissions for host groups. */
   hostgroup_rights?: InputMaybe<Array<ZabbixGroupRightInput>>;
+  /** Name of the user group. */
   name: Scalars['String']['input'];
+  /** Permissions for template groups. */
   templategroup_rights?: InputMaybe<Array<ZabbixGroupRightInput>>;
+  /** Status of the users in the group. */
   users_status?: InputMaybe<Scalars['Int']['input']>;
 }
 
+/** Represents a permission assigned to a user for a specific object. */
 export interface UserPermission {
   __typename?: 'UserPermission';
   /**
@@ -682,118 +801,179 @@ export interface UserPermission {
    * Permissions/{objectName}
    */
   objectName: Scalars['String']['output'];
+  /** The assigned permission level. */
   permission: Permission;
 }
 
+/** Represents the combined user rights (groups and roles). */
 export interface UserRights {
   __typename?: 'UserRights';
+  /** List of user groups. */
   userGroups?: Maybe<Array<UserGroup>>;
+  /** List of user roles. */
   userRoles?: Maybe<Array<UserRole>>;
 }
 
+/** Input for importing user rights. */
 export interface UserRightsInput {
+  /** List of user groups to import. */
   userGroups?: InputMaybe<Array<UserGroupInput>>;
+  /** List of user roles to import. */
   userRoles?: InputMaybe<Array<UserRoleInput>>;
 }
 
+/** Represents a Zabbix user role. */
 export interface UserRole {
   __typename?: 'UserRole';
+  /** Name of the role. */
   name?: Maybe<Scalars['String']['output']>;
+  /** Whether the role is read-only. */
   readonly?: Maybe<Scalars['Int']['output']>;
+  /** Internal Zabbix ID of the role. */
   roleid: Scalars['Int']['output'];
+  /** Rules assigned to the role. */
   rules?: Maybe<UserRoleRules>;
+  /** Type of the role. */
   type?: Maybe<Scalars['Int']['output']>;
 }
 
+/** Input for a user role. */
 export interface UserRoleInput {
+  /** Name of the role. */
   name?: InputMaybe<Scalars['String']['input']>;
+  /** Whether the role is read-only (1) or not (0). */
   readonly?: InputMaybe<Scalars['Int']['input']>;
+  /** Specific rules for the role. */
   rules?: InputMaybe<UserRoleRulesInput>;
+  /** Type of role (e.g., 1 for User, 2 for Admin, 3 for Super Admin). */
   type?: InputMaybe<Scalars['Int']['input']>;
 }
 
+/** Represents a module assigned to a user role. */
 export interface UserRoleModule {
   __typename?: 'UserRoleModule';
+  /** Technical ID of the module. */
   id?: Maybe<Scalars['String']['output']>;
+  /** Internal Zabbix module ID. */
   moduleid?: Maybe<Scalars['String']['output']>;
+  /** Relative path to the module. */
   relative_path?: Maybe<Scalars['String']['output']>;
+  /** Status of the module. */
   status?: Maybe<Scalars['Int']['output']>;
 }
 
+/** Input for user role module access. */
 export interface UserRoleModuleInput {
+  /** Technical ID of the module. */
   id?: InputMaybe<Scalars['String']['input']>;
+  /** The internal Zabbix module ID. */
   moduleid?: InputMaybe<Scalars['String']['input']>;
+  /** Status of the module. */
   status?: InputMaybe<Scalars['Int']['input']>;
 }
 
+/** Represents a single rule within a user role. */
 export interface UserRoleRule {
   __typename?: 'UserRoleRule';
+  /** Name of the rule. */
   name?: Maybe<Scalars['String']['output']>;
+  /** Status of the rule. */
   status?: Maybe<Scalars['Int']['output']>;
 }
 
+/** Input for a single user role rule. */
 export interface UserRoleRuleInput {
+  /** Name of the rule/element. */
   name?: InputMaybe<Scalars['String']['input']>;
+  /** Status (e.g., 1 for enabled, 0 for disabled). */
   status?: InputMaybe<Scalars['Int']['input']>;
 }
 
+/** Represents the rules assigned to a user role. */
 export interface UserRoleRules {
   __typename?: 'UserRoleRules';
+  /** Action rules. */
   actions?: Maybe<Array<UserRoleRule>>;
+  /** Default access for actions. */
   actions_default_access?: Maybe<Scalars['Int']['output']>;
+  /** List of API methods allowed/denied. */
   api?: Maybe<Array<Scalars['String']['output']>>;
+  /** Whether API access is enabled. */
   api_access?: Maybe<Scalars['Int']['output']>;
+  /** API mode. */
   api_mode?: Maybe<Scalars['Int']['output']>;
+  /** Module access rules. */
   modules?: Maybe<Array<UserRoleModule>>;
+  /** Default access for modules. */
   modules_default_access?: Maybe<Scalars['Int']['output']>;
+  /** UI access rules. */
   ui?: Maybe<Array<UserRoleRule>>;
+  /** Default access for UI elements. */
   ui_default_access?: Maybe<Scalars['Int']['output']>;
 }
 
+/** Input for user role rules. */
 export interface UserRoleRulesInput {
+  /** Action rules. */
   actions?: InputMaybe<Array<UserRoleRuleInput>>;
+  /** Default access for actions. */
   actions_default_access?: InputMaybe<Scalars['Int']['input']>;
+  /** List of API methods allowed/denied. */
   api?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Whether API access is enabled (1) or not (0). */
   api_access?: InputMaybe<Scalars['Int']['input']>;
+  /** API mode (e.g., 0 for white-list, 1 for black-list). */
   api_mode?: InputMaybe<Scalars['Int']['input']>;
+  /** Module access rules. */
   modules?: InputMaybe<Array<UserRoleModuleInput>>;
+  /** Default access for modules. */
   modules_default_access?: InputMaybe<Scalars['Int']['input']>;
+  /** UI access rules. */
   ui?: InputMaybe<Array<UserRoleRuleInput>>;
+  /** Default access for UI elements. */
   ui_default_access?: InputMaybe<Scalars['Int']['input']>;
 }
 
+/** Represents the configuration for a 4-field widget preview. */
 export interface WidgetPreview {
   __typename?: 'WidgetPreview';
+  /** Bottom-left field specification. */
   BOTTOM_LEFT?: Maybe<DisplayFieldSpec>;
+  /** Bottom-right field specification. */
   BOTTOM_RIGHT?: Maybe<DisplayFieldSpec>;
+  /** Top-left field specification. */
   TOP_LEFT?: Maybe<DisplayFieldSpec>;
+  /** Top-right field specification. */
   TOP_RIGHT?: Maybe<DisplayFieldSpec>;
 }
 
+/** Represents a specific permission right for a group. */
 export interface ZabbixGroupRight {
   __typename?: 'ZabbixGroupRight';
+  /** ID of the group the right applies to. */
   id: Scalars['Int']['output'];
+  /** Name of the group. */
   name?: Maybe<Scalars['String']['output']>;
+  /** Assigned permission level. */
   permission?: Maybe<Permission>;
+  /** Unique ID of the group. */
   uuid?: Maybe<Scalars['String']['output']>;
 }
 
+/** Input for a Zabbix group permission right. */
 export interface ZabbixGroupRightInput {
   /**
-   * name may optionally be specified for documentation purpose,
+   * Name may optionally be specified for documentation purpose,
    * but the master for setting the user right is the uuid.
-   * If a uuid is found and the corresponding group
-   * has a deviating name this will be documented within a message
-   * with errorcode = 0 (OK) but the permission will be set (
-   * the reason is that names for groups may deviate between several
-   * instances of the control center although the semantic is the same -
-   * while the semantic is identified by uuid.
    */
   name?: InputMaybe<Scalars['String']['input']>;
+  /** The permission level to assign. */
   permission?: InputMaybe<Permission>;
+  /** The unique ID of the group. */
   uuid?: InputMaybe<Scalars['String']['input']>;
 }
 
+/** Concrete implementation of a Zabbix host. */
 export interface ZabbixHost extends Host {
   __typename?: 'ZabbixHost';
   /**
@@ -801,28 +981,48 @@ export interface ZabbixHost extends Host {
    * of a device in the system (capabilities, functionalities, or purpose).
    */
   deviceType?: Maybe<Scalars['String']['output']>;
+  /** Technical name of the host. */
   host: Scalars['String']['output'];
+  /** List of host groups this host belongs to. */
   hostgroups?: Maybe<Array<HostGroup>>;
+  /** Internal Zabbix ID of the host. */
   hostid: Scalars['ID']['output'];
+  /** Host inventory data. */
   inventory?: Maybe<Inventory>;
+  /** List of monitored items for this host. */
   items?: Maybe<Array<ZabbixItem>>;
+  /** Visible name of the host. */
   name?: Maybe<Scalars['String']['output']>;
+  /** List of templates linked to this host. */
   parentTemplates?: Maybe<Array<Template>>;
+  /** Tags assigned to the host as a JSON object. */
   tags?: Maybe<Scalars['JSONObject']['output']>;
 }
 
+/** Represents a Zabbix item (a single data point being monitored). */
 export interface ZabbixItem {
   __typename?: 'ZabbixItem';
+  /** Attribute name if this item is part of a hierarchical mapping. */
   attributeName?: Maybe<Scalars['String']['output']>;
+  /** Internal Zabbix ID of the host this item belongs to. */
   hostid?: Maybe<Scalars['Int']['output']>;
+  /** Hosts that this item is linked to. */
   hosts?: Maybe<Array<Host>>;
+  /** Internal Zabbix ID of the item. */
   itemid: Scalars['Int']['output'];
+  /** Technical key of the item. */
   key_: Scalars['String']['output'];
+  /** Unix timestamp of the last time the item value was updated. */
   lastclock?: Maybe<Scalars['Int']['output']>;
+  /** Last value retrieved for this item. */
   lastvalue?: Maybe<Scalars['String']['output']>;
+  /** Visible name of the item. */
   name: Scalars['String']['output'];
+  /** Status of the item (ENABLED or DISABLED). */
   status?: Maybe<DeviceStatus>;
+  /** Communication type used by the item. */
   type?: Maybe<DeviceCommunicationType>;
+  /** Type of information (e.g., 0 for Float, 3 for Int, 4 for Text). */
   value_type: Scalars['Int']['output'];
 }
 

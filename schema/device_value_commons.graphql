@@ -45,5 +45,8 @@ interface DeviceValueMessage {
 Marker-interface for device-related data values.
 """
 interface DeviceValue {
+    """
+    Dummy field to allow for empty interfaces.
+    """
     _empty: String
 }

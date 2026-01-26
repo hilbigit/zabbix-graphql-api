@@ -4,78 +4,136 @@
 besides monitoring information.
 """
 interface Device implements Host {
+    """Internal Zabbix ID of the device."""
     hostid: ID!
     """
-    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname
+    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname.
     """
     host: String!
+    """Classification of the device."""
     deviceType: String
+    """List of host groups this device belongs to."""
     hostgroups: [HostGroup!]
+    """Visible name of the device."""
     name: String
+    """Device configuration tags."""
     tags: DeviceConfig
+    """State of the device."""
     state: DeviceState
 }
 
+"""
+Configuration settings for a device.
+"""
 type DeviceConfig {
+    """
+    Configuration for the device widget preview in the cockpit.
+    """
     deviceWidgetPreview: WidgetPreview
 }
 
+"""
+Represents the configuration for a 4-field widget preview.
+"""
 type WidgetPreview {
+    """Top-left field specification."""
     TOP_LEFT: DisplayFieldSpec
+    """Top-right field specification."""
     TOP_RIGHT: DisplayFieldSpec
+    """Bottom-left field specification."""
     BOTTOM_LEFT: DisplayFieldSpec
+    """Bottom-right field specification."""
     BOTTOM_RIGHT: DisplayFieldSpec
 }
 
+"""
+Specification for a display field in a widget.
+"""
 type DisplayFieldSpec {
+    """Key of the data to display."""
     key: String,
+    """Value to display if the data is missing."""
     emptyValue: String
+    """Unit string to append to the value."""
     unit: String,
+    """Font size for the value."""
     value_font_size: String
+    """Optional transformation for the value."""
     g_value_transform: String
+    """Font size for the unit."""
     unit_font_size: String
+    """Optional transformation for the unit."""
     g_unit_transform: String
 }
 
+"""
+Operational data common to most devices.
+"""
 type OperationalDeviceData {
+    """Device temperature."""
     temperature: Float
+    """Device voltage."""
     voltage: Float
+    """Signal strength (e.g., WiFi or GSM)."""
     signalstrength: Float
+    """Current location of the device."""
     location: Location
+    """Timestamp of the operational data."""
     timestamp: DateTime
+    """List of active errors or status messages."""
     error: [ErrorPayload!]
 }
 
+"""
+Payload for a single error or status message.
+"""
 type ErrorPayload {
+    """Error code."""
     code: Int!
+    """Human-readable error message."""
     message: String
+    """Additional contextual information about the error."""
     additionalInfo: JSONObject
 }
 
+"""
+Common interface for device state.
+"""
 interface DeviceState {
+    """Operational data (telemetry)."""
     operational: OperationalDeviceData
 }
 
-# Generic IoT devices with "generic" current state - mapping all "values"
+"""
+Generic implementation of device state using a JSON object for current values.
+"""
 type GenericDeviceState implements DeviceState {
+    """Operational data (telemetry)."""
     operational: OperationalDeviceData
+    """Current business data as a generic JSON object."""
     current: JSONObject
 }
 
 
 """
-Device represents generic IoT / Edge - devices providing their state as generic "state.current" - JSON Object
+Device represents generic IoT / Edge - devices providing their state as generic "state.current" - JSON Object.
 """
 type GenericDevice implements Host & Device  {
+    """Internal Zabbix ID of the device."""
     hostid: ID!
     """
-    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname
+    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname.
     """
     host: String!
+    """Classification of the device."""
     deviceType: String
+    """List of host groups this device belongs to."""
     hostgroups: [HostGroup!]
+    """Visible name of the device."""
     name: String
+    """Device configuration tags."""
     tags: DeviceConfig
+    """State of the generic device."""
     state: GenericDeviceState
 }
 
