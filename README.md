@@ -55,6 +55,7 @@ The API is configured via environment variables. Create a `.env` file or set the
 | `ZABBIX_BASE_URL` | URL to your Zabbix API (e.g., `http://zabbix.example.com/zabbix`) | |
 | `ZABBIX_AUTH_TOKEN` | Zabbix Super Admin API token for administrative tasks | |
 | `ZABBIX_EDGE_DEVICE_BASE_GROUP` | Base host group for devices | `Baustellen-Devices` |
+| `ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX` | Prefix for template groups used as permissions | `Permissions` |
 | `SCHEMA_PATH` | Path to the directory containing `.graphql` schema files | `./schema/` |
 
 ### Starting the API
@@ -155,6 +156,36 @@ The API will:
 1. Load all provided schema files.
 2. For each type listed in `ADDITIONAL_RESOLVERS`, it will automatically create a resolver that maps Zabbix items (e.g., an item with key `state.current.values.temperature`) to the corresponding GraphQL fields.
 
+## User Permissions & `hasPermission`
+
+The Zabbix GraphQL API provides a sophisticated way to manage and check application-level permissions using Zabbix's built-in user group and template group mechanisms.
+
+### Modeling Permissions with Template Groups
+
+Permissions can be modeled as **empty template groups** (groups with no templates or hosts attached) organized in a hierarchical structure. By convention, these groups start with a configurable prefix (default: `Permissions/`).
+
+#### Example Hierarchy:
+*   `Permissions/ConstructionSite`: General access to construction site data.
+*   `Permissions/Automatism`: Access to automation features.
+*   `Permissions/Automatism/Status`: Permission to view automation status.
+
+### Zabbix Preconditions
+
+1.  **Template Groups**: Create template groups for each permission you want to manage (e.g., `Permissions/App1/FeatureA`).
+2.  **User Groups**: In Zabbix, assign these template groups to Zabbix User Groups with specific permission levels (`READ`, `READ_WRITE`, or `DENY`).
+3.  **Authentication**: The GraphQL API will check the permissions of the authenticated user (via token or session cookie) against these Zabbix assignments.
+
+### Using `hasPermission` and `userPermissions`
+
+The API provides two main queries for permission checking:
+
+*   **`userPermissions`**: Returns a list of all permissions assigned to the current user.
+*   **`hasPermissions`**: Checks if the user has a specific set of required permissions (e.g., "Does the user have `READ_WRITE` access to `Automatism/Status`?").
+
+This allows for fine-grained access control in your frontend or external applications, using Zabbix as the central authorization authority.
+
+For a complete example of how to import these permission groups, see the [Permissions Template Groups Import Sample](docs/sample_import_permissions_template_groups_mutation.graphql).
+
 ## Sample Environment File
 
 Below is a complete example of a `.env` file showing all available configuration options:
@@ -190,7 +221,8 @@ The `docs` directory contains several sample GraphQL queries and mutations to he
     *   [Import Distance Tracker Template](docs/sample_import_distance_tracker_template.graphql) (Schema Extension Example)
     *   [Delete Templates](docs/sample_delete_templates_mutation.graphql)
 *   **Template Groups**:
-    *   [Import Template Groups](docs/sample_import_template_groups_mutation.graphql)
+    *   [Import Host Template Groups](docs/sample_import_host_template_groups_mutation.graphql)
+    *   [Import Permissions Template Groups](docs/sample_import_permissions_template_groups_mutation.graphql)
     *   [Delete Template Groups](docs/sample_delete_template_groups_mutation.graphql)
 *   **User Rights**:
     *   [Export User Rights](docs/sample_export_user_rights_query.graphql)

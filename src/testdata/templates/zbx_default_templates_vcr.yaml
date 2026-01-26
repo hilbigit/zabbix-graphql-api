@@ -646,8 +646,6 @@ zabbix_export:
         - name: Permissions/Automatism
         - name: Permissions/Automatism/Status
         - name: Permissions/ConstructionSite
-        - name: Permissions/Library
-        - name: Permissions/Library/Item
         - name: Templates/Roadwork/Controller
         - name: Templates/Roadwork/Device-Capabilities
         - name: Templates/Roadwork/Device-Capabilities/FLASH_ATTACHABLE

@@ -1,0 +1,38 @@
+### Mutation
+Use this mutation to import template groups used for permission management.
+
+```graphql
+mutation ImportTemplateGroups($templateGroups: [CreateTemplateGroup!]!) {
+  importTemplateGroups(templateGroups: $templateGroups) {
+    groupName
+    groupid
+    message
+    error {
+      message
+      code
+      data
+    }
+  }
+}
+```
+
+### Variables
+This sample data contains template groups used to model application-level permissions on the Zabbix side.
+The data is based on the `Permissions/` groups from `src/testdata/templates/zbx_default_templates_vcr.yaml`.
+
+```json
+{
+  "templateGroups": [
+    {
+      "uuid": "43aab460fe444f18886b19948413b7e3",
+      "groupName": "Permissions/ConstructionSite"
+    },
+    {
+      "groupName": "Permissions/Automatism"
+    },
+    {
+      "groupName": "Permissions/Automatism/Status"
+    }
+  ]
+}
+```
