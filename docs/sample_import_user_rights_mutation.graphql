@@ -1,0 +1,50 @@
+### Mutation
+Use this mutation to import user rights (roles and groups).
+
+```graphql
+mutation ImportUserRights($input: UserRightsInput!, $dryRun: Boolean) {
+  importUserRights(input: $input, dryRun: $dryRun) {
+    userRoles {
+      id
+      name
+      message
+    }
+    userGroups {
+      id
+      name
+      message
+    }
+  }
+}
+```
+
+### Variables
+```json
+{
+  "input": {
+    "userRoles": [
+      {
+        "name": "Test Role",
+        "type": 1,
+        "rules": {
+          "api_access": 1,
+          "api": ["host.get", "item.get"]
+        }
+      }
+    ],
+    "userGroups": [
+      {
+        "name": "Test Group",
+        "gui_access": 0,
+        "hostgroup_rights": [
+          {
+            "name": "ConstructionSite/Test",
+            "permission": "READ_WRITE"
+          }
+        ]
+      }
+    ]
+  },
+  "dryRun": false
+}
+```

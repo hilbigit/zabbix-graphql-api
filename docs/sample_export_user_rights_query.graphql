@@ -1,0 +1,28 @@
+### Query
+Use this query to export all user rights (roles and groups).
+
+```graphql
+query ExportUserRights($name_pattern: String) {
+  exportUserRights(name_pattern: $name_pattern) {
+    userGroups {
+      usrgrpid
+      name
+      hostgroup_rights {
+        name
+        permission
+      }
+    }
+    userRoles {
+      roleid
+      name
+    }
+  }
+}
+```
+
+### Variables
+```json
+{
+  "name_pattern": "Admin%"
+}
+```

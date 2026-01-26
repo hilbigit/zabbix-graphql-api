@@ -13,16 +13,21 @@ import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-ap
 
 export class HostImporter {
     public static getHostGroupHierarchyNames(hostGroups: Array<CreateHostGroup>) {
-        let resultSet: Set<CreateHostGroup> = new Set<CreateHostGroup>(hostGroups)
+        let nameToGroup = new Map<string, CreateHostGroup>()
         for (let group of hostGroups || []) {
-            let levelNames = group.groupName.split("/", hostGroups?.length - 1)
+            let levelNames = group.groupName.split("/")
             let leafName = ""
-            for (let level of levelNames) {
-                leafName += (leafName ? "/" + level : level)
-                resultSet.add({groupName: leafName})
+            for (let i = 0; i < levelNames.length; i++) {
+                leafName += (leafName ? "/" + levelNames[i] : levelNames[i])
+                if (!nameToGroup.has(leafName)) {
+                    // Use original group object if it matches the name (to keep UUID), else create new
+                    let original = hostGroups.find(g => g.groupName === leafName)
+                    nameToGroup.set(leafName, original ? original : {groupName: leafName})
+                }
             }
         }
-        return resultSet
+        // Sort alphabetically to process parents before children
+        return Array.from(nameToGroup.values()).sort((a, b) => a.groupName.localeCompare(b.groupName))
     }
 
     public static async importHostGroups(hostGroups: InputMaybe<Array<CreateHostGroup>> | undefined, zabbixAuthToken?: string, cookie?: string) {

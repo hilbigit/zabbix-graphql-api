@@ -1,0 +1,18 @@
+### Query
+# Use this query to list all host groups.
+
+```graphql
+query AllHostGroups($search_name: String) {
+  allHostGroups(search_name: $search_name) {
+    groupid
+    name
+  }
+}
+```
+
+### Variables
+```json
+{
+  "search_name": "Baustellen-Devices/*"
+}
+```

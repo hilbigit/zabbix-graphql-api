@@ -1,0 +1,36 @@
+### Mutation
+Use this mutation to import hosts and assign them to host groups.
+
+```graphql
+mutation ImportHosts($hosts: [CreateHost!]!) {
+  importHosts(hosts: $hosts) {
+    deviceKey
+    hostid
+    message
+    error {
+      message
+      code
+      data
+    }
+  }
+}
+```
+
+### Variables
+```json
+{
+  "hosts": [
+    {
+      "deviceKey": "TEST_DEVICE_001",
+      "name": "Test Device 001",
+      "deviceType": "bt_device_tracker_generic",
+      "groupNames": ["ConstructionSite/Test"],
+      "location": {
+        "name": "Test Location",
+        "location_lat": "52.5200",
+        "location_lon": "13.4050"
+      }
+    }
+  ]
+}
+```

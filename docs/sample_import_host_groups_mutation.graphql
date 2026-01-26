@@ -1,0 +1,28 @@
+### Mutation
+Use this mutation to import host groups.
+
+```graphql
+mutation ImportHostGroups($hostGroups: [CreateHostGroup!]!) {
+  importHostGroups(hostGroups: $hostGroups) {
+    groupName
+    groupid
+    message
+    error {
+      message
+      code
+      data
+    }
+  }
+}
+```
+
+### Variables
+```json
+{
+  "hostGroups": [
+    {
+      "groupName": "ConstructionSite/Test"
+    }
+  ]
+}
+```

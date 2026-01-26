@@ -1,0 +1,21 @@
+### Query
+Use this query to list all devices (hosts with device type and state).
+
+```graphql
+query AllDevices($name_pattern: String, $with_items: Boolean) {
+  allDevices(name_pattern: $name_pattern, with_items: $with_items) {
+    hostid
+    host
+    name
+    deviceType
+  }
+}
+```
+
+### Variables
+```json
+{
+  "name_pattern": "%",
+  "with_items": true
+}
+```

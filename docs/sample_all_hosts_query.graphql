@@ -1,0 +1,25 @@
+### Query
+Use this query to list all hosts, filtered by name pattern and/or device type.
+
+```graphql
+query AllHosts($name_pattern: String, $tag_deviceType: [String]) {
+  allHosts(name_pattern: $name_pattern, tag_deviceType: $tag_deviceType) {
+    hostid
+    host
+    name
+    deviceType
+    hostgroups {
+      groupid
+      name
+    }
+  }
+}
+```
+
+### Variables
+```json
+{
+  "name_pattern": "BT_%",
+  "tag_deviceType": ["bt_device_tracker_generic"]
+}
+```
