@@ -10,7 +10,7 @@ jest.mock("../datasources/zabbix-api.js", () => ({
         post: jest.fn(),
         requestByPath: jest.fn()
     },
-    ZABBIX_EDGE_DEVICE_BASE_GROUP: "Baustellen-Devices"
+    ZABBIX_EDGE_DEVICE_BASE_GROUP: "Roadwork"
 }));
 
 // Mock ZabbixRequestWithPermissions to skip permission checks

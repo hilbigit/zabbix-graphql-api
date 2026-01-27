@@ -13,7 +13,7 @@ jest.mock("../datasources/zabbix-api.js", () => ({
         getLocations: jest.fn(),
         requestByPath: jest.fn()
     },
-    ZABBIX_EDGE_DEVICE_BASE_GROUP: "Baustellen-Devices"
+    ZABBIX_EDGE_DEVICE_BASE_GROUP: "Roadwork"
 }));
 
 describe("Host Integration Tests", () => {

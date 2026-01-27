@@ -13,6 +13,6 @@ query AllHostGroups($search_name: String) {
 ### Variables
 ```json
 {
-  "search_name": "Baustellen-Devices/*"
+  "search_name": "Roadwork/*"
 }
 ```

@@ -10,7 +10,7 @@ import {ParsedArgs, ZabbixErrorResult, ZabbixRequest, ZabbixResult} from "./zabb
 
 export const zabbixRequestAuthToken = process.env.ZABBIX_AUTH_TOKEN_FOR_REQUESTS
 export const zabbixSuperAuthToken = process.env.ZABBIX_AUTH_TOKEN
-export const ZABBIX_EDGE_DEVICE_BASE_GROUP = process.env.ZABBIX_EDGE_DEVICE_BASE_GROUP || process.env.ZABBIX_ROADWORK_BASE_GROUP || "Baustellen-Devices"
+export const ZABBIX_EDGE_DEVICE_BASE_GROUP = process.env.ZABBIX_EDGE_DEVICE_BASE_GROUP || process.env.ZABBIX_ROADWORK_BASE_GROUP || "Roadwork"
 export const FIND_ZABBIX_EDGE_DEVICE_BASE_GROUP_PREFIX = new RegExp(`^(${ZABBIX_EDGE_DEVICE_BASE_GROUP})\/`)
 
 export class ZabbixAPI

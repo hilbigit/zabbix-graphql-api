@@ -55,7 +55,7 @@ The API is configured via environment variables. Create a `.env` file or set the
 | :--- | :--- | :--- |
 | `ZABBIX_BASE_URL` | URL to your Zabbix API (e.g., `http://zabbix.example.com/zabbix`) | |
 | `ZABBIX_AUTH_TOKEN` | Zabbix Super Admin API token for administrative tasks | |
-| `ZABBIX_EDGE_DEVICE_BASE_GROUP` | Base host group for devices | `Baustellen-Devices` |
+| `ZABBIX_EDGE_DEVICE_BASE_GROUP` | Base host group for devices | `Roadwork` |
 | `ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX` | Prefix for template groups used as permissions | `Permissions` |
 | `SCHEMA_PATH` | Path to the directory containing `.graphql` schema files | `./schema/` |
 
@@ -211,7 +211,7 @@ ZABBIX_BASE_URL=http://your-zabbix-instance/zabbix
 ZABBIX_AUTH_TOKEN=your-super-admin-token-here
 
 # General Configuration
-ZABBIX_EDGE_DEVICE_BASE_GROUP=Baustellen-Devices
+ZABBIX_EDGE_DEVICE_BASE_GROUP=Roadwork
 API_VERSION=1.0.0
 SCHEMA_PATH=./schema/
 

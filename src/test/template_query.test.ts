@@ -10,7 +10,7 @@ jest.mock("../datasources/zabbix-api.js", () => ({
         post: jest.fn(),
         baseURL: "http://mock-zabbix"
     },
-    ZABBIX_EDGE_DEVICE_BASE_GROUP: "Baustellen-Devices"
+    ZABBIX_EDGE_DEVICE_BASE_GROUP: "Roadwork"
 }));
 
 describe("Template Resolver", () => {

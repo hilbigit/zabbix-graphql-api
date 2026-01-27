@@ -11,7 +11,7 @@ jest.mock("../datasources/zabbix-api.js", () => ({
         baseURL: "http://mock-zabbix",
         getLocations: jest.fn()
     },
-    ZABBIX_EDGE_DEVICE_BASE_GROUP: "Baustellen-Devices"
+    ZABBIX_EDGE_DEVICE_BASE_GROUP: "Roadwork"
 }));
 
 describe("Host and HostGroup Resolvers", () => {
