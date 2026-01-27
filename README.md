@@ -58,6 +58,8 @@ The API is configured via environment variables. Create a `.env` file or set the
 | `ZABBIX_EDGE_DEVICE_BASE_GROUP` | Base host group for devices | `Roadwork` |
 | `ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX` | Prefix for template groups used as permissions | `Permissions` |
 | `SCHEMA_PATH` | Path to the directory containing `.graphql` schema files | `./schema/` |
+| `HOST_GROUP_FILTER_DEFAULT` | Default search pattern for `allHostGroups` query | |
+| `HOST_TYPE_FILTER_DEFAULT` | Default value for `tag_hostType` filter in `allHosts` and `allDevices` queries | |
 
 ### Starting the API
 
@@ -187,6 +189,54 @@ This allows for fine-grained access control in your frontend or external applica
 
 For a complete example of how to import these permission groups, see the [Permissions Template Groups Import Sample](docs/sample_import_permissions_template_groups_mutation.graphql).
 
+## Host Classification & Filtering
+
+The API leverages Zabbix tags to classify hosts and devices, enabling efficient filtering and multi-tenancy support.
+
+### The `hostType` Tag
+
+The `hostType` tag is used to categorize hosts and templates. This allows the API to provide default filters for specific application domains or device categories.
+
+#### How to set the Host Type in Zabbix:
+
+To classify a host or a template, simply add a tag in the Zabbix UI or via the API:
+*   **Tag Name**: `hostType`
+*   **Tag Value**: A string representing the category (e.g., `Roadwork/Devices`, `SmartCity/Sensors`).
+
+This tag can be defined:
+1.  **Directly on the Host**: Specific to that individual device.
+2.  **On a Template**: All hosts linked to this template will inherit the classification.
+
+### Default Filtering with `HOST_TYPE_FILTER_DEFAULT`
+
+By configuring the `HOST_TYPE_FILTER_DEFAULT` environment variable, you can set a global default for the `allHosts` and `allDevices` queries. 
+
+*   If `HOST_TYPE_FILTER_DEFAULT=Roadwork/Devices` is set, a query like `allHosts { host }` will only return hosts that have the `hostType` tag set to `Roadwork/Devices`.
+*   This default can always be overridden in the GraphQL query by explicitly passing the `tag_hostType` argument.
+
+### Search Filtering with `HOST_GROUP_FILTER_DEFAULT`
+
+The `HOST_GROUP_FILTER_DEFAULT` variable provides a default search pattern for the `allHostGroups` query. This is particularly useful for restricting the visible host group hierarchy to a specific subtree by default.
+
+#### Overriding the Default Filter
+
+The default filter can be overridden by explicitly providing the `search_name` argument in the `allHostGroups` query. When `search_name` is present, the environment variable is ignored.
+
+#### Using Wildcards
+
+The `search_name` parameter supports the `*` wildcard (enabled via the Zabbix API's `searchWildcardsEnabled` feature). This allows you to search for all subgroups within a specific path.
+
+**Example**: To find all subgroups of `Roadwork/Devices/`, use the following query:
+
+```graphql
+query {
+  allHostGroups(search_name: "Roadwork/Devices/*") {
+    groupid
+    name
+  }
+}
+```
+
 ## Sample Application: Virtual Control Room (VCR)
 
 The **Virtual Control Room (VCR)** is a professional cockpit and control center application designed for monitoring and managing large-scale deployments of IoT and Edge devices, such as traffic management systems, roadwork safety equipment, and environmental sensors.
@@ -214,6 +264,8 @@ ZABBIX_AUTH_TOKEN=your-super-admin-token-here
 ZABBIX_EDGE_DEVICE_BASE_GROUP=Roadwork
 API_VERSION=1.0.0
 SCHEMA_PATH=./schema/
+HOST_GROUP_FILTER_DEFAULT=Roadwork/Devices/*
+HOST_TYPE_FILTER_DEFAULT=Roadwork/Devices
 
 # Schema Extensions (No-Code)
 ADDITIONAL_SCHEMAS=./schema/extensions/display_devices.graphql,./schema/extensions/location_tracker_devices.graphql,./schema/extensions/location_tracker_commons.graphql

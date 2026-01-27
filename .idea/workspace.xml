@@ -4,17 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: update base host group name from &quot;Baustellen-Devices&quot; to &quot;Roadwork&quot; in code, tests, and documentation">
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: centralize configuration management using a new `Config` class&#10;&#10;- Replaced all direct `process.env` references with `Config` class constants.&#10;- Added `dotenv` package to manage environment variables.&#10;- Updated affected files, including schema loader, Zabbix API, resolvers, logging system, and integration points.&#10;- Improved maintainability and consistency in environment variable handling.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/resolvers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolvers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/common_utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/common_utils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-api.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-permissions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-permissions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/logging/logger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logging/logger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/host_query.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/host_query.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +115,7 @@
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\schema" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.test">
+  <component name="RunManager" selected="Node.js.index.ts">
     <configuration name="copy-schema" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -353,7 +348,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769525714791</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="chore: centralize configuration management using a new `Config` class&#10;&#10;- Replaced all direct `process.env` references with `Config` class constants.&#10;- Added `dotenv` package to manage environment variables.&#10;- Updated affected files, including schema loader, Zabbix API, resolvers, logging system, and integration points.&#10;- Improved maintainability and consistency in environment variable handling.">
+      <option name="closed" value="true" />
+      <created>1769531308340</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1769531308340</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -393,7 +396,8 @@
     <MESSAGE value="chore: update Docker image path in workflows and README" />
     <MESSAGE value="docs: add Virtual Control Room (VCR) sample application info to README.md&#10;&#10;- Added a new section describing the Virtual Control Room (VCR) as a sample application.&#10;&#10;- Explained how VCR utilizes key API features like hierarchical mapping, dynamic authorization, mass provisioning, and data visualization.&#10;&#10;- Included a link to the technical product information PDF in the docs folder.&#10;&#10;- Added VCR to the Key Features list." />
     <MESSAGE value="chore: update base host group name from &quot;Baustellen-Devices&quot; to &quot;Roadwork&quot; in code, tests, and documentation" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: update base host group name from &quot;Baustellen-Devices&quot; to &quot;Roadwork&quot; in code, tests, and documentation" />
+    <MESSAGE value="chore: centralize configuration management using a new `Config` class&#10;&#10;- Replaced all direct `process.env` references with `Config` class constants.&#10;- Added `dotenv` package to manage environment variables.&#10;- Updated affected files, including schema loader, Zabbix API, resolvers, logging system, and integration points.&#10;- Improved maintainability and consistency in environment variable handling." />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: centralize configuration management using a new `Config` class&#10;&#10;- Replaced all direct `process.env` references with `Config` class constants.&#10;- Added `dotenv` package to manage environment variables.&#10;- Updated affected files, including schema loader, Zabbix API, resolvers, logging system, and integration points.&#10;- Improved maintainability and consistency in environment variable handling." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

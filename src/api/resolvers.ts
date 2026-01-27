@@ -97,7 +97,9 @@ export function createResolvers(): Resolvers {
                 zabbixAuthToken,
                 cookie, dataSources
             }: any) => {
-                args.tag_hostType ??= [ZABBIX_EDGE_DEVICE_BASE_GROUP];
+                if (Config.HOST_TYPE_FILTER_DEFAULT) {
+                    args.tag_hostType ??= [Config.HOST_TYPE_FILTER_DEFAULT];
+                }
                 return await new ZabbixQueryHostsRequestWithItemsAndInventory(zabbixAuthToken, cookie)
                     .executeRequestThrowError(
                         dataSources.zabbixAPI, new ParsedArgs(args)
@@ -107,8 +109,9 @@ export function createResolvers(): Resolvers {
                 zabbixAuthToken,
                 cookie, dataSources
             }: any) => {
-                args.tag_hostType ??= [ZABBIX_EDGE_DEVICE_BASE_GROUP];
-
+                if (Config.HOST_TYPE_FILTER_DEFAULT) {
+                    args.tag_hostType ??= [Config.HOST_TYPE_FILTER_DEFAULT];
+                }
                 return await new ZabbixQueryDevices(zabbixAuthToken, cookie)
                     .executeRequestThrowError(
                         dataSources.zabbixAPI, new ZabbixQueryDevicesArgs(args)
@@ -118,8 +121,8 @@ export function createResolvers(): Resolvers {
                 zabbixAuthToken,
                 cookie
             }: any) => {
-                if (!args.search_name) {
-                    args.search_name = ZABBIX_EDGE_DEVICE_BASE_GROUP + "/*"
+                if (!args.search_name && Config.HOST_GROUP_FILTER_DEFAULT) {
+                    args.search_name = Config.HOST_GROUP_FILTER_DEFAULT
                 }
                 return await new ZabbixQueryHostgroupsRequest(zabbixAuthToken, cookie).executeRequestThrowError(
                     zabbixAPI, new ZabbixQueryHostgroupsParams(args)

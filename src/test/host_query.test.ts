@@ -2,6 +2,7 @@
 import {createResolvers} from "../api/resolvers.js";
 import {zabbixAPI, ZABBIX_EDGE_DEVICE_BASE_GROUP} from "../datasources/zabbix-api.js";
 import {QueryAllHostsArgs, QueryAllDevicesArgs, QueryAllHostGroupsArgs} from "../schema/generated/graphql.js";
+import {Config} from "../common_utils.js";
 
 // Mocking ZabbixAPI
 jest.mock("../datasources/zabbix-api.js", () => ({
@@ -12,6 +13,14 @@ jest.mock("../datasources/zabbix-api.js", () => ({
         getLocations: jest.fn()
     },
     ZABBIX_EDGE_DEVICE_BASE_GROUP: "Roadwork"
+}));
+
+// Mocking Config
+jest.mock("../common_utils.js", () => ({
+    Config: {
+        HOST_TYPE_FILTER_DEFAULT: "Roadwork",
+        HOST_GROUP_FILTER_DEFAULT: "Roadwork/%"
+    }
 }));
 
 describe("Host and HostGroup Resolvers", () => {
@@ -89,6 +98,27 @@ describe("Host and HostGroup Resolvers", () => {
             body: expect.objectContaining({
                 params: expect.objectContaining({
                     search: { name: ["Group 1"] }
+                })
+            })
+        }));
+    });
+
+    test("allHostGroups query - uses default search pattern", async () => {
+        const mockGroups = [{ groupid: "10", name: "Roadwork/Group 1" }];
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce(mockGroups);
+
+        const args: QueryAllHostGroupsArgs = {};
+        const context = { 
+            zabbixAuthToken: "test-token"
+        };
+
+        const result = await resolvers.Query.allHostGroups(null, args, context);
+
+        expect(result).toEqual(mockGroups);
+        expect(zabbixAPI.post).toHaveBeenCalledWith("hostgroup.get", expect.objectContaining({
+            body: expect.objectContaining({
+                params: expect.objectContaining({
+                    search: { name: ["Roadwork/%"] }
                 })
             })
         }));
