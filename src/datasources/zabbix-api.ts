@@ -7,10 +7,11 @@ import {
 } from "@apollo/datasource-rest";
 import {logger} from "../logging/logger.js";
 import {ParsedArgs, ZabbixErrorResult, ZabbixRequest, ZabbixResult} from "./zabbix-request.js";
+import {Config} from "../common_utils.js";
 
-export const zabbixRequestAuthToken = process.env.ZABBIX_AUTH_TOKEN_FOR_REQUESTS
-export const zabbixSuperAuthToken = process.env.ZABBIX_AUTH_TOKEN
-export const ZABBIX_EDGE_DEVICE_BASE_GROUP = process.env.ZABBIX_EDGE_DEVICE_BASE_GROUP || process.env.ZABBIX_ROADWORK_BASE_GROUP || "Roadwork"
+export const zabbixRequestAuthToken = Config.ZABBIX_AUTH_TOKEN_FOR_REQUESTS
+export const zabbixSuperAuthToken = Config.ZABBIX_AUTH_TOKEN
+export const ZABBIX_EDGE_DEVICE_BASE_GROUP = Config.ZABBIX_EDGE_DEVICE_BASE_GROUP || Config.ZABBIX_ROADWORK_BASE_GROUP || "Roadwork"
 export const FIND_ZABBIX_EDGE_DEVICE_BASE_GROUP_PREFIX = new RegExp(`^(${ZABBIX_EDGE_DEVICE_BASE_GROUP})\/`)
 
 export class ZabbixAPI
@@ -103,4 +104,4 @@ export class ZabbixAPI
     }
 }
 
-export const zabbixAPI = new ZabbixAPI(process.env.ZABBIX_BASE_URL || "")
+export const zabbixAPI = new ZabbixAPI(Config.ZABBIX_BASE_URL)

@@ -1,3 +1,5 @@
+import {Config} from "../common_utils.js";
+
 export enum Loglevel {
     ERROR="ERROR", WARN="WARN", INFO="INFO", TRACE="TRACE", DEBUG="DEBUG"
 }
@@ -11,7 +13,7 @@ export class Logger {
     }
 
     readEnvironmentLogLevel() {
-        const levels = process.env.LOG_LEVELS
+        const levels = Config.LOG_LEVELS
         if (levels) {
             const enumLevels = levels.split(",").map(v=> Loglevel[v  as keyof typeof Loglevel])
             this.levels = new Set<Loglevel>(enumLevels)

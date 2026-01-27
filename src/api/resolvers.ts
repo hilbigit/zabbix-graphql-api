@@ -58,6 +58,7 @@ import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-ap
 import {GraphQLInterfaceType, GraphQLList} from "graphql/type/index.js";
 import {isDevice} from "./resolver_helpers.js";
 import {ZabbixPermissionsHelper} from "../datasources/zabbix-permissions.js";
+import {Config} from "../common_utils.js";
 
 
 export function createResolvers(): Resolvers {
@@ -78,7 +79,7 @@ export function createResolvers(): Resolvers {
                 return dataSources.zabbixAPI.getLocations(zabbixAuthToken, new ParsedArgs(args));
             },
             apiVersion: () => {
-                return process.env.API_VERSION ?? "unknown"
+                return Config.API_VERSION ?? "unknown"
             },
             zabbixVersion: async () => {
                 return await new ZabbixRequest<string>("apiinfo.version").executeRequestThrowError(

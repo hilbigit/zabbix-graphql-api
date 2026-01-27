@@ -2,6 +2,7 @@ import {ParsedArgs, ZabbixErrorResult, ZabbixRequest, ZabbixResult} from "./zabb
 import {ZabbixAPI} from "./zabbix-api.js";
 import {InputMaybe, Permission, QueryHasPermissionsArgs, UserPermission} from "../schema/generated/graphql.js";
 import {ApiErrorCode, PermissionNumber} from "../model/model_enum_values.js";
+import {Config} from "../common_utils.js";
 
 
 export class ZabbixRequestWithPermissions<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixRequest<T, A> {
@@ -93,7 +94,7 @@ class ZabbixQueryUserGroupPermissionsRequest extends ZabbixRequest<ZabbixUserGro
 
 export class ZabbixPermissionsHelper {
     private static permissionObjectNameCache: Map<string, string | null> = new Map()
-    public static ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX = process.env.ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX || "Permissions"
+    public static ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX = Config.ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX
 
     public static async getUserPermissions(zabbixAPI: ZabbixAPI, zabbixAuthToken?: string, cookie?: string,
                                            objectNames?: InputMaybe<string[]> | undefined): Promise<UserPermission[]> {

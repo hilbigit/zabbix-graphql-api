@@ -4,8 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="docs: add Virtual Control Room (VCR) sample application info to README.md&#10;&#10;- Added a new section describing the Virtual Control Room (VCR) as a sample application.&#10;&#10;- Explained how VCR utilizes key API features like hierarchical mapping, dynamic authorization, mass provisioning, and data visualization.&#10;&#10;- Included a link to the technical product information PDF in the docs folder.&#10;&#10;- Added VCR to the Key Features list.">
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: update base host group name from &quot;Baustellen-Devices&quot; to &quot;Roadwork&quot; in code, tests, and documentation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/resolvers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolvers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common_utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/common_utils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-permissions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-permissions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logging/logger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logging/logger.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +83,7 @@
     "go.import.settings.migrated": "true",
     "javascript.preferred.runtime.type.id": "node",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/docs",
+    "last_opened_file_path": "//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/src",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -85,6 +94,7 @@
     "npm.compile.executor": "Run",
     "npm.copy-schema.executor": "Run",
     "npm.prod.executor": "Run",
+    "npm.test.executor": "Run",
     "settings.editor.selected.configurable": "settings.javascript.runtime",
     "to.speed.mode.migration.done": "true",
     "ts.external.directory.path": "\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib",
@@ -100,17 +110,17 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\src" />
+      <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\dist" />
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\docs" />
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\src\testdata\templates" />
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\src\test" />
-      <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\.forgejo\workflows" />
-      <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\schema" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.codegen">
+  <component name="RunManager" selected="npm.test">
     <configuration name="copy-schema" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -162,9 +172,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.test" />
         <item itemvalue="npm.prod" />
         <item itemvalue="npm.copy-schema" />
-        <item itemvalue="npm.test" />
         <item itemvalue="npm.prod" />
         <item itemvalue="npm.copy-schema" />
       </list>
@@ -335,7 +345,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769514926656</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="chore: update base host group name from &quot;Baustellen-Devices&quot; to &quot;Roadwork&quot; in code, tests, and documentation">
+      <option name="closed" value="true" />
+      <created>1769525714791</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1769525714791</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -374,7 +392,8 @@
     <MESSAGE value="docs: enhance GraphQL schema documentation&#10;&#10;- Added comprehensive descriptions to all types, interfaces, and fields in 'schema/api_commons.graphql'.&#10;&#10;- Improved documentation for mutations and input/response types in 'schema/mutations.graphql'.&#10;&#10;- Added detailed descriptions for all queries and their arguments in 'schema/queries.graphql'.&#10;&#10;- Enhanced documentation for core Zabbix types and enums in 'schema/zabbix.graphql'.&#10;&#10;- Updated extension schemas under 'schema/extensions/' with proper GraphQL descriptions.&#10;&#10;- Verified schema validity via 'graphql-codegen' and ran all tests to ensure consistency." />
     <MESSAGE value="chore: update Docker image path in workflows and README" />
     <MESSAGE value="docs: add Virtual Control Room (VCR) sample application info to README.md&#10;&#10;- Added a new section describing the Virtual Control Room (VCR) as a sample application.&#10;&#10;- Explained how VCR utilizes key API features like hierarchical mapping, dynamic authorization, mass provisioning, and data visualization.&#10;&#10;- Included a link to the technical product information PDF in the docs folder.&#10;&#10;- Added VCR to the Key Features list." />
-    <option name="LAST_COMMIT_MESSAGE" value="docs: add Virtual Control Room (VCR) sample application info to README.md&#10;&#10;- Added a new section describing the Virtual Control Room (VCR) as a sample application.&#10;&#10;- Explained how VCR utilizes key API features like hierarchical mapping, dynamic authorization, mass provisioning, and data visualization.&#10;&#10;- Included a link to the technical product information PDF in the docs folder.&#10;&#10;- Added VCR to the Key Features list." />
+    <MESSAGE value="chore: update base host group name from &quot;Baustellen-Devices&quot; to &quot;Roadwork&quot; in code, tests, and documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: update base host group name from &quot;Baustellen-Devices&quot; to &quot;Roadwork&quot; in code, tests, and documentation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

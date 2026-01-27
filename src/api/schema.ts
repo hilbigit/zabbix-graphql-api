@@ -8,6 +8,7 @@ import {readFileSync} from "fs";
 import {GraphQLSchema} from "graphql/type";
 import {createResolvers} from "./resolvers.js";
 import {readdirSync} from "node:fs";
+import {Config} from "../common_utils.js";
 
 
 const createZabbixHierarchicalDeviceFieldResolver =
@@ -26,15 +27,15 @@ const createZabbixHierarchicalDeviceTagsResolver =
     }
 export async function schema_loader(): Promise<GraphQLSchema> {
     const resolvers = createResolvers();
-    const schemaPath = process.env.SCHEMA_PATH || './schema/';
+    const schemaPath = Config.SCHEMA_PATH || './schema/';
     console.log(`Loading schema from path: ${schemaPath}, cwd=${process.cwd()}`);
     var schemaFiles = readdirSync(schemaPath).filter(fn => fn.endsWith('.graphql'));
     let typeDefs: string = "";
     for (const schemaFile of schemaFiles) {
         typeDefs += readFileSync(schemaPath + schemaFile, {encoding: 'utf-8'});
     }
-    if (process.env.ADDITIONAL_SCHEMAS) {
-        for (const schema of process.env.ADDITIONAL_SCHEMAS.split(",")){
+    if (Config.ADDITIONAL_SCHEMAS) {
+        for (const schema of Config.ADDITIONAL_SCHEMAS.split(",")){
             typeDefs += readFileSync(schema, {encoding: 'utf-8'});
         }
     }
@@ -54,8 +55,8 @@ export async function schema_loader(): Promise<GraphQLSchema> {
         GenericDevice: createZabbixHierarchicalDeviceFieldResolver("GenericDevice", originalSchema, additionalMappings),
         DeviceConfig: createZabbixHierarchicalDeviceTagsResolver("DeviceConfig", originalSchema),
     }
-    if (process.env.ADDITIONAL_RESOLVERS) {
-        for (const resolver of process.env.ADDITIONAL_RESOLVERS.split(",")){
+    if (Config.ADDITIONAL_RESOLVERS) {
+        for (const resolver of Config.ADDITIONAL_RESOLVERS.split(",")){
             genericResolvers[resolver] = createZabbixHierarchicalDeviceFieldResolver(resolver, originalSchema, additionalMappings)
         }
     }
