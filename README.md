@@ -25,6 +25,7 @@ Compared to the original Zabbix API, this GraphQL API provides several key enhan
 *   **Strongly Typed Schema**: Leverages GraphQL's type system for clear API documentation and client-side code generation.
 *   **Dynamic Schema Extensibility**: Easily extend the API with custom schema snippets and dynamic resolvers for specialized device types without modifying the core code.
 *   **CI/CD Integration**: Includes a ready-to-use Forgejo/Gitea/GitHub Actions workflow for automated building, testing, and deployment.
+*   **Sample Application (VCR)**: Designed to power the **Virtual Control Room**, a professional cockpit for managing thousands of IoT/Edge devices.
 
 ## How to Install and Start
 
@@ -185,6 +186,20 @@ The API provides two main queries for permission checking:
 This allows for fine-grained access control in your frontend or external applications, using Zabbix as the central authorization authority.
 
 For a complete example of how to import these permission groups, see the [Permissions Template Groups Import Sample](docs/sample_import_permissions_template_groups_mutation.graphql).
+
+## Sample Application: Virtual Control Room (VCR)
+
+The **Virtual Control Room (VCR)** is a professional cockpit and control center application designed for monitoring and managing large-scale deployments of IoT and Edge devices, such as traffic management systems, roadwork safety equipment, and environmental sensors.
+
+### How VCR uses the GraphQL API:
+
+*   **Unified Cockpit**: VCR utilizes the API's **hierarchical mapping** to provide a unified view of diverse device types. It maps Zabbix items and tags directly to structured GraphQL objects (e.g., `operational` telemetry and `current` business state).
+*   **Dynamic Authorization**: The `hasPermissions` query is used to implement a **Dynamic UI**. Buttons, controls, and status indicators are shown or enabled only if the user has the required `READ` or `READ_WRITE` permissions for that specific object.
+*   **Mass Provisioning**: VCR leverages the **mass import** capabilities to provision thousands of devices and templates in a single operation, significantly reducing manual configuration effort in Zabbix.
+*   **Data Visualization**: It uses the `exportHostValueHistory` endpoint to power dashboards showing historical trends, such as traffic density, battery levels, or sensor readings over time.
+
+For more detailed information about the VCR product, please refer to the technical presentation:
+[VCR - Technical product information](docs/VCR%20-%20Technical%20product%20information.pdf)
 
 ## Sample Environment File
 
