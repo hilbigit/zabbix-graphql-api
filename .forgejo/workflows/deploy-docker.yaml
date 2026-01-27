@@ -8,7 +8,7 @@ env:
   API_VERSION: "unknown"
   ENV: "develop"
   DEBUG_WORKFLOW: "false"
-  IMAGE_TAG: forgejo.tooling.hilbigit.com/vcr/zabbix-graphql-api
+  IMAGE_TAG: forgejo.tooling.hilbigit.com/zabbix/zabbix-graphql-api
 jobs:
   RunNpmBuildAndTestLocally:
     runs-on:

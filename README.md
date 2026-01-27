@@ -81,7 +81,7 @@ The API will be available at `http://localhost:4000/`.
 You can run the API without building it locally by pulling the latest image from the Hilbig IT Forgejo infrastructure:
 
 ```bash
-docker pull forgejo.tooling.hilbigit.com/vcr/zabbix-graphql-api:latest
+docker pull forgejo.tooling.hilbigit.com/zabbix/zabbix-graphql-api:latest
 ```
 
 Start the container by passing the required environment variables:
@@ -92,7 +92,7 @@ docker run -d \
   -p 4000:4000 \
   -e ZABBIX_BASE_URL=http://your-zabbix-instance/zabbix \
   -e ZABBIX_AUTH_TOKEN=your-super-admin-token \
-  forgejo.tooling.hilbigit.com/vcr/zabbix-graphql-api:latest
+  forgejo.tooling.hilbigit.com/zabbix/zabbix-graphql-api:latest
 ```
 
 ### Building Locally
