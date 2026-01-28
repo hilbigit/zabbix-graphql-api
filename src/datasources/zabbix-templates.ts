@@ -1,8 +1,4 @@
-
-import {isZabbixErrorResult, ParsedArgs, ZabbixRequest} from "./zabbix-request.js";
-import {ZabbixAPI} from "./zabbix-api.js";
-import {logger} from "../logging/logger.js";
-
+import {ZabbixRequest} from "./zabbix-request.js";
 
 
 export interface ZabbixQueryTemplateResponse {

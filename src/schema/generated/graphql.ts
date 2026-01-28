@@ -1,8 +1,6 @@
-import { DeviceCommunicationType } from '../../model/model_enum_values.js';
-import { StorageItemType } from '../../model/model_enum_values.js';
-import { DeviceStatus } from '../../model/model_enum_values.js';
-import { Permission } from '../../model/model_enum_values.js';
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import {DeviceCommunicationType, DeviceStatus, Permission, StorageItemType} from '../../model/model_enum_values.js';
+import {GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig} from 'graphql';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };

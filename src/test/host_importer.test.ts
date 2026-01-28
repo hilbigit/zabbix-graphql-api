@@ -1,7 +1,5 @@
-
 import {HostImporter} from "../execution/host_importer.js";
-import {zabbixAPI, ZABBIX_EDGE_DEVICE_BASE_GROUP} from "../datasources/zabbix-api.js";
-import {ZabbixRequestWithPermissions} from "../datasources/zabbix-permissions.js";
+import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api.js";
 
 // Mocking ZabbixAPI
 jest.mock("../datasources/zabbix-api.js", () => ({

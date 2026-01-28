@@ -9,7 +9,6 @@ import {
     ZabbixResult
 } from "./zabbix-request.js";
 import {ZabbixHistoryGetParams, ZabbixQueryHistoryRequest} from "./zabbix-history.js";
-import {isArray} from "node:util";
 
 
 export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixRequest<T, A> {

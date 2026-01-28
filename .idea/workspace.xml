@@ -4,12 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: centralize configuration management using a new `Config` class&#10;&#10;- Replaced all direct `process.env` references with `Config` class constants.&#10;- Added `dotenv` package to manage environment variables.&#10;- Updated affected files, including schema loader, Zabbix API, resolvers, logging system, and integration points.&#10;- Improved maintainability and consistency in environment variable handling.">
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: add tests for schema and API config mocking&#10;&#10;- Added unit tests for schema loader, mocking Config variables and resolvers.&#10;- Added unit tests for Zabbix API configuration, verifying constants derived from Config.&#10;- Mocked relevant modules and filesystem behaviors to enable isolated testing.&#10;- Optimized imports on all files and include this within a new .junie/guidelines.md file">
+      <change afterPath="$PROJECT_DIR$/.junie/guidelines.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/logger_config.test.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/schema_config.test.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/zabbix_api_config.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/resolvers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolvers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/common_utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/common_utils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-hosts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-hosts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-templates.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-templates.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-usergroups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-usergroups.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/execution/host_exporter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/execution/host_exporter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/execution/template_deleter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/execution/template_deleter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/execution/template_importer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/execution/template_importer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schema/generated/graphql.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schema/generated/graphql.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/host_importer.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/host_importer.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/host_integration.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/host_integration.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/host_query.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/host_query.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/misc_resolvers.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/misc_resolvers.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/template_deleter.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/template_deleter.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/template_importer.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/template_importer.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/template_integration.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/template_integration.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/template_query.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/template_query.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/user_rights.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/user_rights.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/user_rights_integration.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/user_rights_integration.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,12 +54,12 @@
   <component name="GitRewordedCommitMessages">
     <option name="commitMessagesMapping">
       <RewordedCommitMessageMapping>
-        <option name="originalMessage" value="docs: add README.md and LICENSE file&#10;&#10;- Created README.md with project purpose, features, installation guide, and usage samples.&#10;&#10;- Added LICENSE file with GNU General Public License v2.0 to match Zabbix license.&#10;&#10;(cherry picked from commit 825cb4d918eabfc7ce2319c5839b7f6125a3e1d6)" />
-        <option name="rewordedMessage" value="docs: add README.md and LICENSE file&#10;&#10;- Created README.md with project purpose, features, installation guide, and usage samples.&#10;&#10;- Added LICENSE file with GNU Affero General Public License v3.0 to match Zabbix license.&#10;&#10;- Added license field to package.json." />
+        <option name="originalMessage" value="docs: explain how to override HOST_GROUP_FILTER_DEFAULT and use wildcards&#10;&#10;- Added documentation on overriding 'HOST_GROUP_FILTER_DEFAULT' by explicitly setting the 'search_name' argument in the 'allHostGroups' query.&#10;&#10;- Explained the usage of the '*' wildcard in 'search_name' with a concrete example for subgroup matching." />
+        <option name="rewordedMessage" value="chore: add default filters for host and host group queries&#10;&#10;- Introduced `HOST_TYPE_FILTER_DEFAULT` and `HOST_GROUP_FILTER_DEFAULT` constants in the `Config` class.&#10;- Updated resolvers to use these defaults when `tag_hostType` or `search_name` arguments are not provided.&#10;- Added corresponding tests to verify default behavior in host and host group queries.&#10;- Added documentation on overriding 'HOST_GROUP_FILTER_DEFAULT' by explicitly setting the 'search_name' argument in the 'allHostGroups' query.&#10;- Explained the usage of the '*' wildcard in 'search_name' with a concrete example for subgroup matching." />
       </RewordedCommitMessageMapping>
     </option>
     <option name="currentCommit" value="1" />
-    <option name="onto" value="fdfd5f1e0eab0ff10a5acde7c4574b794dcd2292" />
+    <option name="onto" value="2a8ff989f34d19353d1617393f4dec249971ef74" />
   </component>
   <component name="McpProjectServerCommands">
     <commands />
@@ -58,44 +76,44 @@
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "NIXITCH_NIXPKGS_CONFIG": "",
-    "NIXITCH_NIX_CONF_DIR": "",
-    "NIXITCH_NIX_OTHER_STORES": "",
-    "NIXITCH_NIX_PATH": "",
-    "NIXITCH_NIX_PROFILES": "",
-    "NIXITCH_NIX_REMOTE": "",
-    "NIXITCH_NIX_USER_PROFILE_DIR": "",
-    "Node.js.index.ts.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "go.import.settings.migrated": "true",
-    "javascript.preferred.runtime.type.id": "node",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/src",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node",
-    "nodejs_package_manager_path": "npm",
-    "npm.codegen.executor": "Run",
-    "npm.compile.executor": "Run",
-    "npm.copy-schema.executor": "Run",
-    "npm.prod.executor": "Run",
-    "npm.test.executor": "Run",
-    "settings.editor.selected.configurable": "settings.javascript.runtime",
-    "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;NIXITCH_NIXPKGS_CONFIG&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_CONF_DIR&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_OTHER_STORES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PATH&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PROFILES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_REMOTE&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_USER_PROFILE_DIR&quot;: &quot;&quot;,
+    &quot;Node.js.index.ts.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/src&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.codegen.executor&quot;: &quot;Run&quot;,
+    &quot;npm.compile.executor&quot;: &quot;Run&quot;,
+    &quot;npm.copy-schema.executor&quot;: &quot;Run&quot;,
+    &quot;npm.prod.executor&quot;: &quot;Run&quot;,
+    &quot;npm.test.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.runtime&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecapSpentCounter">
     <option name="endsOfQuotaMs" value="1768327208764" />
     <option name="spentUsd" value="0.04010335" />
@@ -115,7 +133,7 @@
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\schema" />
     </key>
   </component>
-  <component name="RunManager" selected="Node.js.index.ts">
+  <component name="RunManager" selected="npm.test">
     <configuration name="copy-schema" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -356,7 +374,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769531308340</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="chore: add default filters for host and host group queries&#10;&#10;- Introduced `HOST_TYPE_FILTER_DEFAULT` and `HOST_GROUP_FILTER_DEFAULT` constants in the `Config` class.&#10;- Updated resolvers to use these defaults when `tag_hostType` or `search_name` arguments are not provided.&#10;- Added corresponding tests to verify default behavior in host and host group queries.">
+      <option name="closed" value="true" />
+      <created>1769535965694</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1769535965695</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -374,8 +400,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor!: Cleanup zabbix api access and remove unused classes; Restructure grapqhl-schema to better align with clean code and project structure principles;Rename &quot;devices&quot; to &quot;hosts&quot; in &quot;exportHistory&quot; - operation. Prepare extraction of device specific types and alignment with integration layer" />
-    <MESSAGE value="refactor!: Rename &quot;devices&quot; to &quot;hosts&quot; in &quot;exportHistory&quot; - operation. Cleanup zabbix api access and remove unused classes&#10; Restructure grapqhl-schema to better align with clean code and project structure principles" />
     <MESSAGE value="refactor!: Update Node.js version to 24.12.0, enhance GraphQL schema structure, and improve dynamic schema loading logic" />
     <MESSAGE value="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment" />
     <MESSAGE value="chore: Add missing &quot;.js&quot; extensions to imports and improve Node.js compatibility for dynamic schema loading" />
@@ -397,7 +421,12 @@
     <MESSAGE value="docs: add Virtual Control Room (VCR) sample application info to README.md&#10;&#10;- Added a new section describing the Virtual Control Room (VCR) as a sample application.&#10;&#10;- Explained how VCR utilizes key API features like hierarchical mapping, dynamic authorization, mass provisioning, and data visualization.&#10;&#10;- Included a link to the technical product information PDF in the docs folder.&#10;&#10;- Added VCR to the Key Features list." />
     <MESSAGE value="chore: update base host group name from &quot;Baustellen-Devices&quot; to &quot;Roadwork&quot; in code, tests, and documentation" />
     <MESSAGE value="chore: centralize configuration management using a new `Config` class&#10;&#10;- Replaced all direct `process.env` references with `Config` class constants.&#10;- Added `dotenv` package to manage environment variables.&#10;- Updated affected files, including schema loader, Zabbix API, resolvers, logging system, and integration points.&#10;- Improved maintainability and consistency in environment variable handling." />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: centralize configuration management using a new `Config` class&#10;&#10;- Replaced all direct `process.env` references with `Config` class constants.&#10;- Added `dotenv` package to manage environment variables.&#10;- Updated affected files, including schema loader, Zabbix API, resolvers, logging system, and integration points.&#10;- Improved maintainability and consistency in environment variable handling." />
+    <MESSAGE value="chore: add default filters for host and host group queries&#10;&#10;- Introduced `HOST_TYPE_FILTER_DEFAULT` and `HOST_GROUP_FILTER_DEFAULT` constants in the `Config` class.&#10;- Updated resolvers to use these defaults when `tag_hostType` or `search_name` arguments are not provided.&#10;- Added corresponding tests to verify default behavior in host and host group queries." />
+    <MESSAGE value="chore: add default filters for host and host group queries&#10;&#10;- Introduced `HOST_TYPE_FILTER_DEFAULT` and `HOST_GROUP_FILTER_DEFAULT` constants in the `Config` class.&#10;- Updated resolvers to use these defaults when `tag_hostType` or `search_name` arguments are not provided.&#10;- Added corresponding tests to verify default behavior in host and host group queries.&#10;- Added documentation on overriding 'HOST_GROUP_FILTER_DEFAULT' by explicitly setting the 'search_name' argument in the 'allHostGroups' query.&#10;- Explained the usage of the '*' wildcard in 'search_name' with a concrete example for subgroup matching." />
+    <MESSAGE value="chore: add tests for schema and API config mocking&#10;&#10;- Added unit tests for schema loader, mocking Config variables and resolvers.&#10;- Added unit tests for Zabbix API configuration, verifying constants derived from Config.&#10;- Mocked relevant modules and filesystem behaviors to enable isolated testing.&#10;- Optimized imports on all files" />
+    <MESSAGE value="chore: add tests for schema and API config mocking&#10;&#10;- Added unit tests for schema loader, mocking Config variables and resolvers.&#10;- Added unit tests for Zabbix API configuration, verifying constants derived from Config.&#10;- Mocked relevant modules and filesystem behaviors to enable isolated testing.&#10;- Optimized imports on all files and include this within a new .junie/guidelines.md file" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: add tests for schema and API config mocking&#10;&#10;- Added unit tests for schema loader, mocking Config variables and resolvers.&#10;- Added unit tests for Zabbix API configuration, verifying constants derived from Config.&#10;- Mocked relevant modules and filesystem behaviors to enable isolated testing.&#10;- Optimized imports on all files and include this within a new .junie/guidelines.md file" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

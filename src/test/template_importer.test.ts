@@ -1,15 +1,5 @@
-
 import {TemplateImporter} from "../execution/template_importer.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
-import {
-    ZabbixCreateItemRequest,
-    ZabbixCreateTemplateGroupRequest,
-    ZabbixCreateTemplateRequest,
-    ZabbixQueryItemRequest,
-    ZabbixQueryTemplateGroupRequest,
-    ZabbixQueryTemplatesRequest
-} from "../datasources/zabbix-templates.js";
-import {ZabbixErrorResult} from "../datasources/zabbix-request.js";
 
 // Mocking ZabbixAPI.executeRequest
 jest.mock("../datasources/zabbix-api.js", () => ({

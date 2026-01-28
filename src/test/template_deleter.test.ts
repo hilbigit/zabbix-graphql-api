@@ -1,4 +1,3 @@
-
 import {TemplateDeleter} from "../execution/template_deleter.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
 

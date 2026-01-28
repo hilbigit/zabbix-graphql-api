@@ -1,4 +1,3 @@
-
 import {
     CreateTemplate,
     CreateTemplateGroup,
@@ -11,7 +10,6 @@ import {
     ZabbixCreateItemRequest,
     ZabbixCreateTemplateGroupRequest,
     ZabbixCreateTemplateRequest,
-    ZabbixQueryItemRequest,
     ZabbixQueryTemplateGroupRequest,
     ZabbixQueryTemplatesRequest
 } from "../datasources/zabbix-templates.js";

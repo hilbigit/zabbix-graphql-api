@@ -1,8 +1,6 @@
-
 import {createResolvers} from "../api/resolvers.js";
-import {zabbixAPI, ZABBIX_EDGE_DEVICE_BASE_GROUP} from "../datasources/zabbix-api.js";
-import {QueryAllHostsArgs, QueryAllDevicesArgs, QueryAllHostGroupsArgs} from "../schema/generated/graphql.js";
-import {Config} from "../common_utils.js";
+import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api.js";
+import {QueryAllDevicesArgs, QueryAllHostGroupsArgs, QueryAllHostsArgs} from "../schema/generated/graphql.js";
 
 // Mocking ZabbixAPI
 jest.mock("../datasources/zabbix-api.js", () => ({

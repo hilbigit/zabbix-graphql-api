@@ -1,8 +1,8 @@
-import { ApolloServer } from '@apollo/server';
-import { schema_loader } from '../api/schema.js';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { zabbixAPI } from '../datasources/zabbix-api.js';
+import {ApolloServer} from '@apollo/server';
+import {schema_loader} from '../api/schema.js';
+import {readFileSync} from 'fs';
+import {join} from 'path';
+import {zabbixAPI} from '../datasources/zabbix-api.js';
 
 // Mocking ZabbixAPI.post
 jest.mock("../datasources/zabbix-api.js", () => ({

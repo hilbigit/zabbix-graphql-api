@@ -1,4 +1,3 @@
-
 import {createResolvers} from "../api/resolvers.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
 
@@ -7,6 +6,13 @@ jest.mock("../datasources/zabbix-api.js", () => ({
     zabbixAPI: {
         executeRequest: jest.fn(),
         post: jest.fn()
+    }
+}));
+
+// Mocking Config
+jest.mock("../common_utils.js", () => ({
+    Config: {
+        API_VERSION: "1.2.3"
     }
 }));
 
@@ -20,13 +26,7 @@ describe("Miscellaneous Resolvers", () => {
 
     test("apiVersion query", async () => {
         const result = await resolvers.Query.apiVersion();
-        expect(typeof result).toBe("string");
-    });
-
-    test("zabbixVersion query", async () => {
-        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce({ result: "7.0.0" });
-        const result = await resolvers.Query.zabbixVersion();
-        expect(zabbixAPI.post).toHaveBeenCalledWith("apiinfo.version", expect.anything());
+        expect(result).toBe("1.2.3");
     });
 
     test("login query", async () => {

@@ -1,4 +1,3 @@
-
 import {createResolvers} from "../api/resolvers.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
 import {QueryTemplatesArgs} from "../schema/generated/graphql.js";

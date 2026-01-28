@@ -1,4 +1,3 @@
-
 import {DeleteResponse} from "../schema/generated/graphql.js";
 import {
     ZabbixDeleteTemplateGroupsRequest,

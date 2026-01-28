@@ -10,7 +10,7 @@ import {
 } from "./zabbix-request.js";
 import {
     ApiError,
-    ImportUserRightResult, Permission,
+    ImportUserRightResult,
     UserGroup,
     UserGroupInput,
     ZabbixGroupRight,

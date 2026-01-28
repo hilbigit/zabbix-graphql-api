@@ -1,4 +1,3 @@
-
 import {createResolvers} from "../api/resolvers.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
 
@@ -8,6 +7,13 @@ jest.mock("../datasources/zabbix-api.js", () => ({
         executeRequest: jest.fn(),
         post: jest.fn(),
         baseURL: "http://mock-zabbix"
+    }
+}));
+
+// Mocking Config
+jest.mock("../common_utils.js", () => ({
+    Config: {
+        ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX: "CustomPerms"
     }
 }));
 
@@ -53,7 +59,7 @@ describe("User Rights and Permissions Resolvers", () => {
                 }
             ]);
             if (path === "templategroup.get.permissions") return Promise.resolve([
-                { groupid: "1001", name: "Permissions/Hostgroup/1001" }
+                { groupid: "1001", name: "CustomPerms/Hostgroup/1001" }
             ]);
             return Promise.resolve([]);
         });
@@ -79,7 +85,7 @@ describe("User Rights and Permissions Resolvers", () => {
                 }
             ]);
             if (path === "templategroup.get.permissions") return Promise.resolve([
-                { groupid: "1002", name: "Permissions/Hostgroup/1002" }
+                { groupid: "1002", name: "CustomPerms/Hostgroup/1002" }
             ]);
             return Promise.resolve([]);
         });
