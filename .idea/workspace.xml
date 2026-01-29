@@ -4,9 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: add tests for schema and API config mocking&#10;&#10;- Added unit tests for schema loader, mocking Config variables and resolvers.&#10;- Added unit tests for Zabbix API configuration, verifying constants derived from Config.&#10;- Mocked relevant modules and filesystem behaviors to enable isolated testing.&#10;- Optimized imports on all files and include this within a new .junie/guidelines.md file">
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: update `.idea/workspace.xml` and project guidelines  &#10;&#10;- Refined IntelliJ IDEA settings in `.idea/workspace.xml`, including updates to `ProblemsViewState` and `PropertiesComponent` for project consistency.  &#10;- Renamed and expanded `.junie/guidelines.md` to reflect updated best practices, project structure, and development workflows.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.junie/guidelines.md" beforeDir="false" afterPath="$PROJECT_DIR$/.junie/guidelines.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_all_devices_query.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_all_host_groups_query.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_all_hosts_query.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_all_template_groups_query.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_delete_template_groups_mutation.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_delete_templates_mutation.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_export_user_rights_query.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_import_distance_tracker_template.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_import_host_groups_mutation.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_import_host_template_groups_mutation.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_import_hosts_mutation.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_import_permissions_template_groups_mutation.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_import_templates_mutation.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_import_user_rights_mutation.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/sample_templates_query.graphql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/resolvers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolvers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-hostgroups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-hostgroups.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/host_integration.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/host_integration.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/template_integration.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/template_integration.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/user_rights_integration.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/user_rights_integration.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +38,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="70" />
+    <option name="cachedIndexableFilesCount" value="106" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -29,6 +50,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
     <option name="SWAP_SIDES_IN_COMPARE_BRANCHES" value="true" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitRewordedCommitMessages">
     <option name="commitMessagesMapping">
@@ -90,8 +112,8 @@
     "npm.copy-schema.executor": "Run",
     "npm.prod.executor": "Run",
     "npm.test.executor": "Run",
-    "settings.editor.selected.configurable": "ml.llm.LLMConfigurable",
-    "settings.editor.splitter.proportion": "0.3839406",
+    "settings.editor.selected.configurable": "junie.mcp",
+    "settings.editor.splitter.proportion": "0.28812414",
     "to.speed.mode.migration.done": "true",
     "ts.external.directory.path": "\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
@@ -116,7 +138,7 @@
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\schema" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.test">
+  <component name="RunManager" selected="Node.js.index.ts">
     <configuration name="copy-schema" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -179,7 +201,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.29346.242" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.30387.83" />
       </set>
     </attachedChunks>
   </component>
@@ -196,6 +218,9 @@
       <workItem from="1768913192173" duration="14627000" />
       <workItem from="1769095609607" duration="1390000" />
       <workItem from="1769256682556" duration="8928000" />
+      <workItem from="1769699975260" duration="75000" />
+      <workItem from="1769700092648" duration="5212000" />
+      <workItem from="1769724930397" duration="3476000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
       <option name="closed" value="true" />
@@ -373,7 +398,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769582068426</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="chore: update `.idea/workspace.xml` and project guidelines  &#10;&#10;- Refined IntelliJ IDEA settings in `.idea/workspace.xml`, including updates to `ProblemsViewState` and `PropertiesComponent` for project consistency.  &#10;- Renamed and expanded `.junie/guidelines.md` to reflect updated best practices, project structure, and development workflows.">
+      <option name="closed" value="true" />
+      <created>1769597550348</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1769597550348</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -384,14 +417,25 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="public/main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor!: Update Node.js version to 24.12.0, enhance GraphQL schema structure, and improve dynamic schema loading logic" />
     <MESSAGE value="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment" />
     <MESSAGE value="chore: Add missing &quot;.js&quot; extensions to imports and improve Node.js compatibility for dynamic schema loading" />
     <MESSAGE value="chore: Update IntelliJ workspace and fix Docker image tag in workflow" />
@@ -416,7 +460,8 @@
     <MESSAGE value="chore: add default filters for host and host group queries&#10;&#10;- Introduced `HOST_TYPE_FILTER_DEFAULT` and `HOST_GROUP_FILTER_DEFAULT` constants in the `Config` class.&#10;- Updated resolvers to use these defaults when `tag_hostType` or `search_name` arguments are not provided.&#10;- Added corresponding tests to verify default behavior in host and host group queries.&#10;- Added documentation on overriding 'HOST_GROUP_FILTER_DEFAULT' by explicitly setting the 'search_name' argument in the 'allHostGroups' query.&#10;- Explained the usage of the '*' wildcard in 'search_name' with a concrete example for subgroup matching." />
     <MESSAGE value="chore: add tests for schema and API config mocking&#10;&#10;- Added unit tests for schema loader, mocking Config variables and resolvers.&#10;- Added unit tests for Zabbix API configuration, verifying constants derived from Config.&#10;- Mocked relevant modules and filesystem behaviors to enable isolated testing.&#10;- Optimized imports on all files" />
     <MESSAGE value="chore: add tests for schema and API config mocking&#10;&#10;- Added unit tests for schema loader, mocking Config variables and resolvers.&#10;- Added unit tests for Zabbix API configuration, verifying constants derived from Config.&#10;- Mocked relevant modules and filesystem behaviors to enable isolated testing.&#10;- Optimized imports on all files and include this within a new .junie/guidelines.md file" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: add tests for schema and API config mocking&#10;&#10;- Added unit tests for schema loader, mocking Config variables and resolvers.&#10;- Added unit tests for Zabbix API configuration, verifying constants derived from Config.&#10;- Mocked relevant modules and filesystem behaviors to enable isolated testing.&#10;- Optimized imports on all files and include this within a new .junie/guidelines.md file" />
+    <MESSAGE value="chore: update `.idea/workspace.xml` and project guidelines  &#10;&#10;- Refined IntelliJ IDEA settings in `.idea/workspace.xml`, including updates to `ProblemsViewState` and `PropertiesComponent` for project consistency.  &#10;- Renamed and expanded `.junie/guidelines.md` to reflect updated best practices, project structure, and development workflows." />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: update `.idea/workspace.xml` and project guidelines  &#10;&#10;- Refined IntelliJ IDEA settings in `.idea/workspace.xml`, including updates to `ProblemsViewState` and `PropertiesComponent` for project consistency.  &#10;- Renamed and expanded `.junie/guidelines.md` to reflect updated best practices, project structure, and development workflows." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

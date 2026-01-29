@@ -26,7 +26,7 @@ describe("User Rights Integration Tests", () => {
     });
 
     test("Import user rights using sample", async () => {
-        const sampleFile = readFileSync(join(process.cwd(), 'docs', 'sample_import_user_rights_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        const sampleFile = readFileSync(join(process.cwd(), 'docs', 'queries', 'sample_import_user_rights_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         const mutationMatch = sampleFile.match(/```graphql\n([\s\S]*?)\n```/);
         const variablesMatch = sampleFile.match(/```json\n([\s\S]*?)\n```/);
         

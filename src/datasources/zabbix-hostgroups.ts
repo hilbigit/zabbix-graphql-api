@@ -16,7 +16,7 @@ export interface CreateHostGroupResult {
 const hostGroupReadWritePermissions = {
     permissions: [
         {
-            objectName: "Hostgroup/ConstructionSite",
+            objectName: "Hostgroup",
             permission: Permission.ReadWrite
         }]
 }

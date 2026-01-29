@@ -27,7 +27,7 @@ describe("Host Integration Tests", () => {
     });
 
     test("Query allHosts using sample", async () => {
-        const sampleFile = readFileSync(join(process.cwd(), 'docs', 'sample_all_hosts_query.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        const sampleFile = readFileSync(join(process.cwd(), 'docs', 'queries', 'sample_all_hosts_query.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         const mutationMatch = sampleFile.match(/```graphql\n([\s\S]*?)\n```/);
         const variablesMatch = sampleFile.match(/```json\n([\s\S]*?)\n```/);
         
@@ -51,7 +51,7 @@ describe("Host Integration Tests", () => {
     });
 
     test("Import hosts using sample", async () => {
-        const sampleFile = readFileSync(join(process.cwd(), 'docs', 'sample_import_hosts_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        const sampleFile = readFileSync(join(process.cwd(), 'docs', 'queries', 'sample_import_hosts_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         const mutationMatch = sampleFile.match(/```graphql\n([\s\S]*?)\n```/);
         const variablesMatch = sampleFile.match(/```json\n([\s\S]*?)\n```/);
         

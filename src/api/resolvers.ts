@@ -4,14 +4,15 @@ import {
     DeviceStatus,
     Host,
     MutationCreateHostArgs,
+    MutationDeleteTemplateGroupsArgs,
+    MutationDeleteTemplatesArgs,
     MutationImportHostGroupsArgs,
     MutationImportHostsArgs,
     MutationImportTemplateGroupsArgs,
     MutationImportTemplatesArgs,
-    MutationDeleteTemplatesArgs,
-    MutationDeleteTemplateGroupsArgs,
     MutationImportUserRightsArgs,
-    Permission, QueryAllDevicesArgs,
+    Permission,
+    QueryAllDevicesArgs,
     QueryAllHostGroupsArgs,
     QueryAllHostsArgs,
     QueryExportHostValueHistoryArgs,
@@ -31,7 +32,8 @@ import {logger} from "../logging/logger.js";
 import {ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
 import {
     ZabbixCreateHostRequest,
-    ZabbixQueryDevices, ZabbixQueryDevicesArgs,
+    ZabbixQueryDevices,
+    ZabbixQueryDevicesArgs,
     ZabbixQueryHostsRequestWithItemsAndInventory,
 } from "../datasources/zabbix-hosts.js";
 import {ZabbixQueryHostgroupsParams, ZabbixQueryHostgroupsRequest} from "../datasources/zabbix-hostgroups.js";
@@ -46,15 +48,8 @@ import {
     ZabbixImportUserRolesRequest,
     ZabbixQueryUserRolesRequest
 } from "../datasources/zabbix-userroles.js";
-import {
-    ZabbixCreateItemRequest,
-    ZabbixCreateTemplateGroupRequest,
-    ZabbixCreateTemplateRequest,
-    ZabbixQueryItemRequest,
-    ZabbixQueryTemplateGroupRequest,
-    ZabbixQueryTemplatesRequest
-} from "../datasources/zabbix-templates.js";
-import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api.js";
+import {ZabbixQueryTemplateGroupRequest, ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
+import {zabbixAPI} from "../datasources/zabbix-api.js";
 import {GraphQLInterfaceType, GraphQLList} from "graphql/type/index.js";
 import {isDevice} from "./resolver_helpers.js";
 import {ZabbixPermissionsHelper} from "../datasources/zabbix-permissions.js";

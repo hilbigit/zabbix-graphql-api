@@ -24,7 +24,7 @@ describe("Template Integration Tests", () => {
     });
 
     test("Import templates using sample query and variables", async () => {
-        const sampleFile = readFileSync(join(process.cwd(), 'docs', 'sample_import_templates_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        const sampleFile = readFileSync(join(process.cwd(), 'docs', 'queries', 'sample_import_templates_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         
         // Extract mutation and variables from the doc file
         const mutationMatch = sampleFile.match(/```graphql\n([\s\S]*?)\n```/);
@@ -65,7 +65,7 @@ describe("Template Integration Tests", () => {
 
     test("Import and Export templates comparison", async () => {
         // 1. Import
-        const importSample = readFileSync(join(process.cwd(), 'docs', 'sample_import_templates_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        const importSample = readFileSync(join(process.cwd(), 'docs', 'queries', 'sample_import_templates_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         const importMutation = importSample.match(/```graphql\n([\s\S]*?)\n```/)![1];
         const importVariables = JSON.parse(importSample.match(/```json\n([\s\S]*?)\n```/)![1]);
 
@@ -84,7 +84,7 @@ describe("Template Integration Tests", () => {
         });
 
         // 2. Export (Query)
-        const querySample = readFileSync(join(process.cwd(), 'docs', 'sample_templates_query.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        const querySample = readFileSync(join(process.cwd(), 'docs', 'queries', 'sample_templates_query.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         const query = querySample.match(/```graphql\n([\s\S]*?)\n```/)![1];
         const queryVariables = JSON.parse(querySample.match(/```json\n([\s\S]*?)\n```/)![1]);
 
@@ -137,7 +137,7 @@ describe("Template Integration Tests", () => {
 
     test("Import and Export template groups comparison", async () => {
         // 1. Import (Host Template Groups)
-        const importSample = readFileSync(join(process.cwd(), 'docs', 'sample_import_host_template_groups_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        const importSample = readFileSync(join(process.cwd(), 'docs', 'queries', 'sample_import_host_template_groups_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         const importMutation = importSample.match(/```graphql\n([\s\S]*?)\n```/)![1];
         const importVariables = JSON.parse(importSample.match(/```json\n([\s\S]*?)\n```/)![1]);
 
@@ -164,7 +164,7 @@ describe("Template Integration Tests", () => {
         expect(importResult.data.importTemplateGroups).toHaveLength(importVariables.templateGroups.length);
 
         // 2. Import (Permissions Template Groups)
-        const permImportSample = readFileSync(join(process.cwd(), 'docs', 'sample_import_permissions_template_groups_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        const permImportSample = readFileSync(join(process.cwd(), 'docs', 'queries', 'sample_import_permissions_template_groups_mutation.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         const permImportMutation = permImportSample.match(/```graphql\n([\s\S]*?)\n```/)![1];
         const permImportVariables = JSON.parse(permImportSample.match(/```json\n([\s\S]*?)\n```/)![1]);
 
@@ -189,7 +189,7 @@ describe("Template Integration Tests", () => {
         expect(permImportResult.data.importTemplateGroups).toHaveLength(permImportVariables.templateGroups.length);
 
         // 3. Export (Query)
-        const querySample = readFileSync(join(process.cwd(), 'docs', 'sample_all_template_groups_query.graphql'), 'utf-8').replace(/\r\n/g, '\n');
+        const querySample = readFileSync(join(process.cwd(), 'docs', 'queries', 'sample_all_template_groups_query.graphql'), 'utf-8').replace(/\r\n/g, '\n');
         const query = querySample.match(/```graphql\n([\s\S]*?)\n```/)![1];
         const queryVariables = JSON.parse(querySample.match(/```json\n([\s\S]*?)\n```/)![1]);
 

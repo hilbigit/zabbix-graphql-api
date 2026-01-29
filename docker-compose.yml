@@ -1,0 +1,27 @@
+services:
+  zabbix-graphql-api:
+    build:
+      context: .
+      args:
+        - API_VERSION=1.0.0
+    ports:
+      - "4001:4000"
+    env_file:
+      - .env
+    environment:
+      - SCHEMA_PATH=/usr/app/dist/schema/
+      - ZABBIX_AUTH_TOKEN_FOR_REQUESTS=${ZABBIX_AUTH_TOKEN_FOR_REQUESTS}
+
+  apollo-mcp-server:
+    image: ghcr.io/apollographql/apollo-mcp-server:latest
+    ports:
+      - "3000:8000"
+    volumes:
+      - ./mcp-config.yaml:/mcp-config.yaml
+      - ./schema.graphql:/schema.graphql
+      - ./mcp/operations:/mcp/operations
+    command: /mcp-config.yaml
+    environment:
+      - APOLLO_GRAPH_REF=local@main
+    depends_on:
+      - zabbix-graphql-api

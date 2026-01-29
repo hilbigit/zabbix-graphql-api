@@ -25,7 +25,20 @@ Compared to the original Zabbix API, this GraphQL API provides several key enhan
 *   **Strongly Typed Schema**: Leverages GraphQL's type system for clear API documentation and client-side code generation.
 *   **Dynamic Schema Extensibility**: Easily extend the API with custom schema snippets and dynamic resolvers for specialized device types without modifying the core code.
 *   **CI/CD Integration**: Includes a ready-to-use Forgejo/Gitea/GitHub Actions workflow for automated building, testing, and deployment.
+*   **MCP Integration**: Native support for the **Model Context Protocol (MCP)**, enabled by GraphQL's introspectable schema, allowing LLMs to seamlessly interact with Zabbix data.
 *   **Sample Application (VCR)**: Designed to power the **Virtual Control Room**, a professional cockpit for managing thousands of IoT/Edge devices.
+
+## How-To Guides
+
+For detailed information on specific topics, please refer to our how-to guides:
+
+*   [**Schema & Extension Overview**](./docs/howtos/schema.md): Detailed explanation of the schema structure and extension mechanism.
+*   [**Hierarchical Data Mapping**](./docs/howtos/hierarchical_data_mapping.md): How Zabbix items are mapped to nested GraphQL fields.
+*   [**Roles & Permissions**](./docs/howtos/permissions.md): Managing user rights through Zabbix template groups.
+*   [**Zabbix Tags Usage**](./docs/howtos/tags.md): Using tags for classification and metadata.
+*   [**MCP Integration**](./docs/howtos/mcp.md): Connecting LLMs to Zabbix via Model Context Protocol.
+
+See the [How-To Overview](./docs/howtos/README.md) for a complete list of documentation.
 
 ## How to Install and Start
 
@@ -117,126 +130,6 @@ If you prefer to build the image yourself using the provided `Dockerfile`:
       zabbix-graphql-api
     ```
 
-## Extending the Schema
-
-The Zabbix GraphQL API is designed to be highly extensible. You can add your own GraphQL schema snippets and have resolvers dynamically created for them.
-
-### Dynamic Resolvers with `createHierarchicalValueFieldResolver`
-
-The function `createHierarchicalValueFieldResolver` (found in `src/api/resolver_helpers.ts`) allows for the automatic creation of resolvers that map Zabbix items or tags to a hierarchical GraphQL structure. It uses field names and Zabbix item keys (dot-separated) to automatically resolve nested objects.
-
-### Zabbix Preconditions for Hierarchical Mapping
-
-In order for the dynamic resolvers to correctly map Zabbix data to your GraphQL schema, the following preconditions must be met in your Zabbix templates:
-
-*   **Key Naming**: Zabbix item keys (or tags) must match the GraphQL field names.
-*   **Dot Separation**: Use a dot (`.`) as a separator to represent nested object structures. For example, a Zabbix item with the key `state.current.values.temperature` will be automatically mapped to the `temperature` field within the nested structure: `state` -> `current` -> `values` -> `temperature`.
-*   **Type Hinting**: You can guide the type conversion by prepending a type hint and an underscore to the last token of the key:
-    *   `json_`: Parses the value as a JSON object (useful for complex types).
-    *   `str_`: Forces the value to be treated as a string.
-    *   `bool_`: Forces the value to be treated as a boolean.
-    *   `float_`: Forces the value to be treated as a number.
-
-For a complete example of a Zabbix template designed for schema extension, see the [Distance Tracker Import Sample](docs/sample_import_distance_tracker_template.graphql).
-
-### No-Code Extension via Environment Variables
-
-You can extend the schema and add resolvers without writing any TypeScript code by using the following environment variables:
-
-*   **`ADDITIONAL_SCHEMAS`**: A comma-separated list of paths to additional `.graphql` files.
-*   **`ADDITIONAL_RESOLVERS`**: A comma-separated list of GraphQL Type names for which dynamic hierarchical resolvers should be created.
-
-#### Example
-
-Suppose you have custom device definitions in `schema/extensions/`. You can load them and enable dynamic resolution by setting:
-
-```bash
-ADDITIONAL_SCHEMAS=./schema/extensions/display_devices.graphql,./schema/extensions/location_tracker_devices.graphql,./schema/extensions/location_tracker_commons.graphql
-ADDITIONAL_RESOLVERS=SinglePanelDevice,FourPanelDevice,DistanceTrackerDevice
-```
-
-The API will:
-1. Load all provided schema files.
-2. For each type listed in `ADDITIONAL_RESOLVERS`, it will automatically create a resolver that maps Zabbix items (e.g., an item with key `state.current.values.temperature`) to the corresponding GraphQL fields.
-
-## User Permissions & `hasPermission`
-
-The Zabbix GraphQL API provides a sophisticated way to manage and check application-level permissions using Zabbix's built-in user group and template group mechanisms.
-
-### Modeling Permissions with Template Groups
-
-Permissions can be modeled as **empty template groups** (groups with no templates or hosts attached) organized in a hierarchical structure. By convention, these groups start with a configurable prefix (default: `Permissions/`).
-
-#### Example Hierarchy:
-*   `Permissions/ConstructionSite`: General access to construction site data.
-*   `Permissions/Automatism`: Access to automation features.
-*   `Permissions/Automatism/Status`: Permission to view automation status.
-
-### Zabbix Preconditions
-
-1.  **Template Groups**: Create template groups for each permission you want to manage (e.g., `Permissions/App1/FeatureA`).
-2.  **User Groups**: In Zabbix, assign these template groups to Zabbix User Groups with specific permission levels (`READ`, `READ_WRITE`, or `DENY`).
-3.  **Authentication**: The GraphQL API will check the permissions of the authenticated user (via token or session cookie) against these Zabbix assignments.
-
-### Using `hasPermission` and `userPermissions`
-
-The API provides two main queries for permission checking:
-
-*   **`userPermissions`**: Returns a list of all permissions assigned to the current user.
-*   **`hasPermissions`**: Checks if the user has a specific set of required permissions (e.g., "Does the user have `READ_WRITE` access to `Automatism/Status`?").
-
-This allows for fine-grained access control in your frontend or external applications, using Zabbix as the central authorization authority.
-
-For a complete example of how to import these permission groups, see the [Permissions Template Groups Import Sample](docs/sample_import_permissions_template_groups_mutation.graphql).
-
-## Host Classification & Filtering
-
-The API leverages Zabbix tags to classify hosts and devices, enabling efficient filtering and multi-tenancy support.
-
-### The `hostType` Tag
-
-The `hostType` tag is used to categorize hosts and templates. This allows the API to provide default filters for specific application domains or device categories.
-
-#### How to set the Host Type in Zabbix:
-
-To classify a host or a template, simply add a tag in the Zabbix UI or via the API:
-*   **Tag Name**: `hostType`
-*   **Tag Value**: A string representing the category (e.g., `Roadwork/Devices`, `SmartCity/Sensors`).
-
-This tag can be defined:
-1.  **Directly on the Host**: Specific to that individual device.
-2.  **On a Template**: All hosts linked to this template will inherit the classification.
-
-### Default Filtering with `HOST_TYPE_FILTER_DEFAULT`
-
-By configuring the `HOST_TYPE_FILTER_DEFAULT` environment variable, you can set a global default for the `allHosts` and `allDevices` queries. 
-
-*   If `HOST_TYPE_FILTER_DEFAULT=Roadwork/Devices` is set, a query like `allHosts { host }` will only return hosts that have the `hostType` tag set to `Roadwork/Devices`.
-*   This default can always be overridden in the GraphQL query by explicitly passing the `tag_hostType` argument.
-
-### Search Filtering with `HOST_GROUP_FILTER_DEFAULT`
-
-The `HOST_GROUP_FILTER_DEFAULT` variable provides a default search pattern for the `allHostGroups` query. This is particularly useful for restricting the visible host group hierarchy to a specific subtree by default.
-
-#### Overriding the Default Filter
-
-The default filter can be overridden by explicitly providing the `search_name` argument in the `allHostGroups` query. When `search_name` is present, the environment variable is ignored.
-
-#### Using Wildcards
-
-The `search_name` parameter supports the `*` wildcard (enabled via the Zabbix API's `searchWildcardsEnabled` feature). This allows you to search for all subgroups within a specific path.
-
-**Example**: To find all subgroups of `Roadwork/Devices/`, use the following query:
-
-```graphql
-query {
-  allHostGroups(search_name: "Roadwork/Devices/*") {
-    groupid
-    name
-  }
-}
-```
-
 ## Sample Application: Virtual Control Room (VCR)
 
 The **Virtual Control Room (VCR)** is a professional cockpit and control center application designed for monitoring and managing large-scale deployments of IoT and Edge devices, such as traffic management systems, roadwork safety equipment, and environmental sensors.
@@ -277,23 +170,23 @@ ADDITIONAL_RESOLVERS=SinglePanelDevice,FourPanelDevice,DistanceTrackerDevice
 
 ## Usage Samples
 
-The `docs` directory contains several sample GraphQL queries and mutations to help you get started:
+The `docs/queries` directory contains several sample GraphQL queries and mutations to help you get started:
 
 *   **Hosts**:
-    *   [Query All Hosts](docs/sample_all_hosts_query.graphql)
-    *   [Import Hosts](docs/sample_import_hosts_mutation.graphql)
+    *   [Query All Hosts](docs/queries/sample_all_hosts_query.graphql)
+    *   [Import Hosts](docs/queries/sample_import_hosts_mutation.graphql)
 *   **Templates**:
-    *   [Query Templates](docs/sample_templates_query.graphql)
-    *   [Import Templates](docs/sample_import_templates_mutation.graphql)
-    *   [Import Distance Tracker Template](docs/sample_import_distance_tracker_template.graphql) (Schema Extension Example)
-    *   [Delete Templates](docs/sample_delete_templates_mutation.graphql)
+    *   [Query Templates](docs/queries/sample_templates_query.graphql)
+    *   [Import Templates](docs/queries/sample_import_templates_mutation.graphql)
+    *   [Import Distance Tracker Template](docs/queries/sample_import_distance_tracker_template.graphql) (Schema Extension Example)
+    *   [Delete Templates](docs/queries/sample_delete_templates_mutation.graphql)
 *   **Template Groups**:
-    *   [Import Host Template Groups](docs/sample_import_host_template_groups_mutation.graphql)
-    *   [Import Permissions Template Groups](docs/sample_import_permissions_template_groups_mutation.graphql)
-    *   [Delete Template Groups](docs/sample_delete_template_groups_mutation.graphql)
+    *   [Import Host Template Groups](docs/queries/sample_import_host_template_groups_mutation.graphql)
+    *   [Import Permissions Template Groups](docs/queries/sample_import_permissions_template_groups_mutation.graphql)
+    *   [Delete Template Groups](docs/queries/sample_delete_template_groups_mutation.graphql)
 *   **User Rights**:
-    *   [Export User Rights](docs/sample_export_user_rights_query.graphql)
-    *   [Import User Rights](docs/sample_import_user_rights_mutation.graphql)
+    *   [Export User Rights](docs/queries/sample_export_user_rights_query.graphql)
+    *   [Import User Rights](docs/queries/sample_import_user_rights_mutation.graphql)
 
 ## License
 

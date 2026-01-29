@@ -2,6 +2,11 @@
 
 This document provides concise information and best practices for developers working on the Zabbix GraphQL API project.
 
+### Environment
+- **Operating System:** Windows with WSL + Ubuntu installed.
+- **Commands:** Always execute Linux commands (e.g., use `ls` instead of `dir`).
+
+
 ## Tech Stack
 - **Runtime**: Node.js (v18+)
 - **Language**: TypeScript (ESM)
@@ -35,3 +40,6 @@ This document provides concise information and best practices for developers wor
 - **Modular Datasources**: When adding support for new Zabbix features, create a new datasource class in `src/datasources/` extending `ZabbixRESTDataSource`.
 - **Schema Organization**: Place GraphQL SDL files in the `schema/` directory. Use descriptive comments in SDL as they are used for API documentation.
 - **Testing**: Write reproduction tests for bugs and cover new features with both unit and integration tests in `src/test/`.
+
+### Git Standards
+- **Commit Messages:** Use [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`, `style:`).

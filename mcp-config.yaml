@@ -1,0 +1,20 @@
+endpoint: http://zabbix-graphql-api:4000/graphql
+overrides:
+  mutation_mode: all
+transport:
+  type: streamable_http
+  stateful_mode: false
+operations:
+  source: local
+  paths:
+    - /mcp/operations
+schema:
+  source: local
+  path: /schema.graphql
+introspection:
+  execute:
+    enabled: true
+  introspect:
+    enabled: true
+  search:
+    enabled: true
