@@ -25,6 +25,5 @@ Discover how to integrate with the Model Context Protocol (MCP) to enable LLMs a
 ---
 
 ## 🔍 Additional Resources
-
 - **[Sample Queries](../queries/README.md)**: Categorized list of practical GraphQL operation examples.
 - **[Main README](../../README.md)**: Technical reference, configuration, and environment setup.

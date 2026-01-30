@@ -10,7 +10,7 @@ operations:
     - /mcp/operations
 schema:
   source: local
-  path: /schema.graphql
+  path: /mcp-data/schema.graphql
 introspection:
   execute:
     enabled: true

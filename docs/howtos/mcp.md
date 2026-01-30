@@ -13,19 +13,15 @@ By leveraging GraphQL, the API provides a strongly-typed and introspectable inte
 
 You can start both the Zabbix GraphQL API and the Apollo MCP Server using Docker Compose. This setup uses a local `mcp-config.yaml` and a generated `schema.graphql`.
 
-1.  **Prerequisites**: Ensure you have a `.env` file with the required Zabbix connection details.
-2.  **Generate Schema**: Generate the combined schema file required by the MCP server:
-    ```bash
-    cat schema/*.graphql > schema.graphql
-    ```
-3.  **Prepare Operations**: Create the operations directory if it doesn't exist:
-    ```bash
-    mkdir -p mcp/operations
-    ```
-4.  **Start Services**:
-    ```bash
-    docker-compose up -d
-    ```
+- **Prerequisites**: Ensure you have a `.env` file with the required Zabbix connection details.
+- **Prepare Operations**: Create the operations directory if it doesn't exist:
+  ```bash
+  mkdir -p mcp/operations
+  ```
+- **Start Services**:
+  ```bash
+  docker-compose up -d
+  ```
 
 This will:
 - Start the `zabbix-graphql-api` on `http://localhost:4001/graphql` (internal port 4000).
@@ -33,8 +29,14 @@ This will:
 
 ### Using with Claude Desktop
 
-To use this integration with Claude Desktop, add the following configuration to your Claude Desktop config file (typically `appflowy.json` or similar depending on OS, but usually `claude_desktop_config.json`):
+To use this integration with Claude Desktop, add the following configuration to your Claude Desktop config file (typically `claude_desktop_config.json`).
 
+- **Prerequisite**: Generate the combined schema file in your project root:
+  ```bash
+  cat schema/*.graphql > schema.graphql
+  ```
+
+- **Configuration**:
 ```json
 {
   "mcpServers": {
@@ -45,7 +47,7 @@ To use this integration with Claude Desktop, add the following configuration to 
         "-i",
         "--rm",
         "-v", "/path/to/your/project/mcp-config.yaml:/mcp-config.yaml",
-        "-v", "/path/to/your/project/schema.graphql:/schema.graphql",
+        "-v", "/path/to/your/project/schema.graphql:/mcp-data/schema.graphql:ro",
         "-v", "/path/to/your/project/mcp/operations:/mcp/operations",
         "-e", "APOLLO_GRAPH_REF=local@main",
         "ghcr.io/apollographql/apollo-mcp-server:latest",
@@ -57,6 +59,9 @@ To use this integration with Claude Desktop, add the following configuration to 
 ```
 
 **Note**: Ensure the `zabbix-graphql-api` is running and accessible. If running locally, you might need to use `host.docker.internal:4001/graphql` in your `mcp-config.yaml` to allow the containerized MCP server to reach your host.
+
+#### 💡 Sample Configuration (Alternative)
+If you prefer to run the MCP server manually or via Docker Compose (as described above), you can use a HTTP-based configuration instead of the `command` execution. See [.ai/mcp/mcp.json](../../.ai/mcp/mcp.json) for a sample configuration that connects to the server running on `localhost:3000`.
 
 ### Benefits of GraphQL-enabled MCP over REST
 
@@ -73,10 +78,10 @@ Integrating via GraphQL offers significant advantages for AI agents and MCP comp
 
 The MCP server can be used in conjunction with the [**Cookbook**](./cookbook.md) to automate the generation of test cases. By providing a cookbook "recipe" to an LLM with access to the `zabbix-graphql` MCP server, the LLM can:
 
-1.  Analyze the step-by-step instructions in the recipe.
-2.  Use the MCP server's tools to inspect the current Zabbix state and schema.
-3.  Generate and execute the necessary GraphQL operations to fulfill the recipe's task.
-4.  Verify the outcome and suggest assertions for a formal test script.
+- Analyze the step-by-step instructions in the recipe.
+- Use the MCP server's tools to inspect the current Zabbix state and schema.
+- Generate and execute the necessary GraphQL operations to fulfill the recipe's task.
+- Verify the outcome and suggest assertions for a formal test script.
 
 Example prompt for an LLM:
 > "Using the `zabbix-graphql` MCP server, follow the 'Provisioning a New Host' recipe from the cookbook. Create a host named 'Test-Host-01' in the 'Linux servers' group and link the 'ICMP Ping' template."

@@ -6,11 +6,11 @@
   "type": "module",
   "scripts": {
     "compile": "tsc",
-    "start": "nodemon --watch \"src/**\" --watch \"schema.graphql\" --ext \"ts,json\" --exec \"node --import tsx ./src/index.ts\"",
+    "start": "nodemon --watch \"src/**\" --watch \"schema/**\" --ext \"ts,json,graphql\" --exec \"node --import tsx ./src/index.ts\"",
     "prod": "npm run copy-schema && node ./dist/index.js",
     "test": "jest --detectOpenHandles --forceExit --bail",
     "codegen": "graphql-codegen --config codegen.ts --watch",
-    "nodemon": "nodemon --watch \"src/**\" --watch \"schema.graphql\" --ext \"ts,json\" --exec \"tsc",
+    "nodemon": "nodemon --watch \"src/**\" --watch \"schema/**\" --ext \"ts,json,graphql\" --exec \"tsc",
     "copy-schema": "cp -R schema ./dist/"
   },
   "keywords": [],

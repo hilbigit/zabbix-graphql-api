@@ -18,10 +18,23 @@ services:
       - "3000:8000"
     volumes:
       - ./mcp-config.yaml:/mcp-config.yaml
-      - ./schema.graphql:/schema.graphql
+      - mcp-shared:/mcp-data:ro
       - ./mcp/operations:/mcp/operations
     command: /mcp-config.yaml
     environment:
       - APOLLO_GRAPH_REF=local@main
     depends_on:
-      - zabbix-graphql-api
+      schema-gen:
+        condition: service_completed_successfully
+      zabbix-graphql-api:
+        condition: service_started
+
+  schema-gen:
+    image: alpine
+    volumes:
+      - ./schema:/schema:ro
+      - mcp-shared:/mcp-data
+    command: sh -c "cat /schema/*.graphql > /mcp-data/schema.graphql"
+
+volumes:
+  mcp-shared:

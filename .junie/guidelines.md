@@ -2,9 +2,12 @@
 
 This document provides concise information and best practices for developers working on the Zabbix GraphQL API project.
 
+## Roadmap
+The [Roadmap](../roadmap.md) is to be considered as outlook giving constraints on architectural and design decisions for current work on the project.
+
 ### Environment
-- **Operating System:** Windows with WSL + Ubuntu installed.
-- **Commands:** Always execute Linux commands (e.g. use `ls` instead of `dir`).
+- **Operating System**: Windows with WSL + Ubuntu installed.
+- **Commands**: Always execute Linux commands (e.g. use `ls` instead of `dir`).
 
 
 ## Tech Stack
@@ -40,6 +43,15 @@ This document provides concise information and best practices for developers wor
 - **Schema Organization**: Place GraphQL SDL files in the `schema/` directory. Use descriptive comments in SDL as they are used for API documentation.
 - **Testing**: Write reproduction tests for bugs and cover new features with both unit and integration tests in `src/test/`.
 - **Grammar & Style**: Avoid using a comma after "e.g." or "i.e." (e.g. use "e.g. example" instead of "e.g., example").
+
+### Documentation Style
+- **Bullet Points**: Use bullet points instead of enumerations for lists to maintain consistency across all documentation.
+- **Visual Style**: Use icons in headers and bold subjects for primary list items (e.g. `- **Feature**: Description`) to match the `README.md` style.
+    - *Note*: Standardize colon placement (outside bold tags) for primary list items.
+- **Sub-points**: Use indented bullet points for detailed descriptions or additional context.
+    - *Format*: Use the `- *Subject*: Description` format for specific references or categorized sub-items (e.g. `- *Reference*: ...`).
+    - *Format*: Use plain text for general descriptions that follow a primary list item.
+- **Formatting**: Avoid extra blank lines between headers and list items.
 
 ### Git Standards
 - **Commit Messages:** Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) (e.g. `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`, `style:`).

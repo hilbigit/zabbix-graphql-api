@@ -5,8 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="docs: refactor documentation and upgrade to Node.js 24&#10;&#10;This commit upgrades the project to Node.js 24 (LTS) and performs a major refactoring of the documentation to support both advanced users and AI-based automation (MCP).&#10;&#10;Changes:&#10;- Environment &amp; CI/CD:&#10;  - Set Node.js version to &gt;=24 in package.json and .nvmrc.&#10;  - Updated Dockerfile to use Node 24 base image.&#10;  - Updated @types/node to ^24.10.9.&#10;- Documentation:&#10;  - Refactored README.md with comprehensive technical reference, configuration details, and Zabbix-to-GraphQL mapping.&#10;  - Created docs/howtos/cookbook.md with practical recipes for common tasks and AI test generation.&#10;  - Updated docs/howtos/mcp.md to emphasize GraphQL's advantages for AI agents and Model Context Protocol.&#10;  - Added readme.improvement.plan.md to track documentation evolution.&#10;  - Enhanced all how-to guides with improved cross-references and up-to-date information.&#10;- Guidelines:&#10;  - Updated .junie/guidelines.md with Node 24 requirements and enhanced commit message standards (Conventional Commits 1.0.0).&#10;- Infrastructure &amp; Code:&#10;  - Updated docker-compose.yml with Apollo MCP server integration.&#10;  - Refined configuration and schema handling in src/api/ and src/datasources/.&#10;  - Synchronized generated TypeScript types with schema updates.">
+      <change afterPath="$PROJECT_DIR$/.ai/mcp/mcp.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roadmap.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.junie/guidelines.md" beforeDir="false" afterPath="$PROJECT_DIR$/.junie/guidelines.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/howtos/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/howtos/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/howtos/cookbook.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/howtos/cookbook.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/howtos/mcp.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/howtos/mcp.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mcp-config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/mcp-config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +26,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="109" />
+    <option name="cachedIndexableFilesCount" value="111" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -43,7 +52,13 @@
   </component>
   <component name="McpProjectServerCommands">
     <commands />
-    <urls />
+    <urls>
+      <McpServerConfigurationProperties>
+        <option name="allowedToolsNames" />
+        <option name="enabled" value="true" />
+        <option name="name" value="zabbix-graphql" />
+      </McpServerConfigurationProperties>
+    </urls>
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -200,6 +215,7 @@
       <workItem from="1769699975260" duration="75000" />
       <workItem from="1769700092648" duration="5212000" />
       <workItem from="1769724930397" duration="16056000" />
+      <workItem from="1769789496322" duration="5496000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
       <option name="closed" value="true" />
