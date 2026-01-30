@@ -16,17 +16,7 @@ For comprehensive understanding of each operation, read the detailed comments in
 
 ### Zabbix to GraphQL Mapping
 
-The API maps Zabbix entities to GraphQL types as follows:
-
-| Zabbix Entity | GraphQL Type | Description |
-|---------------|--------------|-------------|
-| Host | `Host` / `Device` | Represents a Zabbix host; `Device` is a specialized `Host` with a `deviceType` tag |
-| Host Group | `HostGroup` | Represents a Zabbix host group |
-| Template | `Template` | Represents a Zabbix template |
-| Template Group | `HostGroup` | Represents a Zabbix template group |
-| Item | Nested fields in `Device` | Zabbix items become nested fields in the device based on their key names |
-| Tag | `Tag` | Represents a Zabbix tag associated with a host or template |
-| Inventory | `Location` | Host inventory information maps to location data |
+For a detailed mapping of Zabbix entities to GraphQL types, please refer to the [Zabbix to GraphQL Mapping](../../README.md#zabbix-to-graphql-mapping) section in the main README.
 
 ### Zabbix Entity Relationships
 

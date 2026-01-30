@@ -16,12 +16,15 @@ Understand how the API automatically maps flat Zabbix item keys into nested Grap
 ### 🔐 [Roles and Permissions Extension](./permissions.md)
 Discover how the permission system works, how to define permission levels using Zabbix template groups, and how to query user permissions.
 
-### 🏷️ [Zabbix Tags Usage](./tags.md)
-Learn how Zabbix tags are used for device classification, host categorization, and as metadata within the GraphQL API.
+### 🛠️ [Technical Maintenance](./maintenance.md)
+Guide on code generation (GraphQL Codegen), running Jest tests, and local Docker builds.
 
 ### 🤖 [MCP & Agent Integration](./mcp.md)
-Discover how to integrate the Zabbix GraphQL API with the Model Context Protocol (MCP) to enable LLMs and autonomous agents to interact with your Zabbix data efficiently.
+Discover how to integrate with the Model Context Protocol (MCP) to enable LLMs and autonomous agents to interact with Zabbix efficiently.
 
 ---
 
-For practical examples of GraphQL operations, check the [Sample Queries](../queries/) directory.
+## 🔍 Additional Resources
+
+- **[Sample Queries](../queries/README.md)**: Categorized list of practical GraphQL operation examples.
+- **[Main README](../../README.md)**: Technical reference, configuration, and environment setup.

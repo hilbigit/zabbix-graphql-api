@@ -44,6 +44,8 @@ Restart the API server.
 ### Step 3: Import the Template
 Execute the `importTemplates` mutation to create the template in Zabbix. Use Zabbix item keys that match your GraphQL fields (e.g. `distance.current` for `distance`).
 
+> **Reference**: See how items map to fields in the [Zabbix to GraphQL Mapping](../../README.md#zabbix-to-graphql-mapping).
+
 ---
 
 ## 🍳 Recipe: Provisioning a New Host
@@ -56,6 +58,8 @@ Execute the `importTemplates` mutation to create the template in Zabbix. Use Zab
 Define the host name, groups, and templates to link.
 
 ### Step 2: Execute `createHost` Mutation
+For more details on the input fields, see the [Reference: createHost](../../schema/mutations.graphql).
+
 ```graphql
 mutation CreateNewHost($host: String!, $groups: [Int!]!, $templates: [Int!]!) {
   createHost(host: $host, hostgroupids: $groups, templateids: $templates) {
@@ -85,3 +89,35 @@ query CheckMyPermissions {
   ])
 }
 ```
+
+---
+
+## 🍳 Recipe: Bulk Import of Templates and Hosts
+
+This recipe guides you through performing a mass import of multiple templates and hosts in a single operation.
+
+### Step 1: Prepare Template Import
+Use the `importTemplates` mutation. You can provide multiple template definitions in the `templates` array.
+
+### Step 2: Prepare Host Import
+Use the `importHosts` mutation. Link them to the newly imported templates using their names or IDs.
+
+### Step 3: Combined Operation (Optional)
+You can execute both mutations in a single GraphQL request to ensure atomic-like provisioning of your infrastructure.
+
+```graphql
+mutation BulkProvisioning($templates: [CreateTemplate!]!, $hosts: [CreateHost!]!) {
+  importTemplates(templates: $templates) {
+    templateid
+    host
+    message
+  }
+  importHosts(hosts: $hosts) {
+    hostid
+    deviceKey
+    message
+  }
+}
+```
+
+For detailed examples of the input structures, refer to [Sample Import Templates](../../docs/queries/sample_import_templates_mutation.graphql) and [Sample Import Hosts](../../docs/queries/sample_import_hosts_mutation.graphql).

@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: add MCP integration and refactor documentation into modular how-to guides  &#10;&#10;- Moved GraphQL query samples into a new `docs/queries` directory for better organization.   &#10;- Added new queries and mutations, including `createHost.graphql` and `GetApiVersion.graphql`.  &#10;- Introduced `mcp-config.yaml` and updated `docker-compose.yml` for MCP integration.   &#10;- Updated IntelliJ `.idea/workspace.xml` settings to reflect project changes.  &#10;- Added new how-to guides (`docs/howtos`) for permissions, tags, MCP integration, and schema usage.  &#10;- Enhanced tests by updating file paths and improving sample data locations.  &#10;- Refined permissions and host group structures in `zabbix-hostgroups.ts` and `resolvers.ts`.">
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/index_ts.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/index_ts.xml" afterDir="false" />
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="docs: refactor documentation and upgrade to Node.js 24&#10;&#10;This commit upgrades the project to Node.js 24 (LTS) and performs a major refactoring of the documentation to support both advanced users and AI-based automation (MCP).&#10;&#10;Changes:&#10;- Environment &amp; CI/CD:&#10;  - Set Node.js version to &gt;=24 in package.json and .nvmrc.&#10;  - Updated Dockerfile to use Node 24 base image.&#10;  - Updated @types/node to ^24.10.9.&#10;- Documentation:&#10;  - Refactored README.md with comprehensive technical reference, configuration details, and Zabbix-to-GraphQL mapping.&#10;  - Created docs/howtos/cookbook.md with practical recipes for common tasks and AI test generation.&#10;  - Updated docs/howtos/mcp.md to emphasize GraphQL's advantages for AI agents and Model Context Protocol.&#10;  - Added readme.improvement.plan.md to track documentation evolution.&#10;  - Enhanced all how-to guides with improved cross-references and up-to-date information.&#10;- Guidelines:&#10;  - Updated .junie/guidelines.md with Node 24 requirements and enhanced commit message standards (Conventional Commits 1.0.0).&#10;- Infrastructure &amp; Code:&#10;  - Updated docker-compose.yml with Apollo MCP server integration.&#10;  - Refined configuration and schema handling in src/api/ and src/datasources/.&#10;  - Synchronized generated TypeScript types with schema updates.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -199,7 +199,7 @@
       <workItem from="1769256682556" duration="8928000" />
       <workItem from="1769699975260" duration="75000" />
       <workItem from="1769700092648" duration="5212000" />
-      <workItem from="1769724930397" duration="14118000" />
+      <workItem from="1769724930397" duration="16056000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
       <option name="closed" value="true" />
@@ -393,7 +393,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769730441542</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="docs: refactor documentation and upgrade to Node.js 24&#10;&#10;This commit upgrades the project to Node.js 24 (LTS) and performs a major refactoring of the documentation to support both advanced users and AI-based automation (MCP).&#10;&#10;Changes:&#10;- Environment &amp; CI/CD:&#10;  - Set Node.js version to &gt;=24 in package.json and .nvmrc.&#10;  - Updated Dockerfile to use Node 24 base image.&#10;  - Updated @types/node to ^24.10.9.&#10;- Documentation:&#10;  - Refactored README.md with comprehensive technical reference, configuration details, and Zabbix-to-GraphQL mapping.&#10;  - Created docs/howtos/cookbook.md with practical recipes for common tasks and AI test generation.&#10;  - Updated docs/howtos/mcp.md to emphasize GraphQL's advantages for AI agents and Model Context Protocol.&#10;  - Added readme.improvement.plan.md to track documentation evolution.&#10;  - Enhanced all how-to guides with improved cross-references and up-to-date information.&#10;- Guidelines:&#10;  - Updated .junie/guidelines.md with Node 24 requirements and enhanced commit message standards (Conventional Commits 1.0.0).&#10;- Infrastructure &amp; Code:&#10;  - Updated docker-compose.yml with Apollo MCP server integration.&#10;  - Refined configuration and schema handling in src/api/ and src/datasources/.&#10;  - Synchronized generated TypeScript types with schema updates.">
+      <option name="closed" value="true" />
+      <created>1769780136862</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1769780136862</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

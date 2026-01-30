@@ -31,25 +31,29 @@ The Zabbix GraphQL API acts as a wrapper and enhancer for the native Zabbix JSON
 
 ## How-To Guides
 
-For detailed information on specific topics, please refer to our how-to guides:
+For detailed information on specific topics and practical step-by-step instructions, please refer to our guides:
 
-*   [**Cookbook**](./docs/howtos/cookbook.md): Practical, step-by-step recipes for quick start and AI test generation.
+*   [**Cookbook**](./docs/howtos/cookbook.md): Practical, task-oriented recipes for quick start and AI test generation.
 *   [**Schema & Extension Overview**](./docs/howtos/schema.md): Detailed explanation of the schema structure and extension mechanism.
 *   [**Hierarchical Data Mapping**](./docs/howtos/hierarchical_data_mapping.md): How Zabbix items are mapped to nested GraphQL fields.
 *   [**Roles & Permissions**](./docs/howtos/permissions.md): Managing user rights through Zabbix template groups.
-*   [**Zabbix Tags Usage**](./docs/howtos/tags.md): Using tags for classification and metadata.
-*   [**MCP & Agent Integration**](./docs/howtos/mcp.md): Connecting LLMs and autonomous agents to Zabbix via Model Context Protocol.
+*   [**Technical Maintenance**](./docs/howtos/maintenance.md): Guide on code generation, testing, and Docker maintenance.
+*   [**MCP & Agent Integration**](./docs/howtos/mcp.md): Connecting LLMs and autonomous agents via Model Context Protocol.
 
 See the [How-To Overview](./docs/howtos/README.md) for a complete list of documentation.
 
 ## How to Install and Start
 
-### Prerequisites
+### 📋 Prerequisites
+Before you begin, ensure you have met the following requirements:
 
 *   **Node.js**: Version 24 (LTS) or higher recommended.
 *   **Zabbix**: A running Zabbix instance (compatible with Zabbix 6.0+).
+ with API access
+*   **Zabbix Super Admin Token** (for full functionality / privilege escalation)
+*   **Zabbix User Access** (groups and roles depending on your use case)
 
-### Installation
+### 🛠️ Installation
 
 1.  Clone the repository:
     ```bash
@@ -61,6 +65,21 @@ See the [How-To Overview](./docs/howtos/README.md) for a complete list of docume
     ```bash
     npm install
     ```
+### Starting the API
+
+#### Development Mode
+Starts the server with `nodemon` and `tsx` for automatic reloading:
+```bash
+npm run start
+```
+
+#### Production Mode
+Builds the project and runs the compiled code:
+```bash
+npm run prod
+```
+
+The API will be available at `http://localhost:4000/`.
 
 ## ⚙️ Configuration
 
@@ -93,6 +112,8 @@ In production environments, the `ZABBIX_DEVELOPMENT_TOKEN` should **always be un
 *   **Zabbix Frontend Widgets**: When accessing the API from widgets embedded in the Zabbix frontend, no static token is needed. Authentication is automatically derived from the `zbx_session` cookie provided by the Zabbix web login, which is forwarded to the Zabbix API.
 *   **Other Production Tools**: For other purposes (e.g. accessing the API from external tools or scripts), a Zabbix session or auth token must be passed via the `zabbix-auth-token` HTTP header.
 
+> **Recipe**: See [Managing User Permissions](./docs/howtos/cookbook.md#recipe-managing-user-permissions) for setup instructions.
+
 ### 2. Privilege Escalation
 
 *   **`ZABBIX_PRIVILEGE_ESCALATION_TOKEN`**: Certain operations, such as importing hosts, templates, or user rights, require Super Admin access to Zabbix for specific parts of the process. This token allows the API to perform these administrative tasks even when the initiating user does not have Super Admin rights themselves.
@@ -116,21 +137,8 @@ The API maps Zabbix entities to GraphQL types as follows:
 | Tag | `Tag` | Represents a Zabbix tag associated with a host or template |
 | Inventory | `Location` | Host inventory information maps to location data |
 
-### Starting the API
+> **Detailed Guide**: For a deeper dive into how Zabbix items are transformed into GraphQL fields, see [Hierarchical Data Mapping](./docs/howtos/hierarchical_data_mapping.md).
 
-#### Development Mode
-Starts the server with `nodemon` and `tsx` for automatic reloading:
-```bash
-npm run start
-```
-
-#### Production Mode
-Builds the project and runs the compiled code:
-```bash
-npm run prod
-```
-
-The API will be available at `http://localhost:4000/`.
 
 ## Running with Docker
 
@@ -212,23 +220,9 @@ ADDITIONAL_RESOLVERS=SinglePanelDevice,FourPanelDevice,DistanceTrackerDevice
 
 ## Usage Samples
 
-The `docs/queries` directory contains several sample GraphQL queries and mutations to help you get started:
+The `docs/queries` directory contains several sample GraphQL queries and mutations to help you get started.
 
-*   **Hosts**:
-    *   [Query All Hosts](docs/queries/sample_all_hosts_query.graphql)
-    *   [Import Hosts](docs/queries/sample_import_hosts_mutation.graphql)
-*   **Templates**:
-    *   [Query Templates](docs/queries/sample_templates_query.graphql)
-    *   [Import Templates](docs/queries/sample_import_templates_mutation.graphql)
-    *   [Import Distance Tracker Template](docs/queries/sample_import_distance_tracker_template.graphql) (Schema Extension Example)
-    *   [Delete Templates](docs/queries/sample_delete_templates_mutation.graphql)
-*   **Template Groups**:
-    *   [Import Host Template Groups](docs/queries/sample_import_host_template_groups_mutation.graphql)
-    *   [Import Permissions Template Groups](docs/queries/sample_import_permissions_template_groups_mutation.graphql)
-    *   [Delete Template Groups](docs/queries/sample_delete_template_groups_mutation.graphql)
-*   **User Rights**:
-    *   [Export User Rights](docs/queries/sample_export_user_rights_query.graphql)
-    *   [Import User Rights](docs/queries/sample_import_user_rights_mutation.graphql)
+> **Samples Reference**: See the [Sample Queries & Mutations Overview](./docs/queries/README.md) for a categorized list of examples.
 
 ## 🔄 API Version
 
@@ -237,6 +231,16 @@ The API version is automatically set during the Docker build process based on th
 ### Zabbix Version Compatibility
 
 This API is designed to work with Zabbix 7.4, which is the version it runs productively with. While it may work with earlier versions (like 6.0+), 7.4 is the officially supported and tested version.
+
+## 🛠️ Technical Maintenance
+
+For information on code generation, running tests, and managing the project's development lifecycle, please refer to the [Technical Maintenance Guide](./docs/howtos/maintenance.md).
+
+## 🔗 External Resources
+
+- **Zabbix API Documentation**: [https://www.zabbix.com/documentation/7.0/en/manual/api](https://www.zabbix.com/documentation/7.0/en/manual/api)
+- **Apollo Server Documentation**: [https://www.apollographql.com/docs/apollo-server/](https://www.apollographql.com/docs/apollo-server/)
+- **Model Context Protocol (MCP)**: [https://modelcontextprotocol.io/](https://modelcontextprotocol.io/)
 
 ## License
 
