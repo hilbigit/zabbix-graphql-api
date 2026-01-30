@@ -85,7 +85,7 @@ type Mutation {
     deleteTemplates(
         """List of template IDs to delete."""
         templateids: [Int!], 
-        """Wildcard name pattern for templates to delete (e.g., 'Template%')."""
+        """Wildcard name pattern for templates to delete (e.g. 'Template%')."""
         name_pattern: String
     ): [DeleteResponse!]
 
@@ -189,7 +189,7 @@ input CreateTemplateItem {
     """
     name: String!
     """
-    Zabbix item type (e.g., 0 for Zabbix Agent, 18 for Dependent).
+    Zabbix item type (e.g. 0 for Zabbix Agent, 18 for Dependent).
     """
     type: Int
     """
@@ -197,11 +197,11 @@ input CreateTemplateItem {
     """
     key: String!
     """
-    Type of information (e.g., 0 for Float, 3 for Int, 4 for Text).
+    Type of information (e.g. 0 for Float, 3 for Int, 4 for Text).
     """
     value_type: Int
     """
-    History storage period (e.g., '2d', '90d').
+    History storage period (e.g. '2d', '90d').
     """
     history: String
     """
@@ -245,7 +245,7 @@ Input for an item preprocessing step.
 """
 input CreateItemPreprocessing {
     """
-    Type of preprocessing step (e.g., 12 for JSONPath, 21 for JavaScript).
+    Type of preprocessing step (e.g. 12 for JSONPath, 21 for JavaScript).
     """
     type: Int!
     """
@@ -477,7 +477,7 @@ input UserRoleInput {
     """
     name: String
     """
-    Type of role (e.g., 1 for User, 2 for Admin, 3 for Super Admin).
+    Type of role (e.g. 1 for User, 2 for Admin, 3 for Super Admin).
     """
     type: Int
     """
@@ -515,7 +515,7 @@ input UserRoleRulesInput {
     """
     api_access: Int
     """
-    API mode (e.g., 0 for white-list, 1 for black-list).
+    API mode (e.g. 0 for white-list, 1 for black-list).
     """
     api_mode: Int
     """
@@ -541,7 +541,7 @@ input UserRoleRuleInput {
     """
     name: String
     """
-    Status (e.g., 1 for enabled, 0 for disabled).
+    Status (e.g. 1 for enabled, 0 for disabled).
     """
     status: Int
 }

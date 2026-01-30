@@ -38,7 +38,7 @@ query GetUserPermissions {
 
 ### Setting Up Permissions
 
-1. Create template groups with the prefix `Permissions/` (e.g., `Permissions/hosts`, `Permissions/templates`)
+1. Create template groups with the prefix `Permissions/` (e.g. `Permissions/hosts`, `Permissions/templates`)
 2. Assign these template groups to user groups in Zabbix with appropriate permission levels
 3. Users in those user groups will inherit the permissions
 

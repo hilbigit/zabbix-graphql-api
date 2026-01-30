@@ -13,7 +13,7 @@ interface DeviceValueMessage {
 
     """
     Represents the timestamp at which a specific event, message, or data point was created or recorded.
-    The format should align with standard expectations (e.g., ISO 8601).
+    The format should align with standard expectations (e.g. ISO 8601).
     """
     timestamp: String
 

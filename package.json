@@ -9,7 +9,7 @@
     "start": "nodemon --watch \"src/**\" --watch \"schema.graphql\" --ext \"ts,json\" --exec \"node --import tsx ./src/index.ts\"",
     "prod": "npm run copy-schema && node ./dist/index.js",
     "test": "jest --detectOpenHandles --forceExit --bail",
-    "codegen": "graphql-codegen --config codegen.ts --watch \"schema.graphql\"",
+    "codegen": "graphql-codegen --config codegen.ts --watch",
     "nodemon": "nodemon --watch \"src/**\" --watch \"schema.graphql\" --ext \"ts,json\" --exec \"tsc",
     "copy-schema": "cp -R schema ./dist/"
   },
@@ -17,6 +17,9 @@
   "license": "AGPL-3.0-only",
   "author": "Andreas Hilbig",
   "copyright": "All rights reserved by Hilbig IT GmbH",
+  "engines": {
+    "node": ">=24"
+  },
   "dependencies": {
     "@apollo/datasource-rest": "^6.3.0",
     "@apollo/server": "^5.2.0",
@@ -41,7 +44,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.6",
     "@types/jest": "^29.5.13",
-    "@types/node": "^22.6.1",
+    "@types/node": "^24.10.9",
     "@types/simple-mock": "^0.8.6",
     "@types/ws": "^8.5.12",
     "jest": "^29.7.0",

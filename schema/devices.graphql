@@ -74,7 +74,7 @@ type OperationalDeviceData {
     temperature: Float
     """Device voltage."""
     voltage: Float
-    """Signal strength (e.g., WiFi or GSM)."""
+    """Signal strength (e.g. WiFi or GSM)."""
     signalstrength: Float
     """Current location of the device."""
     location: Location

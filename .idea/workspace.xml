@@ -4,30 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: update `.idea/workspace.xml` and project guidelines  &#10;&#10;- Refined IntelliJ IDEA settings in `.idea/workspace.xml`, including updates to `ProblemsViewState` and `PropertiesComponent` for project consistency.  &#10;- Renamed and expanded `.junie/guidelines.md` to reflect updated best practices, project structure, and development workflows.">
+    <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="chore: add MCP integration and refactor documentation into modular how-to guides  &#10;&#10;- Moved GraphQL query samples into a new `docs/queries` directory for better organization.   &#10;- Added new queries and mutations, including `createHost.graphql` and `GetApiVersion.graphql`.  &#10;- Introduced `mcp-config.yaml` and updated `docker-compose.yml` for MCP integration.   &#10;- Updated IntelliJ `.idea/workspace.xml` settings to reflect project changes.  &#10;- Added new how-to guides (`docs/howtos`) for permissions, tags, MCP integration, and schema usage.  &#10;- Enhanced tests by updating file paths and improving sample data locations.  &#10;- Refined permissions and host group structures in `zabbix-hostgroups.ts` and `resolvers.ts`.">
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/index_ts.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/index_ts.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.junie/guidelines.md" beforeDir="false" afterPath="$PROJECT_DIR$/.junie/guidelines.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_all_devices_query.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_all_host_groups_query.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_all_hosts_query.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_all_template_groups_query.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_delete_template_groups_mutation.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_delete_templates_mutation.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_export_user_rights_query.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_import_distance_tracker_template.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_import_host_groups_mutation.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_import_host_template_groups_mutation.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_import_hosts_mutation.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_import_permissions_template_groups_mutation.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_import_templates_mutation.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_import_user_rights_mutation.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sample_templates_query.graphql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/resolvers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolvers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-hostgroups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-hostgroups.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/host_integration.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/host_integration.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/template_integration.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/template_integration.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/user_rights_integration.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/user_rights_integration.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +17,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="106" />
+    <option name="cachedIndexableFilesCount" value="109" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -80,45 +59,45 @@
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "NIXITCH_NIXPKGS_CONFIG": "",
-    "NIXITCH_NIX_CONF_DIR": "",
-    "NIXITCH_NIX_OTHER_STORES": "",
-    "NIXITCH_NIX_PATH": "",
-    "NIXITCH_NIX_PROFILES": "",
-    "NIXITCH_NIX_REMOTE": "",
-    "NIXITCH_NIX_USER_PROFILE_DIR": "",
-    "Node.js.index.ts.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "go.import.settings.migrated": "true",
-    "javascript.preferred.runtime.type.id": "node",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/src",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node",
-    "nodejs_package_manager_path": "npm",
-    "npm.codegen.executor": "Run",
-    "npm.compile.executor": "Run",
-    "npm.copy-schema.executor": "Run",
-    "npm.prod.executor": "Run",
-    "npm.test.executor": "Run",
-    "settings.editor.selected.configurable": "junie.mcp",
-    "settings.editor.splitter.proportion": "0.28812414",
-    "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;NIXITCH_NIXPKGS_CONFIG&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_CONF_DIR&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_OTHER_STORES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PATH&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PROFILES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_REMOTE&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_USER_PROFILE_DIR&quot;: &quot;&quot;,
+    &quot;Node.js.index.ts.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/src&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;wsl://Ubuntu@/home/ahilbig/.nvm/versions/node/v24.12.0/bin/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.codegen.executor&quot;: &quot;Run&quot;,
+    &quot;npm.compile.executor&quot;: &quot;Run&quot;,
+    &quot;npm.copy-schema.executor&quot;: &quot;Run&quot;,
+    &quot;npm.prod.executor&quot;: &quot;Run&quot;,
+    &quot;npm.test.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.mcp&quot;,
+    &quot;settings.editor.splitter.proportion&quot;: &quot;0.28812414&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecapSpentCounter">
     <option name="endsOfQuotaMs" value="1768327208764" />
     <option name="spentUsd" value="0.04010335" />
@@ -160,7 +139,7 @@
         <env name="ADDITIONAL_RESOLVERS" value="SinglePanelDevice,FourPanelDevice,DistanceTrackerDevice" />
         <env name="ADDITIONAL_SCHEMAS" value="./schema/extensions/display_devices.graphql,./schema/extensions/location_tracker_devices.graphql,./schema/extensions/location_tracker_commons.graphql" />
         <env name="DEBUG" value="device-control-center-api:*" />
-        <env name="ZABBIX_AUTH_TOKEN" value="$ZABBIX_AUTH_TOKEN_VCR_DEV$" />
+        <env name="ZABBIX_PRIVILEGE_ESCALATION_TOKEN" value="$ZABBIX_AUTH_TOKEN_VCR_DEV$" />
         <env name="ZABBIX_BASE_URL" value="http://cockpit.vcr.develop.hilbigit.com/" />
         <env name="ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX" value="Permissions" />
         <env name="ZABBIX_ROADWORK_BASE_GROUP" value="Roadwork/Devices" />
@@ -220,7 +199,7 @@
       <workItem from="1769256682556" duration="8928000" />
       <workItem from="1769699975260" duration="75000" />
       <workItem from="1769700092648" duration="5212000" />
-      <workItem from="1769724930397" duration="3476000" />
+      <workItem from="1769724930397" duration="14118000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
       <option name="closed" value="true" />
@@ -406,7 +385,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769597550348</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="chore: add MCP integration and refactor documentation into modular how-to guides  &#10;&#10;- Moved GraphQL query samples into a new `docs/queries` directory for better organization.   &#10;- Added new queries and mutations, including `createHost.graphql` and `GetApiVersion.graphql`.  &#10;- Introduced `mcp-config.yaml` and updated `docker-compose.yml` for MCP integration.   &#10;- Updated IntelliJ `.idea/workspace.xml` settings to reflect project changes.  &#10;- Added new how-to guides (`docs/howtos`) for permissions, tags, MCP integration, and schema usage.  &#10;- Enhanced tests by updating file paths and improving sample data locations.  &#10;- Refined permissions and host group structures in `zabbix-hostgroups.ts` and `resolvers.ts`.">
+      <option name="closed" value="true" />
+      <created>1769730441542</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1769730441542</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -436,9 +423,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment" />
-    <MESSAGE value="chore: Add missing &quot;.js&quot; extensions to imports and improve Node.js compatibility for dynamic schema loading" />
-    <MESSAGE value="chore: Update IntelliJ workspace and fix Docker image tag in workflow" />
     <MESSAGE value="chore: Add dry-run mode and configure logger for operation mode logging" />
     <MESSAGE value="chore: Add test for Zabbix API arguments parsing" />
     <MESSAGE value="chore: Replace copying of `schema.graphql` with `extensions` in Dockerfile" />
@@ -461,7 +445,10 @@
     <MESSAGE value="chore: add tests for schema and API config mocking&#10;&#10;- Added unit tests for schema loader, mocking Config variables and resolvers.&#10;- Added unit tests for Zabbix API configuration, verifying constants derived from Config.&#10;- Mocked relevant modules and filesystem behaviors to enable isolated testing.&#10;- Optimized imports on all files" />
     <MESSAGE value="chore: add tests for schema and API config mocking&#10;&#10;- Added unit tests for schema loader, mocking Config variables and resolvers.&#10;- Added unit tests for Zabbix API configuration, verifying constants derived from Config.&#10;- Mocked relevant modules and filesystem behaviors to enable isolated testing.&#10;- Optimized imports on all files and include this within a new .junie/guidelines.md file" />
     <MESSAGE value="chore: update `.idea/workspace.xml` and project guidelines  &#10;&#10;- Refined IntelliJ IDEA settings in `.idea/workspace.xml`, including updates to `ProblemsViewState` and `PropertiesComponent` for project consistency.  &#10;- Renamed and expanded `.junie/guidelines.md` to reflect updated best practices, project structure, and development workflows." />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: update `.idea/workspace.xml` and project guidelines  &#10;&#10;- Refined IntelliJ IDEA settings in `.idea/workspace.xml`, including updates to `ProblemsViewState` and `PropertiesComponent` for project consistency.  &#10;- Renamed and expanded `.junie/guidelines.md` to reflect updated best practices, project structure, and development workflows." />
+    <MESSAGE value="feat: add MCP integration and refactor documentation into modular how-to guides&quot; &#10;&#10;- Moved query files to a centralized `docs/queries/` directory for better organization.  &#10;- Added example files under `mcp/operations` to support MCP integration.  &#10;- Introduced a `docker-compose.yml` file for easier local development and deployment of services.  &#10;- Updated tests to reflect the relocation of query files.  &#10;- Enhanced IntelliJ `.idea/workspace.xml` settings for project consistency.  " />
+    <MESSAGE value="chore: add MCP integration and refactor documentation into modular how-to guides  &#10;&#10;- Moved GraphQL query samples into a new `docs/queries` directory for better organization.   &#10;- Added new queries and mutations, including `createHost.graphql` and `GetApiVersion.graphql`.  &#10;- Introduced `mcp-config.yaml` and updated `docker-compose.yml` for MCP integration.   &#10;- Updated IntelliJ `.idea/workspace.xml` settings to reflect project changes.  &#10;- Added new how-to guides (`docs/howtos`) for permissions, tags, MCP integration, and schema usage.  &#10;- Enhanced tests by updating file paths and improving sample data locations.  &#10;- Refined permissions and host group structures in `zabbix-hostgroups.ts` and `resolvers.ts`." />
+    <MESSAGE value="docs: refactor documentation and upgrade to Node.js 24&#10;&#10;This commit upgrades the project to Node.js 24 (LTS) and performs a major refactoring of the documentation to support both advanced users and AI-based automation (MCP).&#10;&#10;Changes:&#10;- Environment &amp; CI/CD:&#10;  - Set Node.js version to &gt;=24 in package.json and .nvmrc.&#10;  - Updated Dockerfile to use Node 24 base image.&#10;  - Updated @types/node to ^24.10.9.&#10;- Documentation:&#10;  - Refactored README.md with comprehensive technical reference, configuration details, and Zabbix-to-GraphQL mapping.&#10;  - Created docs/howtos/cookbook.md with practical recipes for common tasks and AI test generation.&#10;  - Updated docs/howtos/mcp.md to emphasize GraphQL's advantages for AI agents and Model Context Protocol.&#10;  - Added readme.improvement.plan.md to track documentation evolution.&#10;  - Enhanced all how-to guides with improved cross-references and up-to-date information.&#10;- Guidelines:&#10;  - Updated .junie/guidelines.md with Node 24 requirements and enhanced commit message standards (Conventional Commits 1.0.0).&#10;- Infrastructure &amp; Code:&#10;  - Updated docker-compose.yml with Apollo MCP server integration.&#10;  - Refined configuration and schema handling in src/api/ and src/datasources/.&#10;  - Synchronized generated TypeScript types with schema updates." />
+    <option name="LAST_COMMIT_MESSAGE" value="docs: refactor documentation and upgrade to Node.js 24&#10;&#10;This commit upgrades the project to Node.js 24 (LTS) and performs a major refactoring of the documentation to support both advanced users and AI-based automation (MCP).&#10;&#10;Changes:&#10;- Environment &amp; CI/CD:&#10;  - Set Node.js version to &gt;=24 in package.json and .nvmrc.&#10;  - Updated Dockerfile to use Node 24 base image.&#10;  - Updated @types/node to ^24.10.9.&#10;- Documentation:&#10;  - Refactored README.md with comprehensive technical reference, configuration details, and Zabbix-to-GraphQL mapping.&#10;  - Created docs/howtos/cookbook.md with practical recipes for common tasks and AI test generation.&#10;  - Updated docs/howtos/mcp.md to emphasize GraphQL's advantages for AI agents and Model Context Protocol.&#10;  - Added readme.improvement.plan.md to track documentation evolution.&#10;  - Enhanced all how-to guides with improved cross-references and up-to-date information.&#10;- Guidelines:&#10;  - Updated .junie/guidelines.md with Node 24 requirements and enhanced commit message standards (Conventional Commits 1.0.0).&#10;- Infrastructure &amp; Code:&#10;  - Updated docker-compose.yml with Apollo MCP server integration.&#10;  - Refined configuration and schema handling in src/api/ and src/datasources/.&#10;  - Synchronized generated TypeScript types with schema updates." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">

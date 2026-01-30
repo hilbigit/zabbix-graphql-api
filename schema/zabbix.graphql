@@ -72,7 +72,7 @@ type ZabbixItem {
     """
     lastvalue: String
     """
-    Type of information (e.g., 0 for Float, 3 for Int, 4 for Text).
+    Type of information (e.g. 0 for Float, 3 for Int, 4 for Text).
     """
     value_type: Int!
     """

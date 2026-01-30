@@ -10,7 +10,7 @@ services:
       - .env
     environment:
       - SCHEMA_PATH=/usr/app/dist/schema/
-      - ZABBIX_AUTH_TOKEN_FOR_REQUESTS=${ZABBIX_AUTH_TOKEN_FOR_REQUESTS}
+      - ZABBIX_DEVELOPMENT_TOKEN=${ZABBIX_DEVELOPMENT_TOKEN}
 
   apollo-mcp-server:
     image: ghcr.io/apollographql/apollo-mcp-server:latest

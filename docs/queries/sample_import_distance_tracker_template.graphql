@@ -21,7 +21,7 @@ mutation ImportDistanceTrackerTemplate($templates: [CreateTemplate!]!) {
 ### Variables
 The following sample defines the `DISTANCE_TRACKER` template. Note the `deviceType` tag set to `DistanceTrackerDevice`, which instructs the GraphQL API to resolve this host using the specialized `DistanceTrackerDevice` type.
 
-The item keys use the `json_` prefix where appropriate (e.g., `state.current.json_distances`) to ensure that the JSON strings received from Zabbix are automatically parsed into objects/arrays by the GraphQL resolver.
+The item keys use the `json_` prefix where appropriate (e.g. `state.current.json_distances`) to ensure that the JSON strings received from Zabbix are automatically parsed into objects/arrays by the GraphQL resolver.
 
 ```json
 {

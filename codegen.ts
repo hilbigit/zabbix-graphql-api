@@ -16,8 +16,7 @@ const config: CodegenConfig = {
                 declarationKind: 'interface'
             }
         }
-    },
-    watch: true
+    }
 };
 
 export default config;

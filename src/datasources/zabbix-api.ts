@@ -9,8 +9,8 @@ import {logger} from "../logging/logger.js";
 import {ParsedArgs, ZabbixErrorResult, ZabbixRequest, ZabbixResult} from "./zabbix-request.js";
 import {Config} from "../common_utils.js";
 
-export const zabbixRequestAuthToken = Config.ZABBIX_AUTH_TOKEN_FOR_REQUESTS
-export const zabbixSuperAuthToken = Config.ZABBIX_AUTH_TOKEN
+export const zabbixDevelopmentToken = Config.ZABBIX_DEVELOPMENT_TOKEN
+export const zabbixPrivilegeEscalationToken = Config.ZABBIX_PRIVILEGE_ESCALATION_TOKEN
 export const ZABBIX_EDGE_DEVICE_BASE_GROUP = Config.ZABBIX_EDGE_DEVICE_BASE_GROUP || Config.ZABBIX_ROADWORK_BASE_GROUP || "Roadwork"
 export const FIND_ZABBIX_EDGE_DEVICE_BASE_GROUP_PREFIX = new RegExp(`^(${ZABBIX_EDGE_DEVICE_BASE_GROUP})\/`)
 

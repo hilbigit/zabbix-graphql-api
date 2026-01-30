@@ -1,7 +1,7 @@
 # Hint: With node_version>=21.6.0 there are problems with debugging,
-# therefore the development node version is set to 21.5.0 + in order to keep dev + prod versions aligned
+# therefore the development node version is set to 24 + in order to keep dev + prod versions aligned
 # this was also reflected in the Dockerfile
-ARG node_version=21.5.0
+ARG node_version=24
 
 #stage1
 FROM node:${node_version} as builder

@@ -4,6 +4,9 @@ This directory contains detailed guides on how to use and extend the Zabbix Grap
 
 ## Available Guides
 
+### 🍳 [Cookbook](./cookbook.md)
+Practical, step-by-step recipes for common tasks, designed for both humans and AI-based test generation.
+
 ### 📊 [Schema and Schema Extension](./schema.md)
 Learn about the GraphQL schema structure, how Zabbix entities map to GraphQL types, and how to use the dynamic schema extension system.
 
@@ -16,8 +19,8 @@ Discover how the permission system works, how to define permission levels using 
 ### 🏷️ [Zabbix Tags Usage](./tags.md)
 Learn how Zabbix tags are used for device classification, host categorization, and as metadata within the GraphQL API.
 
-### 🤖 [MCP Integration](./mcp.md)
-Discover how to integrate the Zabbix GraphQL API with the Model Context Protocol (MCP) to enable LLMs to interact with your Zabbix data.
+### 🤖 [MCP & Agent Integration](./mcp.md)
+Discover how to integrate the Zabbix GraphQL API with the Model Context Protocol (MCP) to enable LLMs and autonomous agents to interact with your Zabbix data efficiently.
 
 ---
 

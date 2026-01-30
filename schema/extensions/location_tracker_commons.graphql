@@ -12,7 +12,7 @@ type SensorDistanceValue implements DeviceValue {
 
     """
     Represents the MAC address of the device. Typically formatted as a 12-character
-    hexadecimal string (e.g., "00:1A:2B:3C:4D:5E").
+    hexadecimal string (e.g. "00:1A:2B:3C:4D:5E").
     """
     mac: String
 

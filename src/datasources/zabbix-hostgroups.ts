@@ -4,7 +4,7 @@ import {
     FIND_ZABBIX_EDGE_DEVICE_BASE_GROUP_PREFIX,
     ZABBIX_EDGE_DEVICE_BASE_GROUP,
     ZabbixAPI,
-    zabbixSuperAuthToken
+    zabbixPrivilegeEscalationToken
 } from "./zabbix-api.js";
 import {logger} from "../logging/logger.js";
 import {ZabbixRequestWithPermissions} from "./zabbix-permissions.js";
@@ -23,7 +23,7 @@ const hostGroupReadWritePermissions = {
 
 export class ZabbixCreateHostGroupRequest extends ZabbixRequestWithPermissions<CreateHostGroupResult> {
     constructor(_authToken?: string | null, cookie?: string) {
-        super("hostgroup.create", zabbixSuperAuthToken, cookie, hostGroupReadWritePermissions);
+        super("hostgroup.create", zabbixPrivilegeEscalationToken, cookie, hostGroupReadWritePermissions);
     }
 }
 

@@ -8,7 +8,7 @@ import express from 'express';
 import cors from "cors";
 import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
 import {logger} from "../logging/logger.js";
-import {zabbixAPI, zabbixRequestAuthToken} from "../datasources/zabbix-api.js";
+import {zabbixAPI, zabbixDevelopmentToken} from "../datasources/zabbix-api.js";
 import {WebSocketServer} from "ws";
 import {useServer} from "graphql-ws/lib/use/ws";
 
@@ -82,7 +82,7 @@ async function startApolloServer() {
                         dataSources: {
                             zabbixAPI: zabbixAPI,
                         },
-                        zabbixAuthToken: req.headers["zabbix-auth-token"] ?? zabbixRequestAuthToken,
+                        zabbixAuthToken: req.headers["zabbix-auth-token"] ?? zabbixDevelopmentToken,
                         cookie: req.headers.cookie,
                         token: req.headers.token
                     };

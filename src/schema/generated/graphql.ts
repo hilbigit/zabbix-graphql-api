@@ -1,6 +1,8 @@
-import {DeviceCommunicationType, DeviceStatus, Permission, StorageItemType} from '../../model/model_enum_values.js';
-import {GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig} from 'graphql';
-
+import { DeviceCommunicationType } from '../../model/model_enum_values.js';
+import { StorageItemType } from '../../model/model_enum_values.js';
+import { DeviceStatus } from '../../model/model_enum_values.js';
+import { Permission } from '../../model/model_enum_values.js';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -94,7 +96,7 @@ export interface CreateItemPreprocessing {
   error_handler_params?: InputMaybe<Scalars['String']['input']>;
   /** Parameters for the preprocessing step. */
   params: Array<Scalars['String']['input']>;
-  /** Type of preprocessing step (e.g., 12 for JSONPath, 21 for JavaScript). */
+  /** Type of preprocessing step (e.g. 12 for JSONPath, 21 for JavaScript). */
   type: Scalars['Int']['input'];
 }
 
@@ -165,7 +167,7 @@ export interface CreateTemplateItem {
   delay?: InputMaybe<Scalars['String']['input']>;
   /** Description of the item. */
   description?: InputMaybe<Scalars['String']['input']>;
-  /** History storage period (e.g., '2d', '90d'). */
+  /** History storage period (e.g. '2d', '90d'). */
   history?: InputMaybe<Scalars['String']['input']>;
   /** Technical key of the item. */
   key: Scalars['String']['input'];
@@ -177,13 +179,13 @@ export interface CreateTemplateItem {
   preprocessing?: InputMaybe<Array<CreateItemPreprocessing>>;
   /** Tags to assign to the item. */
   tags?: InputMaybe<Array<CreateTag>>;
-  /** Zabbix item type (e.g., 0 for Zabbix Agent, 18 for Dependent). */
+  /** Zabbix item type (e.g. 0 for Zabbix Agent, 18 for Dependent). */
   type?: InputMaybe<Scalars['Int']['input']>;
   /** Units of the value. */
   units?: InputMaybe<Scalars['String']['input']>;
   /** Internally used unique id. */
   uuid?: InputMaybe<Scalars['String']['input']>;
-  /** Type of information (e.g., 0 for Float, 3 for Int, 4 for Text). */
+  /** Type of information (e.g. 0 for Float, 3 for Int, 4 for Text). */
   value_type?: InputMaybe<Scalars['Int']['input']>;
 }
 
@@ -266,7 +268,7 @@ export interface DeviceValueMessage {
   deviceType?: Maybe<Scalars['String']['output']>;
   /**
    * Represents the timestamp at which a specific event, message, or data point was created or recorded.
-   * The format should align with standard expectations (e.g., ISO 8601).
+   * The format should align with standard expectations (e.g. ISO 8601).
    */
   timestamp?: Maybe<Scalars['String']['output']>;
   /**
@@ -581,7 +583,7 @@ export interface OperationalDeviceData {
   error?: Maybe<Array<ErrorPayload>>;
   /** Current location of the device. */
   location?: Maybe<Location>;
-  /** Signal strength (e.g., WiFi or GSM). */
+  /** Signal strength (e.g. WiFi or GSM). */
   signalstrength?: Maybe<Scalars['Float']['output']>;
   /** Device temperature. */
   temperature?: Maybe<Scalars['Float']['output']>;
@@ -843,7 +845,7 @@ export interface UserRoleInput {
   readonly?: InputMaybe<Scalars['Int']['input']>;
   /** Specific rules for the role. */
   rules?: InputMaybe<UserRoleRulesInput>;
-  /** Type of role (e.g., 1 for User, 2 for Admin, 3 for Super Admin). */
+  /** Type of role (e.g. 1 for User, 2 for Admin, 3 for Super Admin). */
   type?: InputMaybe<Scalars['Int']['input']>;
 }
 
@@ -883,7 +885,7 @@ export interface UserRoleRule {
 export interface UserRoleRuleInput {
   /** Name of the rule/element. */
   name?: InputMaybe<Scalars['String']['input']>;
-  /** Status (e.g., 1 for enabled, 0 for disabled). */
+  /** Status (e.g. 1 for enabled, 0 for disabled). */
   status?: InputMaybe<Scalars['Int']['input']>;
 }
 
@@ -920,7 +922,7 @@ export interface UserRoleRulesInput {
   api?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Whether API access is enabled (1) or not (0). */
   api_access?: InputMaybe<Scalars['Int']['input']>;
-  /** API mode (e.g., 0 for white-list, 1 for black-list). */
+  /** API mode (e.g. 0 for white-list, 1 for black-list). */
   api_mode?: InputMaybe<Scalars['Int']['input']>;
   /** Module access rules. */
   modules?: InputMaybe<Array<UserRoleModuleInput>>;
@@ -1020,7 +1022,7 @@ export interface ZabbixItem {
   status?: Maybe<DeviceStatus>;
   /** Communication type used by the item. */
   type?: Maybe<DeviceCommunicationType>;
-  /** Type of information (e.g., 0 for Float, 3 for Int, 4 for Text). */
+  /** Type of information (e.g. 0 for Float, 3 for Int, 4 for Text). */
   value_type: Scalars['Int']['output'];
 }
 

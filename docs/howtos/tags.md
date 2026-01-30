@@ -13,7 +13,7 @@ The `hostType` tag is used to categorize hosts and templates. This allows the AP
 
 To classify a host or a template, add a tag in Zabbix:
 *   **Tag Name**: `hostType`
-*   **Tag Value**: A string representing the category (e.g., `Roadwork/Devices`, `SmartCity/Sensors`).
+*   **Tag Value**: A string representing the category (e.g. `Roadwork/Devices`, `SmartCity/Sensors`).
 
 This tag can be defined directly on the host or on a template (where linked hosts will inherit it).
 

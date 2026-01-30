@@ -58,8 +58,25 @@ To use this integration with Claude Desktop, add the following configuration to 
 
 **Note**: Ensure the `zabbix-graphql-api` is running and accessible. If running locally, you might need to use `host.docker.internal:4001/graphql` in your `mcp-config.yaml` to allow the containerized MCP server to reach your host.
 
-### Benefits of GraphQL-enabled MCP
+### Benefits of GraphQL-enabled MCP over REST
 
-- **Self-Documenting**: The GraphQL schema provides all necessary metadata for the LLM to understand how to use the tools.
-- **Efficient**: LLMs can request exactly the data they need, reducing token usage and improving response speed.
-- **Secure**: Uses the same authentication and permission model as the rest of the API.
+Integrating via GraphQL offers significant advantages for AI agents and MCP compared to the traditional Zabbix JSON-RPC (REST-like) API:
+
+- **Introspection & Discovery**: Unlike REST, GraphQL is natively introspectable. An AI agent can query the schema itself to discover all available types, fields, and operations. This allows agents to "learn" the API capabilities without manual documentation parsing.
+- **Strong Typing**: The schema provides explicit types for every field. AI agents can use this to validate their own generated queries and understand the exact data format expected or returned, reducing errors in agent-driven actions.
+- **Precision (Over-fetching/Under-fetching)**: In REST, endpoints often return fixed data structures, leading to token waste (over-fetching) or requiring multiple round-trips (under-fetching). With GraphQL, the agent requests exactly the fields it needs, which is crucial for staying within LLM context window limits and reducing latency.
+- **Single Endpoint**: AI agents only need to know one endpoint. They don't have to manage a complex tree of URL paths and HTTP methods; they simply send their intent as a GraphQL operation.
+- **Complex Relationships**: Agents can navigate complex Zabbix relationships (e.g. Host -> Items -> History) in a single request, which is much more intuitive for LLMs than orchestrating multiple REST calls.
+- **Self-Documenting**: Descriptive comments in the SDL are automatically exposed to the agent, providing immediate context for what each field represents.
+
+### AI-Based Test Generation via Cookbook
+
+The MCP server can be used in conjunction with the [**Cookbook**](./cookbook.md) to automate the generation of test cases. By providing a cookbook "recipe" to an LLM with access to the `zabbix-graphql` MCP server, the LLM can:
+
+1.  Analyze the step-by-step instructions in the recipe.
+2.  Use the MCP server's tools to inspect the current Zabbix state and schema.
+3.  Generate and execute the necessary GraphQL operations to fulfill the recipe's task.
+4.  Verify the outcome and suggest assertions for a formal test script.
+
+Example prompt for an LLM:
+> "Using the `zabbix-graphql` MCP server, follow the 'Provisioning a New Host' recipe from the cookbook. Create a host named 'Test-Host-01' in the 'Linux servers' group and link the 'ICMP Ping' template."
