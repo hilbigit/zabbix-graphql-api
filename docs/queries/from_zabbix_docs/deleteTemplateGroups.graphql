@@ -1,0 +1,18 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/templategroup/delete
+
+### Query
+```graphql
+mutation DeleteTemplateGroups($groupids: [Int!]) {
+  deleteTemplateGroups(groupids: $groupids) {
+    id
+    message
+  }
+}
+```
+
+### Variables
+```json
+{
+  "groupids": [10, 11]
+}
+```

@@ -1,0 +1,23 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/templategroup/create
+
+### Query
+```graphql
+mutation ImportTemplateGroups($templateGroups: [CreateTemplateGroup!]!) {
+  importTemplateGroups(templateGroups: $templateGroups) {
+    groupName
+    groupid
+    message
+  }
+}
+```
+
+### Variables
+```json
+{
+  "templateGroups": [
+    {
+      "groupName": "New Template Group 1"
+    }
+  ]
+}
+```

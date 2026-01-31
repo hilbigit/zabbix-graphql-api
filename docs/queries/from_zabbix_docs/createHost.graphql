@@ -1,0 +1,23 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/host/create
+
+### Query
+```graphql
+mutation CreateHost($host: String!, $hostgroupids: [Int!]!, $templateids: [Int!]!) {
+  createHost(
+    host: $host,
+    hostgroupids: $hostgroupids,
+    templateids: $templateids
+  ) {
+    hostids
+  }
+}
+```
+
+### Variables
+```json
+{
+  "host": "Linux server",
+  "hostgroupids": [50],
+  "templateids": [20045]
+}
+```

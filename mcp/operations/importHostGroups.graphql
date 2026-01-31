@@ -1,0 +1,7 @@
+mutation ImportHostGroups($hostGroups: [CreateHostGroup!]!) {
+  importHostGroups(hostGroups: $hostGroups) {
+    groupName
+    groupid
+    message
+  }
+}

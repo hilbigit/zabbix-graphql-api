@@ -1,0 +1,27 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/host/get
+
+### Query
+```graphql
+query GetAllDevices($name_pattern: String) {
+  allDevices(name_pattern: $name_pattern) {
+    hostid
+    host
+    name
+    deviceType
+    state {
+      operational {
+        temperature
+        voltage
+        signalstrength
+      }
+    }
+  }
+}
+```
+
+### Variables
+```json
+{
+  "name_pattern": "Device%"
+}
+```

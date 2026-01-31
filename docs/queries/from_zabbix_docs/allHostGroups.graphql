@@ -1,0 +1,18 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/hostgroup/get
+
+### Query
+```graphql
+query GetAllHostGroups($search_name: String) {
+  allHostGroups(search_name: $search_name) {
+    groupid
+    name
+  }
+}
+```
+
+### Variables
+```json
+{
+  "search_name": "Zabbix%"
+}
+```

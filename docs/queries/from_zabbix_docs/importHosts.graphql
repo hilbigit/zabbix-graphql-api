@@ -1,0 +1,30 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/host/create
+
+### Query
+```graphql
+mutation ImportHosts($hosts: [CreateHost!]!) {
+  importHosts(hosts: $hosts) {
+    hostid
+    deviceKey
+    message
+  }
+}
+```
+
+### Variables
+```json
+{
+  "hosts": [
+    {
+      "deviceKey": "Host 1",
+      "deviceType": "GenericDevice",
+      "groupNames": ["Zabbix servers"]
+    },
+    {
+      "deviceKey": "Host 2",
+      "deviceType": "GenericDevice",
+      "groupNames": ["Zabbix servers"]
+    }
+  ]
+}
+```

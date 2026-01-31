@@ -1,0 +1,18 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/template/get
+
+### Query
+```graphql
+query GetTemplates($name_pattern: String) {
+  templates(name_pattern: $name_pattern) {
+    templateid
+    name
+  }
+}
+```
+
+### Variables
+```json
+{
+  "name_pattern": "Template OS%"
+}
+```

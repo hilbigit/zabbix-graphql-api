@@ -1,0 +1,13 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/user/logout
+
+### Query
+```graphql
+query Logout {
+  logout
+}
+```
+
+### Variables
+```json
+{}
+```

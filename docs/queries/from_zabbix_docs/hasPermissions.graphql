@@ -1,0 +1,20 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/usergroup/get
+
+### Query
+```graphql
+query HasPermissions($permissions: [PermissionRequest!]!) {
+  hasPermissions(permissions: $permissions)
+}
+```
+
+### Variables
+```json
+{
+  "permissions": [
+    {
+      "objectName": "Read-Only-Access",
+      "permission": "READ"
+    }
+  ]
+}
+```

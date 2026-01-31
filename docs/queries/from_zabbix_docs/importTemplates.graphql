@@ -1,0 +1,32 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/template/create
+
+### Query
+```graphql
+mutation ImportTemplates($templates: [CreateTemplate!]!) {
+  importTemplates(templates: $templates) {
+    templateid
+    host
+    message
+  }
+}
+```
+
+### Variables
+```json
+{
+  "templates": [
+    {
+      "host": "New Template 1",
+      "groupNames": ["Templates/Operating systems"],
+      "items": [
+        {
+          "name": "Custom item",
+          "key": "custom.item",
+          "value_type": 3,
+          "history": "90d"
+        }
+      ]
+    }
+  ]
+}
+```

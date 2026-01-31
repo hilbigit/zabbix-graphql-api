@@ -1,0 +1,26 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/hostgroup/create
+
+### Query
+```graphql
+mutation ImportHostGroups($hostGroups: [CreateHostGroup!]!) {
+  importHostGroups(hostGroups: $hostGroups) {
+    groupName
+    groupid
+    message
+  }
+}
+```
+
+### Variables
+```json
+{
+  "hostGroups": [
+    {
+      "groupName": "New Host Group 1"
+    },
+    {
+      "groupName": "New Host Group 2"
+    }
+  ]
+}
+```

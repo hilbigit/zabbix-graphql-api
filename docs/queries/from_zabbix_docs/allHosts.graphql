@@ -1,0 +1,34 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/host/get
+
+### Query
+```graphql
+query GetAllHosts($name_pattern: String, $groupids: [Int!]) {
+  allHosts(name_pattern: $name_pattern, groupids: $groupids) {
+    hostid
+    host
+    name
+    deviceType
+    hostgroups {
+      groupid
+      name
+    }
+    ... on ZabbixHost {
+      tags
+      items {
+        itemid
+        name
+        key_
+        lastvalue
+      }
+    }
+  }
+}
+```
+
+### Variables
+```json
+{
+  "name_pattern": "Linux%",
+  "groupids": [2]
+}
+```

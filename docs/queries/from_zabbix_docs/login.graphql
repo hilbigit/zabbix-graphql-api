@@ -1,0 +1,16 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/user/login
+
+### Query
+```graphql
+query Login($username: String!, $password: String!) {
+  login(username: $username, password: $password)
+}
+```
+
+### Variables
+```json
+{
+  "username": "Admin",
+  "password": "zabbix_password"
+}
+```

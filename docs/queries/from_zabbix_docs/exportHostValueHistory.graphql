@@ -1,0 +1,24 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/history/get
+
+### Query
+```graphql
+query ExportHostValueHistory($host_filter: [String!], $itemKey_filter: [String!], $limit: Int) {
+  exportHostValueHistory(
+    host_filter: $host_filter,
+    itemKey_filter: $itemKey_filter,
+    limit: $limit,
+    type: FLOAT
+  ) {
+    result
+  }
+}
+```
+
+### Variables
+```json
+{
+  "host_filter": ["Linux server"],
+  "itemKey_filter": ["system.cpu.load[all,avg1]"],
+  "limit": 10
+}
+```

@@ -12,6 +12,63 @@ To generate a test case from a recipe:
 
 ---
 
+## 🍳 Recipe: Executing Zabbix 7.4 Documentation Samples
+
+This recipe shows how to execute standard Zabbix 7.4 API examples using their GraphQL equivalents. These samples are directly derived from the official Zabbix documentation and adapted for use with this GraphQL API.
+
+### 📋 Prerequisites
+- Zabbix GraphQL API is running.
+- You have a valid Zabbix user account and are logged in (or have an auth token).
+
+### 🛠️ Step 1: Browse Available Samples
+All samples derived from the Zabbix 7.4 documentation are stored in the following directory:
+- `docs/queries/from_zabbix_docs/`
+
+Each `.graphql` file in this directory contains a reference link to the original Zabbix documentation source.
+
+### ⚙️ Step 2: Extract Query and Variables
+Each sample file in `docs/queries/from_zabbix_docs/` is structured to include both the GraphQL operation and a corresponding set of sample variables.
+
+1.  **Open the Sample**: Open the desired `.graphql` file (e.g. `createHost.graphql`).
+2.  **Copy the Query**: Copy the GraphQL code block found under the `### Query` header.
+3.  **Copy the Variables**: Copy the JSON code block found under the `### Variables` header.
+
+### 🚀 Step 3: Execution/Action
+Choose a sample and execute it against the GraphQL endpoint using your preferred client (like Apollo Studio, GraphiQL, or Postman).
+
+- **Configure the Request**:
+    - Paste the **Query** into the operation window.
+    - Paste the **Variables** JSON into the variables window.
+- **Run the Operation**: Click "Execute" or "Play".
+
+#### Example: Creating a Host
+Using the content from `docs/queries/from_zabbix_docs/createHost.graphql`:
+
+**Query**:
+```graphql
+mutation CreateHost($host: String!, $hostgroupids: [Int!]!, $templateids: [Int!]!) {
+  createHost(host: $host, hostgroupids: $hostgroupids, templateids: $templateids) {
+    hostids
+  }
+}
+```
+
+**Variables**:
+```json
+{
+  "host": "Linux server",
+  "hostgroupids": [50],
+  "templateids": [20045]
+}
+```
+
+### ✅ Step 4: Verification
+Compare the GraphQL response with the expected output described in the Zabbix documentation. Note that while the field names in GraphQL match the Zabbix API field names (e.g. `hostid`, `host`), the structure is simplified and nested objects (like `hostgroups`) can be queried directly without separate `selectXXX` parameters.
+
+- *Reference*: [Zabbix 7.4 API Documentation](https://www.zabbix.com/documentation/7.4/en/manual/api)
+
+---
+
 ## 🍳 Recipe: Extending Schema with a New Device Type
 
 This recipe shows how to add support for a new specialized device type without modifying the core API code. We will use the `DistanceTrackerDevice` as an example.

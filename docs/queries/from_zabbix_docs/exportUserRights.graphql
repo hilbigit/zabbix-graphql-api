@@ -1,0 +1,28 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/usergroup/get
+
+### Query
+```graphql
+query ExportUserRights($name_pattern: String) {
+  exportUserRights(name_pattern: $name_pattern) {
+    userGroups {
+      usrgrpid
+      name
+      hostgroup_rights {
+        name
+        permission
+      }
+    }
+    userRoles {
+      roleid
+      name
+    }
+  }
+}
+```
+
+### Variables
+```json
+{
+  "name_pattern": "Zabbix%"
+}
+```

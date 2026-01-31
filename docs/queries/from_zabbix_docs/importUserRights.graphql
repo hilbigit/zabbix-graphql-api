@@ -1,0 +1,45 @@
+# Source: https://www.zabbix.com/documentation/7.4/en/manual/api/reference/usergroup/create
+
+### Query
+```graphql
+mutation ImportUserRights($input: UserRightsInput!, $dryRun: Boolean!) {
+  importUserRights(input: $input, dryRun: $dryRun) {
+    userGroups {
+      id
+      name
+      message
+    }
+    userRoles {
+      id
+      name
+      message
+    }
+  }
+}
+```
+
+### Variables
+```json
+{
+  "dryRun": true,
+  "input": {
+    "userGroups": [
+      {
+        "name": "New User Group",
+        "hostgroup_rights": [
+          {
+            "name": "Zabbix servers",
+            "permission": "READ"
+          }
+        ]
+      }
+    ],
+    "userRoles": [
+      {
+        "name": "New Role",
+        "type": 1
+      }
+    ]
+  }
+}
+```
