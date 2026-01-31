@@ -14,24 +14,45 @@ To generate a test case from a recipe:
 
 ## 🍳 Recipe: Extending Schema with a New Device Type
 
-This recipe shows how to add support for a new specialized device type without modifying the core API code.
+This recipe shows how to add support for a new specialized device type without modifying the core API code. We will use the `DistanceTrackerDevice` as an example.
 
 ### 📋 Prerequisites
 - Zabbix Template Group `Templates/Roadwork/Devices` exists.
 - Zabbix GraphQL API is running.
 
 ### 🛠️ Step 1: Define the Schema Extension
-Create a new `.graphql` file in `schema/extensions/` (e.g. `distance_tracker.graphql`):
+Create a new `.graphql` file in `schema/extensions/` (e.g. `distance_tracker.graphql`). 
+
+> **Advice**: A new device type must always implement both the `Host` and `Device` interfaces to ensure compatibility with the API's core logic and resolvers.
+
 ```graphql
-type DistanceTrackerDevice {
-  id: String
+type DistanceTrackerDevice implements Host & Device {
+  # Mandatory Host & Device fields
+  hostid: ID!
+  host: String!
+  deviceType: String
+  hostgroups: [HostGroup!]
   name: String
-  location: Location
-  distance: Float
-  batteryLevel: Float
-  lastSeen: DateTime
+  tags: DeviceConfig
+  
+  # Specialized state for this device
+  state: DistanceTrackerState
+}
+
+type DistanceTrackerState implements DeviceState {
+  operational: OperationalDeviceData
+  current: DistanceTrackerValues
+}
+
+type DistanceTrackerValues {
+  timeFrom: Time
+  timeUntil: Time
+  count: Int
+  distances: [SensorDistanceValue!]
 }
 ```
+
+> **Reference**: This example is based on the already prepared sample: [location_tracker_devices.graphql](../../schema/extensions/location_tracker_devices.graphql).
 
 ### ⚙️ Step 2: Configure Environment Variables
 Add the new schema and resolver to your `.env` file:
@@ -41,8 +62,67 @@ ADDITIONAL_RESOLVERS=DistanceTrackerDevice
 ```
 Restart the API server.
 
-### 🚀 Step 3: Import the Template
-Execute the `importTemplates` mutation to create the template in Zabbix. Use Zabbix item keys that match your GraphQL fields (e.g. `distance.current` for `distance`).
+### 🚀 Step 3: Execution/Action (Choose Method)
+
+#### Method A: Manual Creation in Zabbix
+If you prefer to configure Zabbix manually:
+1.  **Create Template**: Create a template named `Distance Tracker Device`.
+2.  **Create Items**: Add items with keys that match the GraphQL fields:
+    *   `state.current.timeFrom`
+    *   `state.current.timeUntil`
+    *   `state.current.count`
+    *   `state.current.json_distances` (maps to `distances` array)
+3.  **Add Tag**: Add a host tag to the template with name `deviceType` and value `DistanceTrackerDevice`.
+
+#### Method B: Automated Import
+Execute the `importTemplates` mutation to create the template and items automatically. 
+> **Reference**: Use the [Sample: Distance Tracker Import](../../docs/queries/sample_import_distance_tracker_template.graphql) for a complete mutation and variables example.
+
+### ✅ Step 4: Verify the Extension
+Verify that the new type is available and correctly mapped by creating a test host and querying it.
+
+#### 1. Create a Test Host
+Use the `importHosts` mutation to create a host and explicitly set its `deviceType` to `DistanceTrackerDevice`.
+```graphql
+mutation CreateTestDistanceTracker($host: String!, $groupNames: [String!]!) {
+  importHosts(hosts: [{
+    deviceKey: $host,
+    deviceType: "DistanceTrackerDevice",
+    groupNames: $groupNames
+  }]) {
+    hostid
+    message
+  }
+}
+```
+
+#### 2. Query the Device
+Query the newly created device. Use the `tag_deviceType: ["DistanceTrackerDevice"]` argument to ensure you only retrieve devices of this specific type and prevent showing all devices.
+```graphql
+query VerifyNewDeviceType {
+  # 1. Check if the type exists in the schema
+  __type(name: "DistanceTrackerDevice") {
+    name
+    fields {
+      name
+    }
+  }
+  # 2. Query the specific device
+  allDevices(tag_deviceType: ["DistanceTrackerDevice"]) {
+    ... on DistanceTrackerDevice {
+      name
+      state {
+        current {
+          count
+          distances {
+            distance
+          }
+        }
+      }
+    }
+  }
+}
+```
 
 > **Reference**: See how items map to fields in the [Zabbix to GraphQL Mapping](../../README.md#zabbix-to-graphql-mapping).
 
@@ -71,6 +151,20 @@ mutation CreateNewHost($host: String!, $groups: [Int!]!, $templates: [Int!]!) {
 }
 ```
 
+### ✅ Step 3: Verify Host Creation
+Check if the host is correctly provisioned and linked to groups:
+```graphql
+query VerifyHost($host: String!) {
+  allHosts(filter_host: $host) {
+    hostid
+    host
+    hostgroups {
+      name
+    }
+  }
+}
+```
+
 ---
 
 ## 🍳 Recipe: Managing User Permissions
@@ -81,7 +175,8 @@ Create a template group with the prefix `Permissions/` in Zabbix (e.g. `Permissi
 ### ⚙️ Step 2: Assign to User Group
 In Zabbix, give a User Group `Read` access to this template group.
 
-### 🚀 Step 3: Verify via API
+### ✅ Step 3: Verify via API
+Verify that the current user has the expected permissions:
 ```graphql
 query CheckMyPermissions {
   hasPermissions(permissions: [
@@ -120,6 +215,22 @@ mutation BulkProvisioning($templates: [CreateTemplate!]!, $hosts: [CreateHost!]!
 }
 ```
 
+### ✅ Step 4: Verify Bulk Import
+Verify that all entities were created and linked correctly:
+```graphql
+query VerifyBulkImport($pattern: String!) {
+  allHosts(name_pattern: $pattern) {
+    hostid
+    host
+    ... on ZabbixHost {
+      parentTemplates {
+        name
+      }
+    }
+  }
+}
+```
+
 For detailed examples of the input structures, refer to [Sample Import Templates](../../docs/queries/sample_import_templates_mutation.graphql) and [Sample Import Hosts](../../docs/queries/sample_import_hosts_mutation.graphql).
 
 ---
@@ -132,7 +243,10 @@ This recipe guides you through setting up the Model Context Protocol (MCP) serve
 - **Zabbix GraphQL API**: Ensure the API is running (e.g. `npm run start`).
 - **Docker**: Installed and running for the MCP server container.
 
-### 🛠️ Setup A: JetBrains IDE (AI Chat & Junie)
+### 🛠️ Step 1: Configure the MCP Server
+Choose one of the following setups:
+
+#### Setup A: JetBrains IDE (AI Chat & Junie)
 Configure the IDE to use the GraphQL MCP server for both the built-in AI Chat and the **Junie agent**.
 - **Prerequisite**: Generate the combined schema file (run this in your project root):
   ```bash
@@ -148,9 +262,8 @@ Configure the IDE to use the GraphQL MCP server for both the built-in AI Chat an
     ```text
     run -i --rm -v ${PROJECT_DIR}/mcp-config.yaml:/mcp-config.yaml -v ${PROJECT_DIR}/schema.graphql:/mcp-data/schema.graphql:ro -v ${PROJECT_DIR}/mcp/operations:/mcp/operations -e APOLLO_GRAPH_REF=local@main ghcr.io/apollographql/apollo-mcp-server:latest /mcp-config.yaml
     ```
-- **Verify**: Ask the AI Chat or Junie: "Use MCP to list the configured Zabbix hosts".
 
-### 🛠️ Setup B: Claude Desktop
+#### Setup B: Claude Desktop
 Connect Claude Desktop to the Zabbix GraphQL API by referring to the [Apollo GraphQL MCP Documentation](https://github.com/apollographql/apollo-mcp-server).
 - **Prerequisite**: Generate the combined schema file (run this in your project root):
   ```bash
@@ -179,6 +292,15 @@ Connect Claude Desktop to the Zabbix GraphQL API by referring to the [Apollo Gra
   }
   ```
 - **Restart Claude**: Fully restart the Claude Desktop application to apply the changes.
+
+### 🚀 Step 2: Use an AI Agent
+Provide the recipe to your AI agent and ask it to perform a task.
+- **Example**: "Use MCP to list the configured Zabbix hosts".
+
+### ✅ Step 3: Verify via Agent
+Confirm that the agent can successfully interact with the API:
+- Ask: "What is the current version of the Zabbix API?"
+- The agent should use the `apiVersion` query and respond with the version number.
 
 ### 💡 Alternative: Using Pre-running MCP Server
 If you already have the MCP server running locally (e.g. via `docker-compose.yml`), you can use a simpler configuration.

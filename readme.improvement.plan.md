@@ -71,6 +71,17 @@ This plan outlines the steps to refactor and improve the Zabbix GraphQL API docu
 - [x] Add explicit "See also" or "Related Recipes" links in reference sections.
 - [x] Link from recipes back to technical reference material for deep-dives.
 
+## Priority 7: Standardization & Verification (New)
+
+### 7.1 Cookbook Verification Steps
+- [x] Add a result verification step to each recipe in `cookbook.md`.
+- [x] Ensure verification steps use GraphQL queries or agent checks where appropriate.
+- [x] Refine 'Extending Schema' recipe with detailed manual/automated steps and comprehensive verification (Priority 7 enhancement).
+
+### 7.2 Recipe Templating
+- [x] Define a standard template for recipes in `.junie/guidelines.md`.
+- [x] Standardize icons and step naming (🛠️, ⚙️, 🚀, ✅).
+
 ## Implementation Order
 1. [x] **Foundation**: Update `README.md` with missing reference information from public origin.
 2. [x] **Cookbook Alpha**: Create `docs/howtos/cookbook.md` with the first set of recipes.
@@ -79,6 +90,7 @@ This plan outlines the steps to refactor and improve the Zabbix GraphQL API docu
 5. [x] **Cross-Linking**: Optimize all links and cross-references.
 6. [x] **Optimize**: Run import optimization across the project.
 7. [x] **Refine & DRY**: Execute Priority 6 tasks to further clean up and structure documentation.
+8. [x] **Standardize**: Add verification steps and formalize the recipe template (Priority 7).
 
 ## Success Metrics
 - All environment variables documented.
@@ -86,3 +98,5 @@ This plan outlines the steps to refactor and improve the Zabbix GraphQL API docu
 - Functional MCP-based test generation using cookbook instructions.
 - Accurate representation of features and compatibility.
 - Zero redundant tables or instructional blocks across the doc set.
+- All recipes include a verification step.
+- Guidelines contain a clear template for future recipes.

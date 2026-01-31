@@ -53,6 +53,45 @@ The [Roadmap](../roadmap.md) is to be considered as outlook giving constraints o
     - *Format*: Use plain text for general descriptions that follow a primary list item.
 - **Formatting**: Avoid extra blank lines between headers and list items.
 
+## Documentation Templates
+
+### Cookbook & Recipes
+Follow this template for all cookbook entries to ensure consistency and AI-parsability.
+
+#### Recipe Template
+```markdown
+## 🍳 Recipe: [Action-Oriented Title]
+
+[Brief description of what this recipe achieves.]
+
+### 📋 Prerequisites
+- [Constraint 1]
+- [Constraint 2]
+
+### 🛠️ Step 1: [Preparation/Definition]
+[Instructions for preparing data or environment.]
+
+### ⚙️ Step 2: [Configuration/Settings]
+[Instructions for configuring settings or environment variables.]
+
+### 🚀 Step 3: [Execution/Action]
+[The main GraphQL operation or command to execute.]
+
+### ✅ Step 4: [Verification]
+[How to verify that the operation was successful using a query or agent check.]
+```
+
+#### Standard Icons for Steps
+- 🍳 **Recipe**: Main header icon.
+- 📋 **Prerequisites**: Necessary conditions before starting.
+- 🛠️ **Preparation**: Initial setup, data definition, or file creation.
+- ⚙️ **Configuration**: Changes to settings, `.env`, or Zabbix UI.
+- 🚀 **Execution**: The primary action or mutation.
+- ✅ **Verification**: Result checking and outcome validation.
+- 💡 **Tip/Alternative**: Helpful hints or alternative methods.
+- 🤖 **AI/MCP**: Agent-specific instructions.
+
 ### Git Standards
 - **Commit Messages:** Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) (e.g. `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`, `style:`).
     - If a commit is complex and covers different aspects, the message **must** always contain a detailed list of what was changed within the optional "body" section, in addition to the short "description" in the header.
+- **Review & Approval**: Never commit changes automatically. Always present the proposed changes and the updated plan to the user for review. Allow the user to provide feedback or add tasks to the plan before proceeding with a commit.
