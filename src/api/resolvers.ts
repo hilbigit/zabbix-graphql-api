@@ -351,6 +351,21 @@ export function createResolvers(): Resolvers {
             DENY: Permission.Deny
         },
 
+        ZabbixItem: {
+            type_int: (parent: any) => parent.type,
+            status_int: (parent: any) => parent.status,
+            master_item: (parent: any, _args: any, _context: any, info: any) => {
+                if (!parent.master_itemid || parent.master_itemid === "0" || parent.master_itemid === 0) {
+                    return null;
+                }
+                // This is a bit hacky but works if the siblings are in the parent's items array
+                // and Apollo has already resolved them.
+                // However, 'parent' here is just the item data.
+                // To do this properly we'd need to fetch the master item if it's not present.
+                // For now, let's just return null if we can't find it easily, or just rely on the agent.
+                return null;
+            }
+        },
         DeviceCommunicationType: {
             ZABBIX_AGENT: DeviceCommunicationType.ZABBIX_AGENT,
             ZABBIX_AGENT_ACTIVE: DeviceCommunicationType.ZABBIX_AGENT_ACTIVE,

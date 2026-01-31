@@ -304,6 +304,83 @@ For detailed examples of the input structures, refer to [Sample Import Templates
 
 ---
 
+## 🍳 Recipe: Cloning a Template with Items
+
+This recipe guides you through cloning an existing Zabbix template, including all its items and their configurations, into a new template using the GraphQL API and MCP.
+
+### 📋 Prerequisites
+- Zabbix GraphQL API is running.
+- You have the technical name of the source template.
+
+### 🛠️ Step 1: Query the Source Template
+Retrieve the source template's details and all its items.
+
+**GraphQL Query**:
+```graphql
+query GetSourceTemplate($name: String!) {
+  templates(name_pattern: $name) {
+    host
+    name
+    items {
+      itemid
+      name
+      key_
+      type_int
+      value_type
+      status_int
+      history
+      delay
+      units
+      description
+      preprocessing
+      tags
+      master_itemid
+    }
+  }
+}
+```
+
+### ⚙️ Step 2: Prepare the Clone Configuration
+1.  **Technical Names**: Choose a new technical name (`host`) and visible name (`name`) for the clone.
+2.  **Item Mapping**: Map the source items to the `items` array in the `importTemplates` mutation.
+3.  **Resolve Master Items**: For dependent items (where `master_itemid` > 0), find the source item with the matching `itemid` and use its `key_` as the `master_item.key` in the new item definition.
+
+### 🚀 Step 3: Execute `importTemplates` Mutation
+Execute the mutation to create the clone.
+
+```graphql
+mutation CloneTemplate($templates: [CreateTemplate!]!) {
+  importTemplates(templates: $templates) {
+    host
+    templateid
+    message
+  }
+}
+```
+
+### ✅ Step 4: Verification
+Verify that the cloned template exists and has the expected items.
+
+```graphql
+query VerifyClone($host: String!) {
+  templates(name_pattern: $host) {
+    templateid
+    host
+    items {
+      name
+      key_
+    }
+  }
+}
+```
+
+### 🤖 AI/MCP
+AI agents can use the following MCP tools to automate this:
+- **GetTemplates**: To fetch the source template and its hierarchical item structure.
+- **ImportTemplates**: To provision the new cloned template.
+
+---
+
 ## 🍳 Recipe: Setting up GraphQL MCP for AI Agents
 
 This recipe guides you through setting up the Model Context Protocol (MCP) server to enable AI agents like **Junie** or **Claude** to interact with your Zabbix data through the GraphQL API.

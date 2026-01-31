@@ -1,0 +1,12 @@
+# Import templates into Zabbix.
+# This operation allows creating or updating templates with their groups, items, and linked templates.
+mutation ImportTemplates($templates: [CreateTemplate!]!) {
+  importTemplates(templates: $templates) {
+    host
+    templateid
+    message
+    error {
+      message
+    }
+  }
+}

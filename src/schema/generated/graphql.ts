@@ -816,6 +816,10 @@ export { StorageItemType };
 /** Represents a Zabbix template. */
 export interface Template {
   __typename?: 'Template';
+  /** Technical name of the template. */
+  host: Scalars['String']['output'];
+  /** List of items for this template. */
+  items?: Maybe<Array<ZabbixItem>>;
   /** Name of the template. */
   name?: Maybe<Scalars['String']['output']>;
   /** Internal Zabbix ID of the template. */
@@ -1064,6 +1068,12 @@ export interface ZabbixItem {
   __typename?: 'ZabbixItem';
   /** Attribute name if this item is part of a hierarchical mapping. */
   attributeName?: Maybe<Scalars['String']['output']>;
+  /** Update interval. */
+  delay?: Maybe<Scalars['String']['output']>;
+  /** Description of the item. */
+  description?: Maybe<Scalars['String']['output']>;
+  /** History storage period (e.g. '2d', '90d'). */
+  history?: Maybe<Scalars['String']['output']>;
   /** Internal Zabbix ID of the host this item belongs to. */
   hostid?: Maybe<Scalars['Int']['output']>;
   /** Hosts that this item is linked to. */
@@ -1076,12 +1086,26 @@ export interface ZabbixItem {
   lastclock?: Maybe<Scalars['Int']['output']>;
   /** Last value retrieved for this item. */
   lastvalue?: Maybe<Scalars['String']['output']>;
+  /** Master item for dependent items. */
+  master_item?: Maybe<ZabbixItem>;
+  /** Master item ID for dependent items. */
+  master_itemid?: Maybe<Scalars['Int']['output']>;
   /** Visible name of the item. */
   name: Scalars['String']['output'];
+  /** Preprocessing steps for the item. */
+  preprocessing?: Maybe<Array<Scalars['JSONObject']['output']>>;
   /** Status of the item (ENABLED or DISABLED). */
   status?: Maybe<DeviceStatus>;
+  /** Raw Zabbix item status as integer. */
+  status_int?: Maybe<Scalars['Int']['output']>;
+  /** Tags assigned to the item. */
+  tags?: Maybe<Array<Scalars['JSONObject']['output']>>;
   /** Communication type used by the item. */
   type?: Maybe<DeviceCommunicationType>;
+  /** Raw Zabbix item type as integer. */
+  type_int?: Maybe<Scalars['Int']['output']>;
+  /** Units of the value. */
+  units?: Maybe<Scalars['String']['output']>;
   /** Type of information (e.g. 0 for Float, 3 for Int, 4 for Text). */
   value_type: Scalars['Int']['output'];
 }
@@ -1162,7 +1186,7 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
   DeviceValueMessage: never;
   Error: ( ApiError );
   GpsPosition: ( Location );
-  Host: ( GenericDevice ) | ( Omit<ZabbixHost, 'items'> & { items?: Maybe<Array<_RefType['ZabbixItem']>> } );
+  Host: ( GenericDevice ) | ( Omit<ZabbixHost, 'items' | 'parentTemplates'> & { items?: Maybe<Array<_RefType['ZabbixItem']>>, parentTemplates?: Maybe<Array<_RefType['Template']>> } );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -1220,7 +1244,7 @@ export type ResolversTypes = {
   SortOrder: SortOrder;
   StorageItemType: StorageItemType;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Template: ResolverTypeWrapper<Template>;
+  Template: ResolverTypeWrapper<Omit<Template, 'items'> & { items?: Maybe<Array<ResolversTypes['ZabbixItem']>> }>;
   Time: ResolverTypeWrapper<Scalars['Time']['output']>;
   UserGroup: ResolverTypeWrapper<UserGroup>;
   UserGroupInput: UserGroupInput;
@@ -1238,8 +1262,8 @@ export type ResolversTypes = {
   WidgetPreview: ResolverTypeWrapper<WidgetPreview>;
   ZabbixGroupRight: ResolverTypeWrapper<ZabbixGroupRight>;
   ZabbixGroupRightInput: ZabbixGroupRightInput;
-  ZabbixHost: ResolverTypeWrapper<Omit<ZabbixHost, 'items'> & { items?: Maybe<Array<ResolversTypes['ZabbixItem']>> }>;
-  ZabbixItem: ResolverTypeWrapper<Omit<ZabbixItem, 'hosts'> & { hosts?: Maybe<Array<ResolversTypes['Host']>> }>;
+  ZabbixHost: ResolverTypeWrapper<Omit<ZabbixHost, 'items' | 'parentTemplates'> & { items?: Maybe<Array<ResolversTypes['ZabbixItem']>>, parentTemplates?: Maybe<Array<ResolversTypes['Template']>> }>;
+  ZabbixItem: ResolverTypeWrapper<Omit<ZabbixItem, 'hosts' | 'master_item'> & { hosts?: Maybe<Array<ResolversTypes['Host']>>, master_item?: Maybe<ResolversTypes['ZabbixItem']> }>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -1292,7 +1316,7 @@ export type ResolversParentTypes = {
   SmoketestResponse: SmoketestResponse;
   SmoketestStep: SmoketestStep;
   String: Scalars['String']['output'];
-  Template: Template;
+  Template: Omit<Template, 'items'> & { items?: Maybe<Array<ResolversParentTypes['ZabbixItem']>> };
   Time: Scalars['Time']['output'];
   UserGroup: UserGroup;
   UserGroupInput: UserGroupInput;
@@ -1310,8 +1334,8 @@ export type ResolversParentTypes = {
   WidgetPreview: WidgetPreview;
   ZabbixGroupRight: ZabbixGroupRight;
   ZabbixGroupRightInput: ZabbixGroupRightInput;
-  ZabbixHost: Omit<ZabbixHost, 'items'> & { items?: Maybe<Array<ResolversParentTypes['ZabbixItem']>> };
-  ZabbixItem: Omit<ZabbixItem, 'hosts'> & { hosts?: Maybe<Array<ResolversParentTypes['Host']>> };
+  ZabbixHost: Omit<ZabbixHost, 'items' | 'parentTemplates'> & { items?: Maybe<Array<ResolversParentTypes['ZabbixItem']>>, parentTemplates?: Maybe<Array<ResolversParentTypes['Template']>> };
+  ZabbixItem: Omit<ZabbixItem, 'hosts' | 'master_item'> & { hosts?: Maybe<Array<ResolversParentTypes['Host']>>, master_item?: Maybe<ResolversParentTypes['ZabbixItem']> };
 };
 
 export type ApiErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['ApiError'] = ResolversParentTypes['ApiError']> = {
@@ -1572,6 +1596,8 @@ export type SmoketestStepResolvers<ContextType = any, ParentType extends Resolve
 export type StorageItemTypeResolvers = EnumResolverSignature<{ FLOAT?: any, INT?: any, TEXT?: any }, ResolversTypes['StorageItemType']>;
 
 export type TemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['Template'] = ResolversParentTypes['Template']> = {
+  host?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  items?: Resolver<Maybe<Array<ResolversTypes['ZabbixItem']>>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   templateid?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1670,15 +1696,25 @@ export type ZabbixHostResolvers<ContextType = any, ParentType extends ResolversP
 
 export type ZabbixItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['ZabbixItem'] = ResolversParentTypes['ZabbixItem']> = {
   attributeName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  delay?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  history?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hostid?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   hosts?: Resolver<Maybe<Array<ResolversTypes['Host']>>, ParentType, ContextType>;
   itemid?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   key_?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   lastclock?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   lastvalue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  master_item?: Resolver<Maybe<ResolversTypes['ZabbixItem']>, ParentType, ContextType>;
+  master_itemid?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  preprocessing?: Resolver<Maybe<Array<ResolversTypes['JSONObject']>>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['DeviceStatus']>, ParentType, ContextType>;
+  status_int?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  tags?: Resolver<Maybe<Array<ResolversTypes['JSONObject']>>, ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes['DeviceCommunicationType']>, ParentType, ContextType>;
+  type_int?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  units?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   value_type?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

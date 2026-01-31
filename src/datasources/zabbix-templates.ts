@@ -1,18 +1,28 @@
-import {ZabbixRequest, ParsedArgs, isZabbixErrorResult} from "./zabbix-request.js";
+import {ZabbixRequest, ParsedArgs, isZabbixErrorResult, ZabbixParams} from "./zabbix-request.js";
 import {ZabbixAPI} from "./zabbix-api.js";
 import {logger} from "../logging/logger.js";
 
 
 export interface ZabbixQueryTemplateResponse {
     templateid: string,
+    host: string,
     uuid: string,
     name: string,
+    items?: any[]
 }
 
 
 export class ZabbixQueryTemplatesRequest extends ZabbixRequest<ZabbixQueryTemplateResponse[]> {
     constructor(authToken?: string | null, cookie?: string | null,) {
         super("template.get", authToken, cookie);
+    }
+
+    createZabbixParams(args?: ParsedArgs): ZabbixParams {
+        return {
+            "selectItems": "extend",
+            "output": "extend",
+            ...args?.zabbix_params
+        };
     }
 }
 

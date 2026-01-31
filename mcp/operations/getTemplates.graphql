@@ -1,0 +1,21 @@
+query GetTemplates($name_pattern: String) {
+  templates(name_pattern: $name_pattern) {
+    templateid
+    host
+    name
+    items {
+      name
+      key_
+      type
+      value_type
+      status
+      history
+      delay
+      units
+      description
+      preprocessing
+      tags
+      master_itemid
+    }
+  }
+}

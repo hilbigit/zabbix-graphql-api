@@ -88,9 +88,49 @@ type ZabbixItem {
     """
     type: DeviceCommunicationType
     """
+    Raw Zabbix item type as integer.
+    """
+    type_int: Int
+    """
+    Raw Zabbix item status as integer.
+    """
+    status_int: Int
+    """
     Hosts that this item is linked to.
     """
     hosts: [Host!]
+    """
+    History storage period (e.g. '2d', '90d').
+    """
+    history: String
+    """
+    Update interval.
+    """
+    delay: String
+    """
+    Units of the value.
+    """
+    units: String
+    """
+    Description of the item.
+    """
+    description: String
+    """
+    Preprocessing steps for the item.
+    """
+    preprocessing: [JSONObject!]
+    """
+    Tags assigned to the item.
+    """
+    tags: [JSONObject!]
+    """
+    Master item ID for dependent items.
+    """
+    master_itemid: Int
+    """
+    Master item for dependent items.
+    """
+    master_item: ZabbixItem
 }
 
 """
@@ -182,9 +222,17 @@ type Template {
     """
     templateid: String!
     """
+    Technical name of the template.
+    """
+    host: String!
+    """
     Name of the template.
     """
     name: String
+    """
+    List of items for this template.
+    """
+    items: [ZabbixItem!]
 }
 
 """

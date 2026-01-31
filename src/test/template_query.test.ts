@@ -37,7 +37,10 @@ describe("Template Resolver", () => {
         expect(zabbixAPI.post).toHaveBeenCalledWith("template.get", expect.objectContaining({
             body: expect.objectContaining({
                 method: "template.get",
-                params: {}
+                params: expect.objectContaining({
+                    output: "extend",
+                    selectItems: "extend"
+                })
             })
         }));
     });
