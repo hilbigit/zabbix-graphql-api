@@ -48,6 +48,7 @@ type DistanceTrackerValues {
   timeFrom: Time
   timeUntil: Time
   count: Int
+  # The distances are modelled using a type which is already defined in location_tracker_commons.graphql
   distances: [SensorDistanceValue!]
 }
 ```
@@ -57,7 +58,7 @@ type DistanceTrackerValues {
 ### ⚙️ Step 2: Configure Environment Variables
 Add the new schema and resolver to your `.env` file:
 ```env
-ADDITIONAL_SCHEMAS=./schema/extensions/distance_tracker.graphql
+ADDITIONAL_SCHEMAS=./schema/extensions/distance_tracker.graphql,./schema/extensions/location_tracker_commons.graphql
 ADDITIONAL_RESOLVERS=DistanceTrackerDevice
 ```
 Restart the API server.
@@ -66,12 +67,12 @@ Restart the API server.
 
 #### Method A: Manual Creation in Zabbix
 If you prefer to configure Zabbix manually:
-1.  **Create Template**: Create a template named `Distance Tracker Device`.
-2.  **Create Items**: Add items with keys that match the GraphQL fields:
+1.  **Create Template**: Create a template named `DISTANCE_TRACKER`.
+2.  **Create Items**: Add items with keys that match the GraphQL fields (using hierarchical mapping):
     *   `state.current.timeFrom`
     *   `state.current.timeUntil`
     *   `state.current.count`
-    *   `state.current.json_distances` (maps to `distances` array)
+    *   `state.current.json_distances` (maps to `distances` array via `json_` prefix)
 3.  **Add Tag**: Add a host tag to the template with name `deviceType` and value `DistanceTrackerDevice`.
 
 #### Method B: Automated Import
@@ -82,7 +83,8 @@ Execute the `importTemplates` mutation to create the template and items automati
 Verify that the new type is available and correctly mapped by creating a test host and querying it.
 
 #### 1. Create a Test Host
-Use the `importHosts` mutation to create a host and explicitly set its `deviceType` to `DistanceTrackerDevice`.
+Use the `importHosts` mutation (or `createHost` if IDs are already known) to create a host and explicitly set its `deviceType` to `DistanceTrackerDevice`.
+
 ```graphql
 mutation CreateTestDistanceTracker($host: String!, $groupNames: [String!]!) {
   importHosts(hosts: [{
@@ -97,7 +99,8 @@ mutation CreateTestDistanceTracker($host: String!, $groupNames: [String!]!) {
 ```
 
 #### 2. Query the Device
-Query the newly created device. Use the `tag_deviceType: ["DistanceTrackerDevice"]` argument to ensure you only retrieve devices of this specific type and prevent showing all devices.
+Query the newly created device. Use the `tag_deviceType: ["DistanceTrackerDevice"]` argument to ensure you only retrieve devices of this specific type and prevent showing all devices of any type.
+
 ```graphql
 query VerifyNewDeviceType {
   # 1. Check if the type exists in the schema
@@ -126,6 +129,11 @@ query VerifyNewDeviceType {
 
 > **Reference**: See how items map to fields in the [Zabbix to GraphQL Mapping](../../README.md#zabbix-to-graphql-mapping).
 
+### 🤖 AI/MCP
+AI agents can use the generalized `verifySchemaExtension.graphql` operations to automate this step:
+- **CreateVerificationHost**: Automatically imports a test host with the correct `deviceType`.
+- **VerifySchemaExtension**: Queries the newly created device to verify it is correctly mapped to the new type.
+
 ---
 
 ## 🍳 Recipe: Provisioning a New Host
@@ -139,6 +147,9 @@ Define the host name, groups, and templates to link.
 
 ### 🚀 Step 2: Execute `createHost` Mutation
 For more details on the input fields, see the [Reference: createHost](../../schema/mutations.graphql).
+
+### 🤖 AI/MCP
+AI agents should prefer using the `importHosts` MCP tool for provisioning as it allows using names for host groups instead of IDs.
 
 ```graphql
 mutation CreateNewHost($host: String!, $groups: [Int!]!, $templates: [Int!]!) {
@@ -303,7 +314,7 @@ Confirm that the agent can successfully interact with the API:
 - The agent should use the `apiVersion` query and respond with the version number.
 
 ### 💡 Alternative: Using Pre-running MCP Server
-If you already have the MCP server running locally (e.g. via `docker-compose.yml`), you can use a simpler configuration.
+If you already have the MCP server running locally (e.g. via `docker compose`), you can use a simpler configuration.
 - **Sample Configuration**: See [.ai/mcp/mcp.json](../../.ai/mcp/mcp.json) for a sample that connects to a running MCP server via HTTP.
 - **Usage**: Use this `url`-based configuration in your Claude Desktop or IDE settings instead of the `command`-based setup if you prefer to manage the MCP server lifecycle separately.
 

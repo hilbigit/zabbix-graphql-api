@@ -1,0 +1,13 @@
+query VerifySchemaExtension($typeName: String!, $deviceKey: String) {
+  allDevices(tag_deviceType: [$typeName], filter_host: $deviceKey) {
+    hostid
+    host
+    name
+    deviceType
+    state {
+      operational {
+        timestamp
+      }
+    }
+  }
+}

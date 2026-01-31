@@ -20,7 +20,7 @@ You can start both the Zabbix GraphQL API and the Apollo MCP Server using Docker
   ```
 - **Start Services**:
   ```bash
-  docker-compose up -d
+  docker compose up -d
   ```
 
 This will:

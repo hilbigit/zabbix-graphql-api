@@ -7,7 +7,7 @@ The [Roadmap](../roadmap.md) is to be considered as outlook giving constraints o
 
 ### Environment
 - **Operating System**: Windows with WSL + Ubuntu installed.
-- **Commands**: Always execute Linux commands (e.g. use `ls` instead of `dir`).
+- **Commands**: Always execute Linux commands (e.g. use `ls` instead of `dir`) and use `docker compose` (without hyphen) instead of `docker-compose`.
 
 
 ## Tech Stack
@@ -15,7 +15,7 @@ The [Roadmap](../roadmap.md) is to be considered as outlook giving constraints o
 - **Language**: TypeScript (ESM)
 - **API**: GraphQL (Apollo Server 4)
 - **Testing**: Jest
-- **Deployment**: Docker
+- **Deployment**: Docker (v27+) and Docker Compose (v2.29+)
 
 ## Project Structure
 - `src/api/`: GraphQL server configuration, schema loading, and root resolvers (see `createResolvers` in `resolvers.ts`).

@@ -27,7 +27,7 @@ The Zabbix GraphQL API acts as a wrapper and enhancer for the native Zabbix JSON
   - *Reference*: `codegen.ts`, `src/schema/generated/graphql.ts`, `tsconfig.json`, `package.json` (devDependencies for GraphQL Codegen)
 
 - **AI Agent & MCP Enablement**: Native support for Model Context Protocol (MCP) and AI-driven automation. GraphQL's strongly-typed, introspectable nature provides a superior interface for AI agents compared to traditional REST APIs.
-  - *Reference*: `docs/howtos/mcp.md`, `.ai/mcp/mcp.json` (Sample Config), `mcp-config.yaml`, `docker-compose.yml` (MCP service)
+  - *Reference*: `docs/howtos/mcp.md`, `.ai/mcp/mcp.json` (Sample Config), `mcp-config.yaml`, `docker compose` (MCP service)
 
 > **Planned features**: For an overview of achieved milestones and planned enhancements have a look at the  [**Roadmap**](./roadmap.md).
 
@@ -50,6 +50,7 @@ See the [How-To Overview](./docs/howtos/README.md) for a complete list of docume
 Before you begin, ensure you have met the following requirements:
 
 - **Node.js**: Version 24 (LTS) or higher recommended.
+- **Docker**: Version 27 or higher and **Docker Compose** v2.29 or higher (use `docker compose` instead of `docker-compose`).
 - **Zabbix**: A running Zabbix instance (compatible with Zabbix 6.0+) with API access.
 - **Zabbix Super Admin Token** (for full functionality / privilege escalation).
 - **Zabbix User Access** (groups and roles depending on your use case).

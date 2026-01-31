@@ -1,0 +1,13 @@
+mutation CreateVerificationHost($deviceKey: String!, $deviceType: String!, $groupNames: [String!]!) {
+  importHosts(hosts: [{
+    deviceKey: $deviceKey,
+    deviceType: $deviceType,
+    groupNames: $groupNames
+  }]) {
+    hostid
+    message
+    error {
+      message
+    }
+  }
+}
