@@ -1,5 +1,6 @@
 # Import multiple hosts/devices into Zabbix.
 # This is a powerful tool for bulk provisioning of hosts using their names and types.
+# It supports linking templates by ID (templateids) or by name (templateNames).
 mutation ImportHosts($hosts: [CreateHost!]!) {
   importHosts(hosts: $hosts) {
     hostid

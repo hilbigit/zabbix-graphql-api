@@ -11,7 +11,9 @@ type Mutation {
         """List of host group IDs to assign the host to."""
         hostgroupids:[Int!]!, 
         """List of template IDs to link to the host."""
-        templateids: [Int!]!,
+        templateids: [Int],
+        """List of template names to link to the host."""
+        templateNames: [String],
         """Optional location information for the host inventory."""
         location: LocationInput
     ): CreateHostResponse
@@ -100,6 +102,78 @@ type Mutation {
         """Wildcard name pattern for template groups to delete."""
         name_pattern: String
     ): [DeleteResponse!]
+
+    """
+    Delete hosts by their IDs or by a name pattern.
+
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+    """
+    deleteHosts(
+        """List of host IDs to delete."""
+        hostids: [Int!], 
+        """Wildcard name pattern for hosts to delete."""
+        name_pattern: String
+    ): [DeleteResponse!]
+
+    """
+    Delete host groups by their IDs or by a name pattern.
+
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+    """
+    deleteHostGroups(
+        """List of host group IDs to delete."""
+        groupids: [Int!], 
+        """Wildcard name pattern for host groups to delete."""
+        name_pattern: String
+    ): [DeleteResponse!]
+
+    """
+    Runs a smoketest: creates a template, links a host, verifies it, and cleans up.
+    """
+    runSmoketest(
+        """Technical name for the smoketest host."""
+        hostName: String!, 
+        """Technical name for the smoketest template."""
+        templateName: String!, 
+        """Technical name for the smoketest host group."""
+        groupName: String!
+    ): SmoketestResponse!
+}
+
+"""
+Response object for the smoketest operation.
+"""
+type SmoketestResponse {
+    """
+    True if all steps of the smoketest succeeded.
+    """
+    success: Boolean!
+    """
+    Overall status message.
+    """
+    message: String
+    """
+    Detailed results for each step.
+    """
+    steps: [SmoketestStep!]!
+}
+
+"""
+Results for a single step in the smoketest.
+"""
+type SmoketestStep {
+    """
+    Name of the step (e.g. 'Create Template').
+    """
+    name: String!
+    """
+    True if the step succeeded.
+    """
+    success: Boolean!
+    """
+    Status message or error message for the step.
+    """
+    message: String
 }
 
 ####################################################################
@@ -412,6 +486,14 @@ input CreateHost {
     Optionally, internal group IDs can be provided instead of group names.
     """
     groupids: [Int]
+    """
+    List of template IDs to link to the host.
+    """
+    templateids: [Int]
+    """
+    List of template names to link to the host.
+    """
+    templateNames: [String]
     """
     Location information for the host.
     """

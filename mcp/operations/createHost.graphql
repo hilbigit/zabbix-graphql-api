@@ -1,5 +1,5 @@
-mutation CreateHost($host: String!, $hostgroupids: [Int!]!, $templateids: [Int!]!) {
-  createHost(host: $host, hostgroupids: $hostgroupids, templateids: $templateids) {
+mutation CreateHost($host: String!, $hostgroupids: [Int!]!, $templateids: [Int], $templateNames: [String]) {
+  createHost(host: $host, hostgroupids: $hostgroupids, templateids: $templateids, templateNames: $templateNames) {
     hostids
     error {
       message

@@ -54,6 +54,10 @@ export interface CreateHost {
   location?: InputMaybe<LocationInput>;
   /** Optional display name of the device (must be unique if provided - default is to set display name to deviceKey). */
   name?: InputMaybe<Scalars['String']['input']>;
+  /** List of template names to link to the host. */
+  templateNames?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** List of template IDs to link to the host. */
+  templateids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
 }
 
 /** Input for creating or identifying a host group. */
@@ -479,6 +483,18 @@ export interface Mutation {
    */
   createHost?: Maybe<CreateHostResponse>;
   /**
+   * Delete host groups by their IDs or by a name pattern.
+   *
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+   */
+  deleteHostGroups?: Maybe<Array<DeleteResponse>>;
+  /**
+   * Delete hosts by their IDs or by a name pattern.
+   *
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+   */
+  deleteHosts?: Maybe<Array<DeleteResponse>>;
+  /**
    * Delete template groups by their IDs or by a name pattern.
    *
    * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
@@ -528,6 +544,8 @@ export interface Mutation {
    * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   importUserRights?: Maybe<ImportUserRightsResult>;
+  /** Runs a smoketest: creates a template, links a host, verifies it, and cleans up. */
+  runSmoketest: SmoketestResponse;
 }
 
 
@@ -535,7 +553,20 @@ export interface MutationCreateHostArgs {
   host: Scalars['String']['input'];
   hostgroupids: Array<Scalars['Int']['input']>;
   location?: InputMaybe<LocationInput>;
-  templateids: Array<Scalars['Int']['input']>;
+  templateNames?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  templateids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+}
+
+
+export interface MutationDeleteHostGroupsArgs {
+  groupids?: InputMaybe<Array<Scalars['Int']['input']>>;
+  name_pattern?: InputMaybe<Scalars['String']['input']>;
+}
+
+
+export interface MutationDeleteHostsArgs {
+  hostids?: InputMaybe<Array<Scalars['Int']['input']>>;
+  name_pattern?: InputMaybe<Scalars['String']['input']>;
 }
 
 
@@ -574,6 +605,13 @@ export interface MutationImportTemplatesArgs {
 export interface MutationImportUserRightsArgs {
   dryRun?: Scalars['Boolean']['input'];
   input: UserRightsInput;
+}
+
+
+export interface MutationRunSmoketestArgs {
+  groupName: Scalars['String']['input'];
+  hostName: Scalars['String']['input'];
+  templateName: Scalars['String']['input'];
 }
 
 /** Operational data common to most devices. */
@@ -742,6 +780,28 @@ export interface QueryTemplatesArgs {
 
 export interface QueryUserPermissionsArgs {
   objectNames?: InputMaybe<Array<Scalars['String']['input']>>;
+}
+
+/** Response object for the smoketest operation. */
+export interface SmoketestResponse {
+  __typename?: 'SmoketestResponse';
+  /** Overall status message. */
+  message?: Maybe<Scalars['String']['output']>;
+  /** Detailed results for each step. */
+  steps: Array<SmoketestStep>;
+  /** True if all steps of the smoketest succeeded. */
+  success: Scalars['Boolean']['output'];
+}
+
+/** Results for a single step in the smoketest. */
+export interface SmoketestStep {
+  __typename?: 'SmoketestStep';
+  /** Status message or error message for the step. */
+  message?: Maybe<Scalars['String']['output']>;
+  /** Name of the step (e.g. 'Create Template'). */
+  name: Scalars['String']['output'];
+  /** True if the step succeeded. */
+  success: Scalars['Boolean']['output'];
 }
 
 export enum SortOrder {
@@ -1155,6 +1215,8 @@ export type ResolversTypes = {
   Permission: Permission;
   PermissionRequest: PermissionRequest;
   Query: ResolverTypeWrapper<{}>;
+  SmoketestResponse: ResolverTypeWrapper<SmoketestResponse>;
+  SmoketestStep: ResolverTypeWrapper<SmoketestStep>;
   SortOrder: SortOrder;
   StorageItemType: StorageItemType;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -1227,6 +1289,8 @@ export type ResolversParentTypes = {
   OperationalDeviceData: OperationalDeviceData;
   PermissionRequest: PermissionRequest;
   Query: {};
+  SmoketestResponse: SmoketestResponse;
+  SmoketestStep: SmoketestStep;
   String: Scalars['String']['output'];
   Template: Template;
   Time: Scalars['Time']['output'];
@@ -1449,7 +1513,9 @@ export type LocationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createHost?: Resolver<Maybe<ResolversTypes['CreateHostResponse']>, ParentType, ContextType, RequireFields<MutationCreateHostArgs, 'host' | 'hostgroupids' | 'templateids'>>;
+  createHost?: Resolver<Maybe<ResolversTypes['CreateHostResponse']>, ParentType, ContextType, RequireFields<MutationCreateHostArgs, 'host' | 'hostgroupids'>>;
+  deleteHostGroups?: Resolver<Maybe<Array<ResolversTypes['DeleteResponse']>>, ParentType, ContextType, Partial<MutationDeleteHostGroupsArgs>>;
+  deleteHosts?: Resolver<Maybe<Array<ResolversTypes['DeleteResponse']>>, ParentType, ContextType, Partial<MutationDeleteHostsArgs>>;
   deleteTemplateGroups?: Resolver<Maybe<Array<ResolversTypes['DeleteResponse']>>, ParentType, ContextType, Partial<MutationDeleteTemplateGroupsArgs>>;
   deleteTemplates?: Resolver<Maybe<Array<ResolversTypes['DeleteResponse']>>, ParentType, ContextType, Partial<MutationDeleteTemplatesArgs>>;
   importHostGroups?: Resolver<Maybe<Array<ResolversTypes['CreateHostGroupResponse']>>, ParentType, ContextType, RequireFields<MutationImportHostGroupsArgs, 'hostGroups'>>;
@@ -1457,6 +1523,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   importTemplateGroups?: Resolver<Maybe<Array<ResolversTypes['CreateTemplateGroupResponse']>>, ParentType, ContextType, RequireFields<MutationImportTemplateGroupsArgs, 'templateGroups'>>;
   importTemplates?: Resolver<Maybe<Array<ResolversTypes['ImportTemplateResponse']>>, ParentType, ContextType, RequireFields<MutationImportTemplatesArgs, 'templates'>>;
   importUserRights?: Resolver<Maybe<ResolversTypes['ImportUserRightsResult']>, ParentType, ContextType, RequireFields<MutationImportUserRightsArgs, 'dryRun' | 'input'>>;
+  runSmoketest?: Resolver<ResolversTypes['SmoketestResponse'], ParentType, ContextType, RequireFields<MutationRunSmoketestArgs, 'groupName' | 'hostName' | 'templateName'>>;
 };
 
 export type OperationalDeviceDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationalDeviceData'] = ResolversParentTypes['OperationalDeviceData']> = {
@@ -1486,6 +1553,20 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   templates?: Resolver<Maybe<Array<Maybe<ResolversTypes['Template']>>>, ParentType, ContextType, Partial<QueryTemplatesArgs>>;
   userPermissions?: Resolver<Maybe<Array<ResolversTypes['UserPermission']>>, ParentType, ContextType, Partial<QueryUserPermissionsArgs>>;
   zabbixVersion?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+};
+
+export type SmoketestResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SmoketestResponse'] = ResolversParentTypes['SmoketestResponse']> = {
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  steps?: Resolver<Array<ResolversTypes['SmoketestStep']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SmoketestStepResolvers<ContextType = any, ParentType extends ResolversParentTypes['SmoketestStep'] = ResolversParentTypes['SmoketestStep']> = {
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type StorageItemTypeResolvers = EnumResolverSignature<{ FLOAT?: any, INT?: any, TEXT?: any }, ResolversTypes['StorageItemType']>;
@@ -1636,6 +1717,8 @@ export type Resolvers<ContextType = any> = {
   OperationalDeviceData?: OperationalDeviceDataResolvers<ContextType>;
   Permission?: PermissionResolvers;
   Query?: QueryResolvers<ContextType>;
+  SmoketestResponse?: SmoketestResponseResolvers<ContextType>;
+  SmoketestStep?: SmoketestStepResolvers<ContextType>;
   StorageItemType?: StorageItemTypeResolvers;
   Template?: TemplateResolvers<ContextType>;
   Time?: GraphQLScalarType;

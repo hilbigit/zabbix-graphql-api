@@ -140,14 +140,15 @@ Execute the `importTemplates` mutation to create the template and items automati
 Verify that the new type is available and correctly mapped by creating a test host and querying it.
 
 #### 1. Create a Test Host
-Use the `importHosts` mutation (or `createHost` if IDs are already known) to create a host and explicitly set its `deviceType` to `DistanceTrackerDevice`.
+Use the `importHosts` mutation (or `createHost` if IDs are already known) to create a host. Set its `deviceType` to `DistanceTrackerDevice` and link it to the `DISTANCE_TRACKER` template (created in Step 3) using the `templateNames` parameter.
 
 ```graphql
-mutation CreateTestDistanceTracker($host: String!, $groupNames: [String!]!) {
+mutation CreateTestDistanceTracker($host: String!, $groupNames: [String!]!, $templateNames: [String]) {
   importHosts(hosts: [{
     deviceKey: $host,
     deviceType: "DistanceTrackerDevice",
-    groupNames: $groupNames
+    groupNames: $groupNames,
+    templateNames: $templateNames
   }]) {
     hostid
     message
@@ -209,8 +210,8 @@ For more details on the input fields, see the [Reference: createHost](../../sche
 AI agents should prefer using the `importHosts` MCP tool for provisioning as it allows using names for host groups instead of IDs.
 
 ```graphql
-mutation CreateNewHost($host: String!, $groups: [Int!]!, $templates: [Int!]!) {
-  createHost(host: $host, hostgroupids: $groups, templateids: $templates) {
+mutation CreateNewHost($host: String!, $groups: [Int!]!, $templates: [Int], $templateNames: [String]) {
+  createHost(host: $host, hostgroupids: $groups, templateids: $templates, templateNames: $templateNames) {
     hostids
     error {
       message

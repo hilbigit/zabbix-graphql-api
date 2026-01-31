@@ -1,8 +1,9 @@
-mutation CreateVerificationHost($deviceKey: String!, $deviceType: String!, $groupNames: [String!]!) {
+mutation CreateVerificationHost($deviceKey: String!, $deviceType: String!, $groupNames: [String!]!, $templateNames: [String]) {
   importHosts(hosts: [{
     deviceKey: $deviceKey,
     deviceType: $deviceType,
-    groupNames: $groupNames
+    groupNames: $groupNames,
+    templateNames: $templateNames
   }]) {
     hostid
     message

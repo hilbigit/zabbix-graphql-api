@@ -6,7 +6,8 @@ import {
     InputMaybe
 } from "../schema/generated/graphql.js";
 import {logger} from "../logging/logger.js";
-import {ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
+import {ZabbixCreateHostRequest} from "../datasources/zabbix-hosts.js";
+import {ZabbixQueryTemplatesRequest, TemplateHelper} from "../datasources/zabbix-templates.js";
 import {isZabbixErrorResult, ParsedArgs, ZabbixErrorResult} from "../datasources/zabbix-request.js";
 import {CreateHostGroupResult, GroupHelper, ZabbixCreateHostGroupRequest} from "../datasources/zabbix-hostgroups.js";
 import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api.js";
@@ -110,32 +111,49 @@ export class HostImporter {
                     break
                 }
             }
-            let deviceImportResult: {
-                hostids?: string[];
-                error?: any;
-            } = await zabbixAPI.requestByPath("host.create", new ParsedArgs(
+
+            let templateids = device.templateids ? [...device.templateids as number[]] : [];
+            if (device.templateNames?.length) {
+                const resolvedTemplateids = await TemplateHelper.findTemplateIdsByName(device.templateNames as string[], zabbixAPI, zabbixAuthToken, cookie);
+                if (resolvedTemplateids) {
+                    templateids.push(...resolvedTemplateids);
+                } else {
+                    result.push({
+                        deviceKey: device.deviceKey,
+                        message: `Unable to find templates: ${device.templateNames}`
+                    });
+                    continue;
+                }
+            }
+
+            if (templateids.length === 0) {
+                const defaultTemplateId = await HostImporter.getTemplateIdForDeviceType(device.deviceType, zabbixAuthToken, cookie);
+                if (defaultTemplateId) {
+                    templateids.push(defaultTemplateId);
+                }
+            }
+
+            let deviceImportResult = await new ZabbixCreateHostRequest(zabbixAuthToken, cookie).executeRequestReturnError(zabbixAPI, new ParsedArgs(
                 {
                     host: device.deviceKey,
                     name: device.name,
                     location: device.location,
-                    templateids: [
-                        await HostImporter.getTemplateIdForDeviceType(
-                            device.deviceType, zabbixAuthToken, cookie)],
+                    templateids: templateids,
                     hostgroupids: groupids
                 }
-            ), zabbixAuthToken, cookie)
-            if (deviceImportResult?.hostids?.length) {
-                result.push({
-                    deviceKey: device.deviceKey,
-                    hostid: deviceImportResult.hostids[0],
-                })
-            } else {
+            ))
+
+            if (isZabbixErrorResult(deviceImportResult)) {
                 result.push({
                     deviceKey: device.deviceKey,
                     message: `Unable to import deviceKey=${device.deviceKey}: ${deviceImportResult.error.message}`,
                     error: deviceImportResult.error
                 })
-
+            } else {
+                result.push({
+                    deviceKey: device.deviceKey,
+                    hostid: deviceImportResult.hostids![0]?.toString(),
+                })
             }
 
         }

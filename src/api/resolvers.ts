@@ -25,6 +25,8 @@ import {
 } from "../schema/generated/graphql.js";
 
 import {HostImporter} from "../execution/host_importer.js";
+import {HostDeleter} from "../execution/host_deleter.js";
+import {SmoketestExecutor} from "../execution/smoketest_executor.js";
 import {TemplateImporter} from "../execution/template_importer.js";
 import {TemplateDeleter} from "../execution/template_deleter.js";
 import {HostValueExporter} from "../execution/host_exporter.js";
@@ -48,7 +50,11 @@ import {
     ZabbixImportUserRolesRequest,
     ZabbixQueryUserRolesRequest
 } from "../datasources/zabbix-userroles.js";
-import {ZabbixQueryTemplateGroupRequest, ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
+import {
+    TemplateHelper,
+    ZabbixQueryTemplateGroupRequest,
+    ZabbixQueryTemplatesRequest
+} from "../datasources/zabbix-templates.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
 import {GraphQLInterfaceType, GraphQLList} from "graphql/type/index.js";
 import {isDevice} from "./resolver_helpers.js";
@@ -182,6 +188,17 @@ export function createResolvers(): Resolvers {
                 zabbixAuthToken,
                 cookie
             }: any) => {
+                if (args.templateNames?.length) {
+                    const templateidsByName = await TemplateHelper.findTemplateIdsByName(args.templateNames as string[], zabbixAPI, zabbixAuthToken, cookie);
+                    if (!templateidsByName) {
+                        return {
+                            error: {
+                                message: `Unable to find templates: ${args.templateNames}`
+                            }
+                        }
+                    }
+                    args.templateids = (args.templateids || []).concat(templateidsByName);
+                }
                 return await new ZabbixCreateHostRequest(zabbixAuthToken, cookie).executeRequestThrowError(
                     zabbixAPI,
                     new ParsedArgs(args)
@@ -241,6 +258,24 @@ export function createResolvers(): Resolvers {
                 cookie
             }: any) => {
                 return TemplateDeleter.deleteTemplateGroups(args.groupids, args.name_pattern, zabbixAuthToken, cookie)
+            },
+            deleteHosts: async (_parent: any, args: any, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                return HostDeleter.deleteHosts(args.hostids, args.name_pattern, zabbixAuthToken, cookie)
+            },
+            deleteHostGroups: async (_parent: any, args: any, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                return HostDeleter.deleteHostGroups(args.groupids, args.name_pattern, zabbixAuthToken, cookie)
+            },
+            runSmoketest: async (_parent: any, args: any, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                return SmoketestExecutor.runSmoketest(args.hostName, args.templateName, args.groupName, zabbixAuthToken, cookie)
             }
         },
 

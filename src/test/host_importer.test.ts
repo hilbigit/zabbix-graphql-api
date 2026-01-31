@@ -71,8 +71,8 @@ describe("HostImporter", () => {
         // Mocking template lookup for deviceType
         (zabbixAPI.post as jest.Mock).mockResolvedValueOnce([{ templateid: "301" }]);
 
-        // Mocking host.create via requestByPath
-        (zabbixAPI.requestByPath as jest.Mock).mockResolvedValueOnce({ hostids: ["401"] });
+        // Mocking host.create via post (called by ZabbixCreateHostRequest)
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce({ hostids: ["401"] });
 
         const result = await HostImporter.importHosts(hosts, "token");
 

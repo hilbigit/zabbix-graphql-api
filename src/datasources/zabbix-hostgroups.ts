@@ -69,6 +69,11 @@ export class ZabbixQueryHostgroupsRequest extends ZabbixRequestWithPermissions<Z
 
 }
 
+export class ZabbixDeleteHostGroupsRequest extends ZabbixRequestWithPermissions<{ groupids: string[] }> {
+    constructor(authToken?: string | null, cookie?: string | null) {
+        super("hostgroup.delete", authToken, cookie, hostGroupReadWritePermissions);
+    }
+}
 
 export class GroupHelper {
     public static groupFullName(groupName: string) {

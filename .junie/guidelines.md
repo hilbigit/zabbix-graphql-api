@@ -28,14 +28,15 @@ The [Roadmap](../roadmap.md) is to be considered as outlook giving constraints o
 ## Common Scripts
 - `npm run start`: Launches the development server with `tsx` and `nodemon` for hot-reloading.
 - `npm run test`: Executes the Jest test suite.
-- `npm run codegen`: Generates TypeScript types based on the GraphQL schema definitions.
+- `npm run codegen`: Starts GraphQL Codegen in watch mode (for continuous development).
+- `npx graphql-codegen --config codegen.ts`: Generates TypeScript types once (use this for one-off updates).
 - `npm run compile`: Compiles TypeScript source files into the `dist/` directory.
 - `npm run prod`: Prepares the schema and runs the compiled production build.
 
 ## Best Practices & Standards
 - **ESM & Imports**: The project uses ECMAScript Modules (ESM). Always use the `.js` extension when importing local files (e.g. `import { Config } from "../common_utils.js";`), even though the source files are `.ts`.
 - **Configuration**: Always use the `Config` class to access environment variables. Avoid direct `process.env` calls.
-- **Type Safety**: Leverage types generated via `npm run codegen` for resolvers and data handling to ensure consistency with the schema.
+- **Type Safety**: Leverage types generated via `npx graphql-codegen --config codegen.ts` (or `npm run codegen` for watch mode) for resolvers and data handling to ensure consistency with the schema.
 - **Import Optimization**: 
     - Always optimize imports before committing. 
     - Project setting `OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT` is enabled.
@@ -43,6 +44,14 @@ The [Roadmap](../roadmap.md) is to be considered as outlook giving constraints o
 - **Schema Organization**: Place GraphQL SDL files in the `schema/` directory. Use descriptive comments in SDL as they are used for API documentation.
 - **Testing**: Write reproduction tests for bugs and cover new features with both unit and integration tests in `src/test/`.
 - **Grammar & Style**: Avoid using a comma after "e.g." or "i.e." (e.g. use "e.g. example" instead of "e.g., example").
+
+## Verification & Deployment
+- **Pre-commit Verification**: Always add a verification stage to your plan before committing.
+    - *Action*: Run the `Smoketest` tool using MCP to ensure basic functionality is intact.
+    - *Action*: Monitor the API logs for errors after each service restart.
+- **Environment Restart**: Always include a step to rebuild and restart the API and MCP server as a final check.
+    - *Command*: `docker compose up -d --build`
+    - *Requirement*: Ask the user if everything looks okay before executing the restart, and offer the option to skip this step.
 
 ### Documentation Style
 - **Bullet Points**: Use bullet points instead of enumerations for lists to maintain consistency across all documentation.

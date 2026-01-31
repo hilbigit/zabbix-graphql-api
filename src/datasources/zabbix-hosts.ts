@@ -228,3 +228,9 @@ export class ZabbixCreateHostRequest extends ZabbixRequest<CreateHostResponse> {
         return args?.zabbix_params || {};
     }
 }
+
+export class ZabbixDeleteHostsRequest extends ZabbixRequest<{ hostids: string[] }> {
+    constructor(authToken?: string | null, cookie?: string | null) {
+        super("host.delete", authToken, cookie);
+    }
+}

@@ -62,9 +62,8 @@ describe("Host Integration Tests", () => {
         (zabbixAPI.post as jest.Mock)
             .mockResolvedValueOnce([{ groupid: "201", name: ZABBIX_EDGE_DEVICE_BASE_GROUP }]) // Base group
             .mockResolvedValueOnce([{ groupid: "202", name: ZABBIX_EDGE_DEVICE_BASE_GROUP + "/ConstructionSite/Test" }]) // Specific group
-            .mockResolvedValueOnce([{ templateid: "301" }]); // Template lookup
-
-        (zabbixAPI.requestByPath as jest.Mock).mockResolvedValueOnce({ hostids: ["401"] });
+            .mockResolvedValueOnce([{ templateid: "301" }]) // Template lookup
+            .mockResolvedValueOnce({ hostids: ["401"] }); // Host creation
 
         const response = await server.executeOperation({
             query: mutation,

@@ -1,0 +1,14 @@
+# Run a complete smoketest: creates a template, host group, and host,
+# verifies their creation and linkage, and then cleans up everything.
+# Variables: hostName, templateName, groupName
+mutation RunSmoketest($hostName: String!, $templateName: String!, $groupName: String!) {
+  runSmoketest(hostName: $hostName, templateName: $templateName, groupName: $groupName) {
+    success
+    message
+    steps {
+      name
+      success
+      message
+    }
+  }
+}

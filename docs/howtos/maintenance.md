@@ -12,8 +12,14 @@ The project uses [GraphQL Codegen](https://the-guild.dev/graphql/codegen) to gen
 - **Generated Output**: `src/schema/generated/graphql.ts`
 
 #### How to Regenerate Types
-Whenever you modify any `.graphql` files in the `schema/` directory, you must regenerate the TypeScript types:
+Whenever you modify any `.graphql` files in the `schema/` directory, you must regenerate the TypeScript types.
 
+For a one-off update (e.g. in a script or before commit):
+```bash
+npx graphql-codegen --config codegen.ts
+```
+
+If you are a developer and want to watch for schema changes continuously:
 ```bash
 npm run codegen
 ```
