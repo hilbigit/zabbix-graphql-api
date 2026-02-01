@@ -17,8 +17,8 @@ export enum DeviceCommunicationType {
 }
 
 export enum DeviceStatus {
-    DISABLED = "0",
-    ENABLED = "1"
+    ENABLED = "0",
+    DISABLED = "1"
 }
 
 export enum StorageItemType {

@@ -143,7 +143,8 @@ export class HostImporter {
                     name: device.name,
                     location: device.location,
                     templateids: templateids,
-                    hostgroupids: groupids
+                    hostgroupids: groupids,
+                    macros: device.macros
                 }
             ))
 

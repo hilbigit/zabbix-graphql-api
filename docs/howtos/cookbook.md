@@ -200,7 +200,7 @@ This recipe demonstrates how to extend the schema with a new device type that re
 
 ### 📋 Prerequisites
 - Zabbix GraphQL API is running.
-- The device has geo-coordinates set in its inventory (`location_lat` and `location_lon`).
+- The device has geo-coordinates set via user macros (`{$LAT}` and `{$LON}`).
 
 ### 🛠️ Step 1: Define the Schema Extension
 Create a new `.graphql` file in `schema/extensions/` named `weather_sensor.graphql`.
@@ -242,12 +242,12 @@ Use the `importTemplates` mutation to create the `WEATHER_SENSOR` template. This
 
 **Key Item Configuration**:
 - **Master Item**: `weather.get` (HTTP Agent)
-  - URL: `https://api.open-meteo.com/v1/forecast?latitude={INVENTORY.LOCATION.LAT}&longitude={INVENTORY.LOCATION.LON}&current=temperature_2m,weather_code`
+  - URL: `https://api.open-meteo.com/v1/forecast?latitude={$LAT}&longitude={$LON}&current=temperature_2m,weather_code`
 - **Dependent Item**: `state.current.temperature` (JSONPath: `$.current.temperature_2m`)
 - **Dependent Item**: `state.current.streetConditionWarnings` (JavaScript mapping from `$.current.weather_code`)
 
 ### ✅ Step 4: Verification
-Create a host, assign it coordinates, and query its weather state.
+Create a host, assign it macros for coordinates, and query its weather state.
 
 1.  **Create Host**:
     ```graphql
@@ -257,10 +257,12 @@ Create a host, assign it coordinates, and query its weather state.
         deviceType: "WeatherSensorDevice",
         groupNames: ["External Sensors"],
         templateNames: ["WEATHER_SENSOR"],
+        macros: [
+          { macro: "{$LAT}", value: "52.52" },
+          { macro: "{$LON}", value: "13.41" }
+        ],
         location: {
-          name: "Berlin",
-          location_lat: "52.52",
-          location_lon: "13.41"
+          name: "Berlin"
         }
       }]) {
         hostid

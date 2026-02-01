@@ -6,6 +6,7 @@ import {TemplateDeleter} from "./template_deleter.js";
 import {logger} from "../logging/logger.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
 import {ZabbixQueryHostsGenericRequest} from "../datasources/zabbix-hosts.js";
+import {ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
 import {ParsedArgs} from "../datasources/zabbix-request.js";
 
 export class RegressionTestExecutor {
@@ -78,7 +79,71 @@ export class RegressionTestExecutor {
             });
             if (!httpSuccess) success = false;
 
-            // Regression 4: Host retrieval and visibility (allHosts output fields fix)
+            // Regression 4: User Macro assignment for host and template creation
+            const macroTemplateName = "REG_MACRO_TEMP_" + Math.random().toString(36).substring(7);
+            const macroHostName = "REG_MACRO_HOST_" + Math.random().toString(36).substring(7);
+
+            const macroTempResult = await TemplateImporter.importTemplates([{
+                host: macroTemplateName,
+                name: "Regression Macro Template",
+                groupNames: [regGroupName],
+                macros: [
+                    { macro: "{$TEMP_MACRO}", value: "temp_value" }
+                ]
+            }], zabbixAuthToken, cookie);
+
+            const macroTempImportSuccess = !!macroTempResult?.length && !macroTempResult[0].error;
+            let macroHostImportSuccess = false;
+            let macroVerifySuccess = false;
+
+            if (macroTempImportSuccess) {
+                const macroHostResult = await HostImporter.importHosts([{
+                    deviceKey: macroHostName,
+                    deviceType: "RegressionHost",
+                    groupNames: [hostGroupName],
+                    templateNames: [macroTemplateName],
+                    macros: [
+                        { macro: "{$HOST_MACRO}", value: "host_value" }
+                    ]
+                }], zabbixAuthToken, cookie);
+                macroHostImportSuccess = !!macroHostResult?.length && !!macroHostResult[0].hostid;
+
+                if (macroHostImportSuccess) {
+                    // Verify macros on host
+                    const verifyHostResult = await new ZabbixQueryHostsGenericRequest("host.get", zabbixAuthToken, cookie)
+                        .executeRequestReturnError(zabbixAPI, new ParsedArgs({
+                            filter_host: macroHostName,
+                            selectMacros: "extend"
+                        }));
+
+                    // Verify macros on template
+                    const verifyTempResult = await new ZabbixQueryTemplatesRequest(zabbixAuthToken, cookie)
+                        .executeRequestReturnError(zabbixAPI, new ParsedArgs({
+                            filter_host: macroTemplateName,
+                            selectMacros: "extend"
+                        }));
+
+                    const hasHostMacro = Array.isArray(verifyHostResult) && verifyHostResult.length > 0 &&
+                        (verifyHostResult[0] as any).macros?.some((m: any) => m.macro === "{$HOST_MACRO}" && m.value === "host_value");
+
+                    const hasTempMacro = Array.isArray(verifyTempResult) && verifyTempResult.length > 0 &&
+                        (verifyTempResult[0] as any).macros?.some((m: any) => m.macro === "{$TEMP_MACRO}" && m.value === "temp_value");
+
+                    macroVerifySuccess = !!(hasHostMacro && hasTempMacro);
+                }
+            }
+
+            const macroOverallSuccess = macroTempImportSuccess && macroHostImportSuccess && macroVerifySuccess;
+            steps.push({
+                name: "REG-MACRO: User Macro assignment",
+                success: macroOverallSuccess,
+                message: macroOverallSuccess
+                    ? "Macros successfully assigned to template and host"
+                    : `Failed: TempImport=${macroTempImportSuccess}, HostImport=${macroHostImportSuccess}, Verify=${macroVerifySuccess}`
+            });
+            if (!macroOverallSuccess) success = false;
+
+            // Regression 5: Host retrieval and visibility (allHosts output fields fix)
             if (success) {
                 const hostResult = await HostImporter.importHosts([{
                     deviceKey: hostName,
@@ -148,8 +213,10 @@ export class RegressionTestExecutor {
 
             // Cleanup
             await HostDeleter.deleteHosts(null, hostName, zabbixAuthToken, cookie);
+            await HostDeleter.deleteHosts(null, macroHostName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, regTemplateName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, httpTempName, zabbixAuthToken, cookie);
+            await TemplateDeleter.deleteTemplates(null, macroTemplateName, zabbixAuthToken, cookie);
             // We don't delete the group here as it might be shared or used by other tests in this run
 
         } catch (error: any) {

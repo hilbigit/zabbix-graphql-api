@@ -16,7 +16,7 @@ mutation ImportWeatherSensorTemplate($templates: [CreateTemplate!]!) {
 ```
 
 ### Variables
-The following variables define the `WEATHER_SENSOR` template. It uses the host's inventory coordinates (`{INVENTORY.LOCATION_LAT}` and `{INVENTORY.LOCATION_LON}`) to fetch localized weather data.
+The following variables define the `WEATHER_SENSOR` template. It uses the host's user macros (`{$LAT}` and `{$LON}`) to fetch localized weather data.
 
 ```json
 {
@@ -28,6 +28,10 @@ The following variables define the `WEATHER_SENSOR` template. It uses the host's
       "tags": [
         { "tag": "deviceType", "value": "WeatherSensorDevice" }
       ],
+      "macros": [
+        { "macro": "{$LAT}", "value": "52.52" },
+        { "macro": "{$LON}", "value": "13.41" }
+      ],
       "items": [
         {
           "name": "Open-Meteo API Fetch",
@@ -36,7 +40,7 @@ The following variables define the `WEATHER_SENSOR` template. It uses the host's
           "value_type": 4,
           "history": "0",
           "delay": "1m",
-          "url": "https://api.open-meteo.com/v1/forecast?latitude={INVENTORY.LOCATION.LAT}&longitude={INVENTORY.LOCATION.LON}&current=temperature_2m,weather_code",
+          "url": "https://api.open-meteo.com/v1/forecast?latitude={$LAT}&longitude={$LON}&current=temperature_2m,weather_code",
           "description": "Master item fetching weather data from Open-Meteo based on host coordinates."
         },
         {

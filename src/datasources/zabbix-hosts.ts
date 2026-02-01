@@ -173,7 +173,8 @@ export interface ZabbixCreateHostInputParams extends ZabbixParams {
     }
     templateids?: [number];
     hostgroupids?: [number];
-    additionalParams?: [number];
+    macros?: { macro: string, value: string }[];
+    additionalParams?: any;
 }
 
 
@@ -200,6 +201,9 @@ class ZabbixCreateHostParams implements ZabbixParams {
                 return {groupid: groupid}
             });
         }
+        if (inputParams.macros) {
+            this.macros = inputParams.macros;
+        }
     }
 
     host: string
@@ -214,6 +218,7 @@ class ZabbixCreateHostParams implements ZabbixParams {
     }
     templates?: any
     groups?: any
+    macros?: { macro: string, value: string }[]
 }
 
 

@@ -163,4 +163,32 @@ describe("TemplateImporter", () => {
         expect(result![0].message).toContain("Invalid params.");
         expect(result![0].message).toContain("the parameter \"key_\" is missing.");
     });
+
+    test("importTemplates - with macros", async () => {
+        const templates = [{
+            host: "TemplateWithMacros",
+            groupNames: ["Group1"],
+            macros: [
+                { macro: "{$LAT}", value: "52.52" },
+                { macro: "{$LON}", value: "13.41" }
+            ]
+        }];
+
+        // Mocking group.get
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce([{ groupid: "201", name: "Group1" }]);
+        // Mocking template.create
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce({ templateids: ["302"] });
+
+        const result = await TemplateImporter.importTemplates(templates, "token");
+
+        expect(result).toHaveLength(1);
+        expect(result![0].templateid).toBe("302");
+
+        // Verify that template.create was called with macros
+        const templateCreateCall = (zabbixAPI.post as jest.Mock).mock.calls.find(call => call[1].body.method === "template.create");
+        expect(templateCreateCall[1].body.params.macros).toEqual([
+            { macro: "{$LAT}", value: "52.52" },
+            { macro: "{$LON}", value: "13.41" }
+        ]);
+    });
 });

@@ -79,4 +79,38 @@ describe("HostImporter", () => {
         expect(result).toHaveLength(1);
         expect(result![0].hostid).toBe("401");
     });
+
+    test("importHosts - with macros", async () => {
+        const hosts = [{
+            deviceKey: "DeviceMacro",
+            deviceType: "Type1",
+            groupNames: ["Group1"],
+            macros: [
+                { macro: "{$LAT}", value: "52.52" },
+                { macro: "{$LON}", value: "13.41" }
+            ]
+        }];
+
+        // Mocking group lookup
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce([{ groupid: "201", name: ZABBIX_EDGE_DEVICE_BASE_GROUP }]);
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce([{ groupid: "202", name: ZABBIX_EDGE_DEVICE_BASE_GROUP + "/Group1" }]);
+        
+        // Mocking template lookup
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce([{ templateid: "301" }]);
+
+        // Mocking host.create
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce({ hostids: ["402"] });
+
+        const result = await HostImporter.importHosts(hosts, "token");
+
+        expect(result).toHaveLength(1);
+        expect(result![0].hostid).toBe("402");
+
+        // Verify that host.create was called with macros
+        const hostCreateCall = (zabbixAPI.post as jest.Mock).mock.calls.find(call => call[1].body.method === "host.create");
+        expect(hostCreateCall[1].body.params.macros).toEqual([
+            { macro: "{$LAT}", value: "52.52" },
+            { macro: "{$LON}", value: "13.41" }
+        ]);
+    });
 });

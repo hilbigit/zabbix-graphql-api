@@ -258,6 +258,10 @@ input CreateTemplate {
     Tags to assign to the template.
     """
     tags: [CreateTag!]
+    """
+    User macros to assign to the template.
+    """
+    macros: [CreateMacro!]
 }
 
 """
@@ -276,6 +280,10 @@ input CreateTemplateItem {
     Zabbix item type (e.g. 0 for Zabbix Agent, 18 for Dependent).
     """
     type: Int
+    """
+    Zabbix item status (0 for Enabled, 1 for Disabled).
+    """
+    status: Int
     """
     Technical key of the item.
     """
@@ -372,6 +380,20 @@ input CreateTag {
     Tag value.
     """
     value: String
+}
+
+"""
+Input for creating a user macro.
+"""
+input CreateMacro {
+    """
+    Macro name (e.g. '{$LAT}').
+    """
+    macro: String!
+    """
+    Macro value.
+    """
+    value: String!
 }
 
 """
@@ -512,6 +534,10 @@ input CreateHost {
     Location information for the host.
     """
     location: LocationInput
+    """
+    User macros to assign to the host.
+    """
+    macros: [CreateMacro!]
 }
 
 """

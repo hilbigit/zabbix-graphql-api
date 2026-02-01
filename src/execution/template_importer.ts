@@ -131,7 +131,8 @@ export class TemplateImporter {
                 groups: groupids.map(id => ({ groupid: id })),
                 uuid: template.uuid,
                 templates: linkedTemplates,
-                tags: template.tags?.map(t => ({ tag: t.tag, value: t.value || "" }))
+                tags: template.tags?.map(t => ({ tag: t.tag, value: t.value || "" })),
+                macros: template.macros
             }
 
             let templateImportResult = await new ZabbixCreateTemplateRequest(zabbixAuthToken, cookie)

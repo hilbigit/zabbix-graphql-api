@@ -52,6 +52,8 @@ export interface CreateHost {
   groupids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   /** Location information for the host. */
   location?: InputMaybe<LocationInput>;
+  /** User macros to assign to the host. */
+  macros?: InputMaybe<Array<CreateMacro>>;
   /** Optional display name of the device (must be unique if provided - default is to set display name to deviceKey). */
   name?: InputMaybe<Scalars['String']['input']>;
   /** List of template names to link to the host. */
@@ -110,6 +112,14 @@ export interface CreateLinkedTemplate {
   name: Scalars['String']['input'];
 }
 
+/** Input for creating a user macro. */
+export interface CreateMacro {
+  /** Macro name (e.g. '{$LAT}'). */
+  macro: Scalars['String']['input'];
+  /** Macro value. */
+  value: Scalars['String']['input'];
+}
+
 /** Reference to a master item for dependent items. */
 export interface CreateMasterItem {
   /** The technical key of the master item. */
@@ -134,6 +144,8 @@ export interface CreateTemplate {
   host: Scalars['String']['input'];
   /** List of items to create within the template. */
   items?: InputMaybe<Array<CreateTemplateItem>>;
+  /** User macros to assign to the template. */
+  macros?: InputMaybe<Array<CreateMacro>>;
   /** Visible name of the template. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Tags to assign to the template. */
@@ -181,6 +193,8 @@ export interface CreateTemplateItem {
   name: Scalars['String']['input'];
   /** Preprocessing steps for the item values. */
   preprocessing?: InputMaybe<Array<CreateItemPreprocessing>>;
+  /** Zabbix item status (0 for Enabled, 1 for Disabled). */
+  status?: InputMaybe<Scalars['Int']['input']>;
   /** Tags to assign to the item. */
   tags?: InputMaybe<Array<CreateTag>>;
   /** Zabbix item type (e.g. 0 for Zabbix Agent, 18 for Dependent). */
@@ -1221,6 +1235,7 @@ export type ResolversTypes = {
   CreateHostResponse: ResolverTypeWrapper<CreateHostResponse>;
   CreateItemPreprocessing: CreateItemPreprocessing;
   CreateLinkedTemplate: CreateLinkedTemplate;
+  CreateMacro: CreateMacro;
   CreateMasterItem: CreateMasterItem;
   CreateTag: CreateTag;
   CreateTemplate: CreateTemplate;
@@ -1298,6 +1313,7 @@ export type ResolversParentTypes = {
   CreateHostResponse: CreateHostResponse;
   CreateItemPreprocessing: CreateItemPreprocessing;
   CreateLinkedTemplate: CreateLinkedTemplate;
+  CreateMacro: CreateMacro;
   CreateMasterItem: CreateMasterItem;
   CreateTag: CreateTag;
   CreateTemplate: CreateTemplate;
