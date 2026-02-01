@@ -39,7 +39,8 @@ For detailed information on specific topics and practical step-by-step instructi
 - [**Schema & Extension Overview**](./docs/howtos/schema.md): Detailed explanation of the schema structure and extension mechanism.
 - [**Hierarchical Data Mapping**](./docs/howtos/hierarchical_data_mapping.md): How Zabbix items are mapped to nested GraphQL fields.
 - [**Roles & Permissions**](./docs/howtos/permissions.md): Managing user rights through Zabbix template groups.
-- [**Technical Maintenance**](./docs/howtos/maintenance.md): Guide on code generation, testing, and Docker maintenance.
+- [**Technical Maintenance Guide**](./docs/howtos/maintenance.md): Guide on code generation, testing, and Docker maintenance.
+- [**Test Specification**](./docs/tests.md): Detailed list of test cases and coverage checklist.
 - [**MCP & Agent Integration**](./docs/howtos/mcp.md): Connecting LLMs and autonomous agents via Model Context Protocol.
 
 See the [How-To Overview](./docs/howtos/README.md) for a complete list of documentation.

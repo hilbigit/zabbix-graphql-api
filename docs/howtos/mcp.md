@@ -63,6 +63,23 @@ To use this integration with Claude Desktop, add the following configuration to 
 #### 💡 Sample Configuration (Alternative)
 If you prefer to run the MCP server manually or via Docker Compose (as described above), you can use a HTTP-based configuration instead of the `command` execution. See [.ai/mcp/mcp.json](../../.ai/mcp/mcp.json) for a sample configuration that connects to the server running on `localhost:3000`.
 
+### 🤖 Prompting with Junie (Integrated MCP)
+
+When working with **Junie** in this repository, the MCP server is already registered as an integrated tool. You can simply ask Junie to perform tasks using the Zabbix GraphQL API by referring to the available MCP tools.
+
+#### 🍳 Example: Running a Smoketest
+To verify the system end-to-end, you can prompt Junie:
+> "Run the Zabbix smoketest using the MCP tool. Use 'JUNIE_MCP_HOST', 'JUNIE_MCP_TEMPLATE', and 'JUNIE_MCP_GROUP' as names."
+
+#### 🍳 Example: Cloning a Template
+To clone a template, you can provide a higher-level instruction:
+> "Using MCP, clone the template 'Generic SNMP' to a new template named 'Custom SNMP v2'. Ensure all items are copied and dependent items have their master item keys correctly mapped."
+
+Junie will then:
+- Use `GetTemplates` to fetch the source template structure.
+- Map the items and resolve master-dependent relationships.
+- Use `ImportTemplates` to create the new cloned template.
+
 ### Benefits of GraphQL-enabled MCP over REST
 
 Integrating via GraphQL offers significant advantages for AI agents and MCP compared to the traditional Zabbix JSON-RPC (REST-like) API:

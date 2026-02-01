@@ -138,6 +138,16 @@ type Mutation {
         """Technical name for the smoketest host group."""
         groupName: String!
     ): SmoketestResponse!
+
+    """
+    Runs all regression tests.
+    """
+    runAllRegressionTests(
+        """Technical name for the test host."""
+        hostName: String!, 
+        """Technical name for the test host group."""
+        groupName: String!
+    ): SmoketestResponse!
 }
 
 """

@@ -19,6 +19,9 @@ Discover how the permission system works, how to define permission levels using 
 ### 🛠️ [Technical Maintenance](./maintenance.md)
 Guide on code generation (GraphQL Codegen), running Jest tests, and local Docker builds.
 
+### 🧪 [Test Specification](../tests.md)
+Detailed list of test cases, categories (Unit, Integration, E2E), and coverage checklist.
+
 ### 🤖 [MCP & Agent Integration](./mcp.md)
 Discover how to integrate with the Model Context Protocol (MCP) to enable LLMs and autonomous agents to interact with Zabbix efficiently.
 

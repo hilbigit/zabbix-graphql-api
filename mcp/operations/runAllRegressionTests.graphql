@@ -1,0 +1,13 @@
+# Runs all regression tests.
+# Variables: hostName, groupName
+mutation RunAllRegressionTests($hostName: String!, $groupName: String!) {
+  runAllRegressionTests(hostName: $hostName, groupName: $groupName) {
+    success
+    message
+    steps {
+      name
+      success
+      message
+    }
+  }
+}

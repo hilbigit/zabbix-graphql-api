@@ -27,6 +27,7 @@ import {
 import {HostImporter} from "../execution/host_importer.js";
 import {HostDeleter} from "../execution/host_deleter.js";
 import {SmoketestExecutor} from "../execution/smoketest_executor.js";
+import {RegressionTestExecutor} from "../execution/regression_test_executor.js";
 import {TemplateImporter} from "../execution/template_importer.js";
 import {TemplateDeleter} from "../execution/template_deleter.js";
 import {HostValueExporter} from "../execution/host_exporter.js";
@@ -276,6 +277,12 @@ export function createResolvers(): Resolvers {
                 cookie
             }: any) => {
                 return SmoketestExecutor.runSmoketest(args.hostName, args.templateName, args.groupName, zabbixAuthToken, cookie)
+            },
+            runAllRegressionTests: async (_parent: any, args: any, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                return RegressionTestExecutor.runAllRegressionTests(args.hostName, args.groupName, zabbixAuthToken, cookie)
             }
         },
 

@@ -304,6 +304,31 @@ For detailed examples of the input structures, refer to [Sample Import Templates
 
 ---
 
+## 🍳 Recipe: Running the Smoketest via MCP
+
+This recipe explains how to execute the end-to-end smoketest using the integrated MCP server. This is the fastest way to verify that your Zabbix GraphQL API is correctly connected to a Zabbix instance and all core features (Groups, Templates, Hosts) are working.
+
+### 📋 Prerequisites
+- Zabbix GraphQL API is running (`npm run start` or via Docker).
+- Integrated MCP server is configured in your environment (e.g. registered in **Junie**).
+
+### 🛠️ Step 1: Prompt the AI Agent
+If you are using **Junie**, you can trigger the smoketest with a single natural language prompt.
+
+**Prompt**:
+> "Run the Zabbix smoketest using the MCP tool. Use 'SMOKE_HOST', 'SMOKE_TEMPLATE', and 'SMOKE_GROUP' for the entity names."
+
+### 🚀 Step 2: Agent Execution
+The agent will:
+1. Identify the `RunSmoketest` tool from the MCP server.
+2. Call the tool with the provided arguments.
+3. Monitor the progress of each step (Create Template Group -> Create Template -> Create Host Group -> Create and Link Host -> Verify -> Cleanup).
+
+### ✅ Step 3: Verification
+The agent will report the success or failure of each step. You should see a final message indicating "Smoketest passed successfully".
+
+---
+
 ## 🍳 Recipe: Cloning a Template with Items
 
 This recipe guides you through cloning an existing Zabbix template, including all its items and their configurations, into a new template using the GraphQL API and MCP.
@@ -378,6 +403,10 @@ query VerifyClone($host: String!) {
 AI agents can use the following MCP tools to automate this:
 - **GetTemplates**: To fetch the source template and its hierarchical item structure.
 - **ImportTemplates**: To provision the new cloned template.
+
+#### 🤖 Prompting Junie
+You can ask **Junie** to automate the entire cloning process:
+> "Using MCP, clone the template 'Generic SNMP' to a new template named 'Custom SNMP v2'. Ensure all items are copied and dependent items have their master item keys correctly mapped."
 
 ---
 
