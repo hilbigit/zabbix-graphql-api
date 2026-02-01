@@ -80,6 +80,10 @@ type ZabbixItem {
     """
     lastvalue: String
     """
+    Error message if the item is in an error state.
+    """
+    error: String
+    """
     Type of information (e.g. 0 for Float, 3 for Int, 4 for Text).
     """
     value_type: Int!

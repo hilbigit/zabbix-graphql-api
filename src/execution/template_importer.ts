@@ -11,7 +11,8 @@ import {
     ZabbixCreateTemplateGroupRequest,
     ZabbixCreateTemplateRequest,
     ZabbixQueryTemplateGroupRequest,
-    ZabbixQueryTemplatesRequest
+    ZabbixQueryTemplatesRequest,
+    ZabbixQueryTemplateResponse
 } from "../datasources/zabbix-templates.js";
 import {isZabbixErrorResult, ParsedArgs, ZabbixErrorResult} from "../datasources/zabbix-request.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
@@ -121,7 +122,7 @@ export class TemplateImporter {
                     })
                     continue
                 }
-                linkedTemplates = queryResult.map(t => ({ templateid: t.templateid }))
+                linkedTemplates = queryResult.map((t: ZabbixQueryTemplateResponse) => ({ templateid: t.templateid }))
             }
 
             // 3. Create Template

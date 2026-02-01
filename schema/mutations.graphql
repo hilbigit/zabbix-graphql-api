@@ -313,6 +313,14 @@ input CreateTemplateItem {
     """
     url: String
     """
+    JavaScript code for Script items or other parameters.
+    """
+    params: String
+    """
+    Timeout for item data collection.
+    """
+    timeout: String
+    """
     Preprocessing steps for the item values.
     """
     preprocessing: [CreateItemPreprocessing!]

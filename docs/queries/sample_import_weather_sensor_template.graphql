@@ -39,7 +39,7 @@ The following variables define the `WEATHER_SENSOR` template. It uses the host's
           "key": "weather.get",
           "value_type": 4,
           "history": "0",
-          "delay": "1m",
+          "delay": "1h",
           "url": "https://api.open-meteo.com/v1/forecast?latitude={$LAT}&longitude={$LON}&current=temperature_2m,weather_code",
           "description": "Master item fetching weather data from Open-Meteo based on host coordinates."
         },
@@ -49,6 +49,8 @@ The following variables define the `WEATHER_SENSOR` template. It uses the host's
           "key": "state.current.temperature",
           "value_type": 0,
           "history": "7d",
+          "units": "°C",
+          "description": "The current temperature at the device location.",
           "master_item": {
             "key": "weather.get"
           },
@@ -65,6 +67,7 @@ The following variables define the `WEATHER_SENSOR` template. It uses the host's
           "key": "state.current.streetConditionWarnings",
           "value_type": 4,
           "history": "7d",
+          "description": "Human-readable weather warnings or descriptions derived from weather codes.",
           "master_item": {
             "key": "weather.get"
           },

@@ -194,17 +194,18 @@ AI agents can use the generalized `verifySchemaExtension.graphql` operations to 
 
 ---
 
-## 🍳 Recipe: Extending Schema with a Weather Sensor Device (Public API)
+## 🍳 Recipe: Extending Schema with Public API Devices
 
-This recipe demonstrates how to extend the schema with a new device type that retrieves real-time weather data from a public API (Open-Meteo) using Zabbix HTTP agent items. This approach allows you to integrate external data sources into your Zabbix monitoring and expose them through the GraphQL API.
+This recipe demonstrates how to extend the schema with new device types that retrieve data from public APIs (e.g. Weather or Ground Values) using Zabbix HTTP agent or Script items. This approach allows you to integrate external data sources and expose them through the GraphQL API.
 
 ### 📋 Prerequisites
 - Zabbix GraphQL API is running.
-- The device has geo-coordinates set via user macros (`{$LAT}` and `{$LON}`).
+- The device has geo-coordinates set via user macros (e.g. `{$LAT}` and `{$LON}`).
 
 ### 🛠️ Step 1: Define the Schema Extension
-Create a new `.graphql` file in `schema/extensions/` named `weather_sensor.graphql`.
+Create a new `.graphql` file in `schema/extensions/` (e.g. `weather_sensor.graphql` or `ground_value_checker.graphql`).
 
+**Sample: Weather Sensor**
 ```graphql
 type WeatherSensorDevice implements Host & Device {
     hostid: ID!
@@ -222,34 +223,83 @@ type WeatherSensorState implements DeviceState {
 }
 
 type WeatherSensorValues {
+    """
+    Current temperature at the device location (in °C).
+    """
     temperature: Float
+    """
+    Warnings or description of the street conditions (e.g. Ice, Rain, Clear). Derived from Open-Meteo weather codes.
+    """
     streetConditionWarnings: String
 }
 ```
 
+**Sample: Ground Value Checker**
+```graphql
+type GroundValueChecker implements Host & Device {
+    hostid: ID!
+    host: String!
+    deviceType: String
+    hostgroups: [HostGroup!]
+    name: String
+    tags: DeviceConfig
+    state: GroundValueState
+}
+
+type GroundValueState implements DeviceState {
+    operational: OperationalDeviceData
+    current: GroundValues
+}
+
+type GroundValues {
+    """
+    Average ground value (in €/m²). Extracted from the BORIS NRW GeoJSON response.
+    """
+    averageValue: Float
+}
+```
+
 ### ⚙️ Step 2: Register the Resolver
-Add the new type and schema to your `.env` file to enable the dynamic resolver:
+Add the new types and schemas to your `.env` file to enable the dynamic resolver:
 ```env
-ADDITIONAL_SCHEMAS=./schema/extensions/weather_sensor.graphql
-ADDITIONAL_RESOLVERS=WeatherSensorDevice
+ADDITIONAL_SCHEMAS=./schema/extensions/weather_sensor.graphql,./schema/extensions/ground_value_checker.graphql
+ADDITIONAL_RESOLVERS=WeatherSensorDevice,GroundValueChecker
 ```
 Restart the API server to apply the changes.
 
-### 🚀 Step 3: Import the Weather Sensor Template
-Use the `importTemplates` mutation to create the `WEATHER_SENSOR` template. This template uses an **HTTP agent** item to fetch data from Open-Meteo and **dependent items** to parse the results.
+### 📊 Step 3: Analyse Data Update Frequency
+Before configuring the Zabbix template, analyse how often the data source actually updates. Setting an update interval (`delay`) that is too frequent puts unnecessary load on public APIs and your Zabbix server.
 
-> **Reference**: See the [Sample: Weather Sensor Template Import](../../docs/queries/sample_import_weather_sensor_template.graphql) for the complete mutation and variables.
+- **Dynamic Data (e.g. Weather)**: Weather data typically updates every 15 to 60 minutes. A `delay` of `1h` or `30m` is usually sufficient for monitoring purposes.
+- **Static Data (e.g. Ground Values)**: Ground values (Bodenrichtwerte) are typically updated once a year. A `delay` of `1d` or even `7d` is more than enough.
 
-**Key Item Configuration**:
+### 🚀 Step 4: Import the Device Template
+Use the `importTemplates` mutation to create the template. Use **HTTP agent** or **Script** items as master items to fetch data, and **dependent items** to parse the results.
+
+> **Reference**: See the [Sample: Weather Sensor Template Import](../../docs/queries/sample_import_weather_sensor_template.graphql) and [Sample: Ground Value Checker Template Import](../../docs/queries/sample_import_ground_value_checker_template.graphql) for complete mutations.
+
+**Key Configuration for Weather Sensor**:
 - **Master Item**: `weather.get` (HTTP Agent)
   - URL: `https://api.open-meteo.com/v1/forecast?latitude={$LAT}&longitude={$LON}&current=temperature_2m,weather_code`
+  - **Delay**: `1h` (Reasonable for weather data)
+  - Description: Master item fetching weather data from Open-Meteo based on host coordinates.
 - **Dependent Item**: `state.current.temperature` (JSONPath: `$.current.temperature_2m`)
-- **Dependent Item**: `state.current.streetConditionWarnings` (JavaScript mapping from `$.current.weather_code`)
+  - Units: `°C`
+  - Description: The current temperature at the device location.
 
-### ✅ Step 4: Verification
-Create a host, assign it macros for coordinates, and query its weather state.
+**Key Configuration for Ground Value Checker**:
+- **Master Item**: `boris.get` (Script)
+  - Params: JavaScript snippet for BBOX calculation and `HttpRequest`.
+  - **Delay**: `1d` (Reasonable for ground values)
+  - Description: Script item calculating BBOX and fetching ground values from BORIS NRW.
+- **Dependent Item**: `state.current.averageValue` (JSONPath: `$.features[0].properties.Bodenrichtwert`)
+  - Units: `€/m²`
+  - Description: The average ground value (Bodenrichtwert) extracted from the BORIS NRW GeoJSON response.
 
-1.  **Create Host**:
+### ✅ Step 5: Verification
+Create a host, assign it macros for coordinates, and query its state.
+
+1.  **Create Host (Weather Example)**:
     ```graphql
     mutation CreateWeatherHost {
       importHosts(hosts: [{
@@ -261,9 +311,7 @@ Create a host, assign it macros for coordinates, and query its weather state.
           { macro: "{$LAT}", value: "52.52" },
           { macro: "{$LON}", value: "13.41" }
         ],
-        location: {
-          name: "Berlin"
-        }
+        location: { name: "Berlin" }
       }]) {
         hostid
       }
@@ -272,14 +320,21 @@ Create a host, assign it macros for coordinates, and query its weather state.
 
 2.  **Query Data**:
     ```graphql
-    query GetWeather {
-      allDevices(tag_deviceType: ["WeatherSensorDevice"]) {
+    query GetDeviceState {
+      allDevices(tag_deviceType: ["WeatherSensorDevice", "GroundValueChecker"]) {
+        name
         ... on WeatherSensorDevice {
-          name
           state {
             current {
               temperature
               streetConditionWarnings
+            }
+          }
+        }
+        ... on GroundValueChecker {
+          state {
+            current {
+              averageValue
             }
           }
         }

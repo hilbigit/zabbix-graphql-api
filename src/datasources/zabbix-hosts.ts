@@ -9,6 +9,7 @@ import {
     ZabbixResult
 } from "./zabbix-request.js";
 import {ZabbixHistoryGetParams, ZabbixQueryHistoryRequest} from "./zabbix-history.js";
+import {ZabbixQueryItemRequest} from "./zabbix-templates.js";
 
 
 export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixRequest<T, A> {
@@ -80,6 +81,14 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A e
                 "type",
                 "value_type",
                 "status",
+                "error",
+                "units",
+                "history",
+                "delay",
+                "description",
+                "preprocessing",
+                "tags",
+                "master_itemid",
             ],
             output: [
                 "hostid",
@@ -97,26 +106,44 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A e
         let result = await super.executeRequestReturnError(zabbixAPI, args);
 
         if (result && !isZabbixErrorResult(result)) {
-            for (let device of <ZabbixHost[]>result) {
-                for (let item of device.items || []) {
-                    if (!item.lastclock ) {
-                        let values = await new ZabbixQueryHistoryRequest(this.authToken, this.cookie).executeRequestReturnError(
-                            zabbixAPI, new ZabbixHistoryGetParams(item.itemid, ["clock", "value", "itemid"], 1, item.value_type))
-                        if (isZabbixErrorResult(values)) {
-                            return values;
-                        }
-                        if (values.length) {
-                            let latestValue = values[0];
-                            item.lastvalue = latestValue.value;
-                            item.lastclock = latestValue.clock;
-                        } else {
-                            item.lastvalue = null;
-                            item.lastclock = null;
+            const hosts = <ZabbixHost[]>result;
+            const hostids = hosts.map(h => h.hostid);
+            
+            if (hostids.length > 0) {
+                // Batch fetch preprocessing for all items of these hosts
+                const allItems = await new ZabbixQueryItemRequest(this.authToken, this.cookie).executeRequestReturnError(zabbixAPI, new ParsedArgs({
+                    hostids: hostids,
+                    selectPreprocessing: "extend"
+                }));
+
+                if (!isZabbixErrorResult(allItems) && Array.isArray(allItems)) {
+                    const itemidToPreprocessing = new Map<string, any>();
+                    allItems.forEach((item: any) => {
+                        itemidToPreprocessing.set(item.itemid, item.preprocessing);
+                    });
+
+                    for (let device of hosts) {
+                        for (let item of device.items || []) {
+                            item.preprocessing = itemidToPreprocessing.get(item.itemid.toString());
+                            if (!item.lastclock ) {
+                                let values = await new ZabbixQueryHistoryRequest(this.authToken, this.cookie).executeRequestReturnError(
+                                    zabbixAPI, new ZabbixHistoryGetParams(item.itemid, ["clock", "value", "itemid"], 1, item.value_type))
+                                if (isZabbixErrorResult(values)) {
+                                    return values;
+                                }
+                                if (values.length) {
+                                    let latestValue = values[0];
+                                    item.lastvalue = latestValue.value;
+                                    item.lastclock = latestValue.clock;
+                                } else {
+                                    item.lastvalue = null;
+                                    item.lastclock = null;
+                                }
+                            }
                         }
                     }
                 }
             }
-
         }
 
         return result;

@@ -24,6 +24,7 @@ import {
     StorageItemType,
 } from "../schema/generated/graphql.js";
 
+import { DateTimeResolver, JSONObjectResolver, TimeResolver } from "graphql-scalars";
 import {HostImporter} from "../execution/host_importer.js";
 import {HostDeleter} from "../execution/host_deleter.js";
 import {SmoketestExecutor} from "../execution/smoketest_executor.js";
@@ -67,6 +68,9 @@ export function createResolvers(): Resolvers {
     // @ts-ignore
     // @ts-ignore
     return {
+        DateTime: DateTimeResolver,
+        Time: TimeResolver,
+        JSONObject: JSONObjectResolver,
         Query: {
             userPermissions: async (_parent: any, objectNamesFilter: QueryUserPermissionsArgs, {
                 zabbixAuthToken,

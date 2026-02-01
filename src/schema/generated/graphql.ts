@@ -191,12 +191,16 @@ export interface CreateTemplateItem {
   master_item?: InputMaybe<CreateMasterItem>;
   /** Name of the item. */
   name: Scalars['String']['input'];
+  /** JavaScript code for Script items or other parameters. */
+  params?: InputMaybe<Scalars['String']['input']>;
   /** Preprocessing steps for the item values. */
   preprocessing?: InputMaybe<Array<CreateItemPreprocessing>>;
   /** Zabbix item status (0 for Enabled, 1 for Disabled). */
   status?: InputMaybe<Scalars['Int']['input']>;
   /** Tags to assign to the item. */
   tags?: InputMaybe<Array<CreateTag>>;
+  /** Timeout for item data collection. */
+  timeout?: InputMaybe<Scalars['String']['input']>;
   /** Zabbix item type (e.g. 0 for Zabbix Agent, 18 for Dependent). */
   type?: InputMaybe<Scalars['Int']['input']>;
   /** Units of the value. */
@@ -1108,6 +1112,8 @@ export interface ZabbixItem {
   delay?: Maybe<Scalars['String']['output']>;
   /** Description of the item. */
   description?: Maybe<Scalars['String']['output']>;
+  /** Error message if the item is in an error state. */
+  error?: Maybe<Scalars['String']['output']>;
   /** History storage period (e.g. '2d', '90d'). */
   history?: Maybe<Scalars['String']['output']>;
   /** Internal Zabbix ID of the host this item belongs to. */
@@ -1743,6 +1749,7 @@ export type ZabbixItemResolvers<ContextType = any, ParentType extends ResolversP
   attributeName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   delay?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   history?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hostid?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   hosts?: Resolver<Maybe<Array<ResolversTypes['Host']>>, ParentType, ContextType>;

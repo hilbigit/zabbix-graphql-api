@@ -1,0 +1,69 @@
+### Mutation
+Use this mutation to import a template specifically designed to work with the `GroundValueChecker` type. This template uses a Zabbix Script item to dynamically calculate a BBOX around the host's coordinates and fetch ground values from the NRW BORIS WMS service.
+
+```graphql
+mutation ImportGroundValueTemplate($templates: [CreateTemplate!]!) {
+  importTemplates(templates: $templates) {
+    host
+    templateid
+    message
+    error {
+      message
+      code
+    }
+  }
+}
+```
+
+### Variables
+The following variables define the `GROUND_VALUE_CHECKER` template. It uses the host's user macros (`{$LAT}` and `{$LON}`) to fetch localized ground value data.
+
+```json
+{
+  "templates": [
+    {
+      "host": "GROUND_VALUE_CHECKER",
+      "name": "Ground Value Checker Template",
+      "groupNames": ["Templates/External APIs"],
+      "tags": [
+        { "tag": "deviceType", "value": "GroundValueChecker" }
+      ],
+      "macros": [
+        { "macro": "{$LAT}", "value": "51.22" },
+        { "macro": "{$LON}", "value": "6.77" }
+      ],
+      "items": [
+        {
+          "name": "BORIS NRW API Fetch",
+          "type": 21,
+          "key": "boris.get",
+          "value_type": 4,
+          "history": "0",
+          "delay": "1d",
+          "params": "var lat = '{$LAT}';\nvar lon = '{$LON}';\n\nif (lat.indexOf('{$') === 0 || lon.indexOf('{$') === 0) {\n    throw 'Macros {$LAT} and {$LON} must be set on the host.';\n}\n\nlat = parseFloat(lat);\nlon = parseFloat(lon);\n\nvar delta = 0.0005; \nvar minLon = lon - delta;\nvar minLat = lat - delta;\nmaxLon = lon + delta;\nmaxLat = lat + delta;\n\nvar bbox = minLon.toFixed(6) + \",\" + minLat.toFixed(6) + \",\" + maxLon.toFixed(6) + \",\" + maxLat.toFixed(6);\n\nvar url = \"https://www.wms.nrw.de/boris/wms_de_bodenrichtwerte?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&LAYERS=brw_wohnbauflaeche,brw_gewerbliche_bauweise,brw_gemischte_bauweise&QUERY_LAYERS=brw_wohnbauflaeche,brw_gewerbliche_bauweise,brw_gemischte_bauweise&I=50&J=50&WIDTH=101&HEIGHT=101&CRS=CRS:84&BBOX=\" + bbox + \"&INFO_FORMAT=application/geo%2Bjson\";\n\nvar request = new HttpRequest();\nrequest.addHeader('Accept: application/geo+json');\nvar response = request.get(url);\n\nif (request.getStatus() !== 200) {\n    throw 'Response code: ' + request.getStatus();\n}\n\nreturn response;",
+          "timeout": "10s",
+          "description": "Script item calculating BBOX and fetching ground values from BORIS NRW."
+        },
+        {
+          "name": "Average Ground Value",
+          "type": 18,
+          "key": "state.current.averageValue",
+          "value_type": 0,
+          "history": "7d",
+          "units": "€/m²",
+          "description": "The average ground value (Bodenrichtwert) extracted from the BORIS NRW GeoJSON response.",
+          "master_item": {
+            "key": "boris.get"
+          },
+          "preprocessing": [
+            {
+              "type": 12,
+              "params": ["$.features[0].properties.Bodenrichtwert"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```

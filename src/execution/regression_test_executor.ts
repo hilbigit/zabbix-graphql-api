@@ -5,7 +5,7 @@ import {TemplateImporter} from "./template_importer.js";
 import {TemplateDeleter} from "./template_deleter.js";
 import {logger} from "../logging/logger.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
-import {ZabbixQueryHostsGenericRequest} from "../datasources/zabbix-hosts.js";
+import {ZabbixQueryHostsGenericRequest, ZabbixQueryHostsGenericRequestWithItems} from "../datasources/zabbix-hosts.js";
 import {ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
 import {ParsedArgs} from "../datasources/zabbix-request.js";
 
@@ -198,6 +198,83 @@ export class RegressionTestExecutor {
                 }
             }
 
+            // Regression 6: Item Metadata (preprocessing, units, description, error)
+            const metaTempName = "REG_META_TEMP_" + Math.random().toString(36).substring(7);
+            const metaHostName = "REG_META_HOST_" + Math.random().toString(36).substring(7);
+
+            const metaTempResult = await TemplateImporter.importTemplates([{
+                host: metaTempName,
+                name: "Regression Meta Template",
+                groupNames: [regGroupName],
+                items: [{
+                    name: "Meta Item",
+                    type: 2, // Zabbix trapper
+                    key: "meta.item",
+                    value_type: 0, // Float
+                    units: "TEST_UNIT",
+                    description: "Test Description",
+                    history: "1d",
+                    preprocessing: [
+                        {
+                            type: 12, // JSONPath
+                            params: ["$.value"]
+                        }
+                    ]
+                }]
+            }], zabbixAuthToken, cookie);
+
+            const metaTempSuccess = !!metaTempResult?.length && !metaTempResult[0].error;
+            let metaHostSuccess = false;
+            let metaVerifySuccess = false;
+
+            if (metaTempSuccess) {
+                const metaHostResult = await HostImporter.importHosts([{
+                    deviceKey: metaHostName,
+                    deviceType: "RegressionHost",
+                    groupNames: [hostGroupName],
+                    templateNames: [metaTempName]
+                }], zabbixAuthToken, cookie);
+                metaHostSuccess = !!metaHostResult?.length && !!metaHostResult[0].hostid;
+
+                if (metaHostSuccess) {
+                    // Verify item metadata
+                    const verifyResult = await new ZabbixQueryHostsGenericRequestWithItems("host.get", zabbixAuthToken, cookie)
+                        .executeRequestReturnError(zabbixAPI, new ParsedArgs({
+                            filter_host: metaHostName
+                        }));
+
+                    if (Array.isArray(verifyResult) && verifyResult.length > 0) {
+                        const host = verifyResult[0] as any;
+                        const item = host.items?.find((i: any) => i.key_ === "meta.item");
+                        
+                        if (item) {
+                            const hasUnits = item.units === "TEST_UNIT";
+                            const hasDesc = item.description === "Test Description";
+                            // Zabbix might return type as string or number depending on version/API, but usually it's string in JSON result if not cast
+                            const hasPreproc = Array.isArray(item.preprocessing) && item.preprocessing.length > 0 && 
+                                               String(item.preprocessing[0].type) === "12";
+                            const hasErrorField = item.hasOwnProperty("error");
+
+                            metaVerifySuccess = hasUnits && hasDesc && hasPreproc && hasErrorField;
+                            
+                            if (!metaVerifySuccess) {
+                                logger.error(`REG-META: Verification failed. Units: ${hasUnits}, Desc: ${hasDesc}, Preproc: ${hasPreproc}, ErrorField: ${hasErrorField}. Item: ${JSON.stringify(item)}`);
+                            }
+                        }
+                    }
+                }
+            }
+
+            const metaOverallSuccess = metaTempSuccess && metaHostSuccess && metaVerifySuccess;
+            steps.push({
+                name: "REG-ITEM-META: Item metadata (preprocessing, units, description, error)",
+                success: metaOverallSuccess,
+                message: metaOverallSuccess
+                    ? "Item metadata successfully retrieved including preprocessing and units"
+                    : `Failed: TempImport=${metaTempSuccess}, HostImport=${metaHostSuccess}, Verify=${metaVerifySuccess}`
+            });
+            if (!metaOverallSuccess) success = false;
+
             // Step 1: Create Host Group (Legacy test kept for compatibility)
             const groupResult = await HostImporter.importHostGroups([{
                 groupName: groupName
@@ -214,9 +291,11 @@ export class RegressionTestExecutor {
             // Cleanup
             await HostDeleter.deleteHosts(null, hostName, zabbixAuthToken, cookie);
             await HostDeleter.deleteHosts(null, macroHostName, zabbixAuthToken, cookie);
+            await HostDeleter.deleteHosts(null, metaHostName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, regTemplateName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, httpTempName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, macroTemplateName, zabbixAuthToken, cookie);
+            await TemplateDeleter.deleteTemplates(null, metaTempName, zabbixAuthToken, cookie);
             // We don't delete the group here as it might be shared or used by other tests in this run
 
         } catch (error: any) {

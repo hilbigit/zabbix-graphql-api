@@ -40,11 +40,11 @@ Aggregated weather information retrieved from the API.
 """
 type WeatherSensorValues {
     """
-    Current temperature at the device location (in Celsius).
+    Current temperature at the device location (in °C).
     """
     temperature: Float
     """
-    Warnings or description of the street conditions (e.g. Ice, Rain, Clear).
+    Warnings or description of the street conditions (e.g. Ice, Rain, Clear). Derived from Open-Meteo weather codes.
     """
     streetConditionWarnings: String
 }

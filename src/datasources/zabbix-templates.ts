@@ -1,4 +1,4 @@
-import {ZabbixRequest, ParsedArgs, isZabbixErrorResult, ZabbixParams} from "./zabbix-request.js";
+import {ZabbixRequest, ParsedArgs, isZabbixErrorResult, ZabbixParams, ZabbixErrorResult} from "./zabbix-request.js";
 import {ZabbixAPI} from "./zabbix-api.js";
 import {logger} from "../logging/logger.js";
 
@@ -23,6 +23,36 @@ export class ZabbixQueryTemplatesRequest extends ZabbixRequest<ZabbixQueryTempla
             "output": "extend",
             ...args?.zabbix_params
         };
+    }
+
+    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: ParsedArgs): Promise<ZabbixErrorResult | ZabbixQueryTemplateResponse[]> {
+        let result = await super.executeRequestReturnError(zabbixAPI, args);
+
+        if (result && !isZabbixErrorResult(result) && Array.isArray(result)) {
+            const templateids = result.map(t => t.templateid);
+            if (templateids.length > 0) {
+                // Batch fetch preprocessing for all items of these templates
+                const allItems = await new ZabbixQueryItemRequest(this.authToken, this.cookie).executeRequestReturnError(zabbixAPI, new ParsedArgs({
+                    templateids: templateids,
+                    selectPreprocessing: "extend"
+                }));
+
+                if (!isZabbixErrorResult(allItems) && Array.isArray(allItems)) {
+                    const itemidToPreprocessing = new Map<string, any>();
+                    allItems.forEach((item: any) => {
+                        itemidToPreprocessing.set(item.itemid, item.preprocessing);
+                    });
+
+                    for (let template of result) {
+                        for (let item of template.items || []) {
+                            item.preprocessing = itemidToPreprocessing.get(item.itemid.toString());
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 }
 
@@ -90,7 +120,7 @@ export class TemplateHelper {
                 logger.error(`Unable to find templateName=${templateName}`)
                 return null
             }
-            result.push(...templates.map((t) => Number(t.templateid)))
+            result.push(...templates.map((t: ZabbixQueryTemplateResponse) => Number(t.templateid)))
         }
         return result
     }
