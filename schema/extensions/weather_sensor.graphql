@@ -1,0 +1,50 @@
+"""
+WeatherSensorDevice represents a device that retrieves weather information
+from public APIs (e.g. Open-Meteo) using Zabbix HTTP agent items.
+"""
+type WeatherSensorDevice implements Host & Device {
+    """Internal Zabbix ID of the device."""
+    hostid: ID!
+    """
+    Per convention a uuid is used as hostname to identify devices if they do not have a unique hostname.
+    """
+    host: String!
+    """Classification of the device."""
+    deviceType: String
+    """List of host groups this device belongs to."""
+    hostgroups: [HostGroup!]
+    """Visible name of the device."""
+    name: String
+    """Device configuration tags."""
+    tags: DeviceConfig
+    """Host inventory data."""
+    inventory: Inventory
+    """List of monitored items for this host."""
+    items: [ZabbixItem!]
+    """State of the weather sensor device."""
+    state: WeatherSensorState
+}
+
+"""
+Represents the state of a weather sensor device.
+"""
+type WeatherSensorState implements DeviceState {
+    """Operational data (telemetry)."""
+    operational: OperationalDeviceData
+    """Current business values (weather data)."""
+    current: WeatherSensorValues
+}
+
+"""
+Aggregated weather information retrieved from the API.
+"""
+type WeatherSensorValues {
+    """
+    Current temperature at the device location (in Celsius).
+    """
+    temperature: Float
+    """
+    Warnings or description of the street conditions (e.g. Ice, Rain, Clear).
+    """
+    streetConditionWarnings: String
+}

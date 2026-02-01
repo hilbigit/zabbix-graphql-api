@@ -78,7 +78,7 @@ export function createResolvers(): Resolvers {
                 return ZabbixPermissionsHelper.hasUserPermissions(zabbixAPI, args, zabbixAuthToken, cookie)
             },
             locations: (_parent: any, args: Object, {dataSources, zabbixAuthToken}: any) => {
-                return dataSources.zabbixAPI.getLocations(zabbixAuthToken, new ParsedArgs(args));
+                return dataSources.zabbixAPI.getLocations(new ParsedArgs(args), zabbixAuthToken);
             },
             apiVersion: () => {
                 return Config.API_VERSION ?? "unknown"

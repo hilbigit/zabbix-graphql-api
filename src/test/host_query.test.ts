@@ -46,7 +46,7 @@ describe("Host and HostGroup Resolvers", () => {
             body: expect.objectContaining({
                 method: "host.get",
                 params: expect.objectContaining({
-                    search: { name: "Test" },
+                    search: expect.objectContaining({ name: "Test" }),
                     tags: expect.arrayContaining([{
                         tag: "hostType",
                         operator: 1,

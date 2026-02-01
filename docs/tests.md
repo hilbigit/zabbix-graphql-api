@@ -73,6 +73,10 @@ This document outlines the test cases and coverage for the Zabbix GraphQL API.
 #### Currently Contained Regression Tests
 The `runAllRegressionTests` mutation (TC-E2E-02) executes the following checks:
 - **Host without items**: Verifies that hosts created without any items or linked templates can be successfully queried by the system. This ensures that the hierarchical mapping and resolvers handle empty item lists gracefully.
+- **Locations query argument order**: Verifies that the `locations` query correctly handles its parameters and successfully contacts the Zabbix API without session errors (verifying the fix for argument order in the resolver).
+- **Template technical name lookup**: Verifies that templates can be correctly identified by their technical name (`host` field) when linking them to hosts during import.
+- **HTTP Agent URL support**: Verifies that templates containing HTTP Agent items with a configured URL can be imported successfully (verifying the addition of the `url` field to `CreateTemplateItem`).
+- **Host retrieval and visibility**: Verifies that newly imported hosts are immediately visible and retrievable via the `allHosts` query, including correctly delivered assigned templates and assigned host groups (verifying the fix for `output` fields in the host query data source).
 
 ## ✅ Test Coverage Checklist
 
@@ -129,6 +133,6 @@ The `runAllRegressionTests` mutation (TC-E2E-02) executes the following checks:
 As per project guidelines, every new feature or bug fix must be accompanied by a described test case in this specification.
 
 - **Feature**: A new feature must have a corresponding test case (TC) defined before implementation.
-- **Bug Fix**: A bug fix must include a reproduction test case that fails without the fix and passes with it.
+- **Bug Fix**: A bug fix must include a reproduction test case that fails without the fix and passes with it. Additionally, a permanent regression test must be added to the automated suite (e.g., `RegressionTestExecutor`) to prevent the issue from re-occurring.
 - **Documentation**: The `docs/tests.md` file must be updated to reflect any changes in test coverage.
 - **Categorization**: Tests must be categorized as Unit, Integration, or End-to-End (E2E).

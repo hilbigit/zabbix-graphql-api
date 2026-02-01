@@ -13,6 +13,8 @@ type SinglePanelDevice implements Host & Device {
     hostgroups: [HostGroup!]
     name: String
     tags: DeviceConfig
+    inventory: Inventory
+    items: [ZabbixItem!]
     state: PanelState
 }
 
@@ -71,6 +73,10 @@ type FourPanelDevice implements Host & Device {
     name: String
     """Device configuration tags."""
     tags: DeviceConfig
+    """Host inventory data."""
+    inventory: Inventory
+    """List of monitored items for this host."""
+    items: [ZabbixItem!]
     """State of the four-panel device."""
     state: FourPanelState
 }

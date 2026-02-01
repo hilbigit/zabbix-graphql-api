@@ -25,6 +25,7 @@ export type ZabbixErrorResult = {
 export const isZabbixErrorResult = (value: any): value is ZabbixErrorResult => value instanceof Object && "error" in value && !!value.error;
 
 export interface ZabbixParams {
+    [key: string]: any
 }
 
 export interface ZabbixWithTagsParams extends ZabbixParams {
@@ -131,13 +132,12 @@ export class ParsedArgs {
         }
 
         if (this.name_pattern) {
-            if ("search" in result) {
-                (<any>result.search).name = this.name_pattern
-            } else {
-                (<any>result).search = {
-                    name: this.name_pattern,
-                }
+            if (!("search" in result)) {
+                (<any>result).search = {}
             }
+            (<any>result).search.name = this.name_pattern;
+            (<any>result).search.host = this.name_pattern;
+            (<any>result).searchByAny = true;
         }
 
         return result

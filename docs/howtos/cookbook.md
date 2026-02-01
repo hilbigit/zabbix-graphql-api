@@ -194,6 +194,99 @@ AI agents can use the generalized `verifySchemaExtension.graphql` operations to 
 
 ---
 
+## 🍳 Recipe: Extending Schema with a Weather Sensor Device (Public API)
+
+This recipe demonstrates how to extend the schema with a new device type that retrieves real-time weather data from a public API (Open-Meteo) using Zabbix HTTP agent items. This approach allows you to integrate external data sources into your Zabbix monitoring and expose them through the GraphQL API.
+
+### 📋 Prerequisites
+- Zabbix GraphQL API is running.
+- The device has geo-coordinates set in its inventory (`location_lat` and `location_lon`).
+
+### 🛠️ Step 1: Define the Schema Extension
+Create a new `.graphql` file in `schema/extensions/` named `weather_sensor.graphql`.
+
+```graphql
+type WeatherSensorDevice implements Host & Device {
+    hostid: ID!
+    host: String!
+    deviceType: String
+    hostgroups: [HostGroup!]
+    name: String
+    tags: DeviceConfig
+    state: WeatherSensorState
+}
+
+type WeatherSensorState implements DeviceState {
+    operational: OperationalDeviceData
+    current: WeatherSensorValues
+}
+
+type WeatherSensorValues {
+    temperature: Float
+    streetConditionWarnings: String
+}
+```
+
+### ⚙️ Step 2: Register the Resolver
+Add the new type and schema to your `.env` file to enable the dynamic resolver:
+```env
+ADDITIONAL_SCHEMAS=./schema/extensions/weather_sensor.graphql
+ADDITIONAL_RESOLVERS=WeatherSensorDevice
+```
+Restart the API server to apply the changes.
+
+### 🚀 Step 3: Import the Weather Sensor Template
+Use the `importTemplates` mutation to create the `WEATHER_SENSOR` template. This template uses an **HTTP agent** item to fetch data from Open-Meteo and **dependent items** to parse the results.
+
+> **Reference**: See the [Sample: Weather Sensor Template Import](../../docs/queries/sample_import_weather_sensor_template.graphql) for the complete mutation and variables.
+
+**Key Item Configuration**:
+- **Master Item**: `weather.get` (HTTP Agent)
+  - URL: `https://api.open-meteo.com/v1/forecast?latitude={INVENTORY.LOCATION.LAT}&longitude={INVENTORY.LOCATION.LON}&current=temperature_2m,weather_code`
+- **Dependent Item**: `state.current.temperature` (JSONPath: `$.current.temperature_2m`)
+- **Dependent Item**: `state.current.streetConditionWarnings` (JavaScript mapping from `$.current.weather_code`)
+
+### ✅ Step 4: Verification
+Create a host, assign it coordinates, and query its weather state.
+
+1.  **Create Host**:
+    ```graphql
+    mutation CreateWeatherHost {
+      importHosts(hosts: [{
+        deviceKey: "Berlin-Weather-Sensor",
+        deviceType: "WeatherSensorDevice",
+        groupNames: ["External Sensors"],
+        templateNames: ["WEATHER_SENSOR"],
+        location: {
+          name: "Berlin",
+          location_lat: "52.52",
+          location_lon: "13.41"
+        }
+      }]) {
+        hostid
+      }
+    }
+    ```
+
+2.  **Query Data**:
+    ```graphql
+    query GetWeather {
+      allDevices(tag_deviceType: ["WeatherSensorDevice"]) {
+        ... on WeatherSensorDevice {
+          name
+          state {
+            current {
+              temperature
+              streetConditionWarnings
+            }
+          }
+        }
+      }
+    }
+    ```
+
+---
+
 ## 🍳 Recipe: Provisioning a New Host
 
 ### 📋 Prerequisites

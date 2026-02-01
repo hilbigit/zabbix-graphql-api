@@ -17,6 +17,10 @@ type DistanceTrackerDevice implements Host & Device {
     name: String
     """Device configuration tags."""
     tags: DeviceConfig
+    """Host inventory data."""
+    inventory: Inventory
+    """List of monitored items for this host."""
+    items: [ZabbixItem!]
     """State of the distance tracker device."""
     state: DistanceTrackerState
 }

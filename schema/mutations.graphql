@@ -301,6 +301,10 @@ input CreateTemplateItem {
     """
     description: String
     """
+    URL for HTTP Agent items.
+    """
+    url: String
+    """
     Preprocessing steps for the item values.
     """
     preprocessing: [CreateItemPreprocessing!]

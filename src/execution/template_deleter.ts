@@ -1,9 +1,9 @@
 import {DeleteResponse} from "../schema/generated/graphql.js";
 import {
+    TemplateHelper,
     ZabbixDeleteTemplateGroupsRequest,
     ZabbixDeleteTemplatesRequest,
-    ZabbixQueryTemplateGroupRequest,
-    ZabbixQueryTemplatesRequest
+    ZabbixQueryTemplateGroupRequest
 } from "../datasources/zabbix-templates.js";
 import {isZabbixErrorResult, ParsedArgs} from "../datasources/zabbix-request.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
@@ -15,11 +15,8 @@ export class TemplateDeleter {
         let idsToDelete = templateids ? [...templateids] : [];
 
         if (name_pattern) {
-            const queryResult = await new ZabbixQueryTemplatesRequest(zabbixAuthToken, cookie)
-                .executeRequestReturnError(zabbixAPI, new ParsedArgs({ name_pattern: name_pattern }));
-            
-            if (!isZabbixErrorResult(queryResult) && Array.isArray(queryResult)) {
-                const foundIds = queryResult.map(t => Number(t.templateid));
+            const foundIds = await TemplateHelper.findTemplateIdsByName([name_pattern], zabbixAPI, zabbixAuthToken, cookie);
+            if (foundIds) {
                 // Merge and deduplicate
                 idsToDelete = Array.from(new Set([...idsToDelete, ...foundIds]));
             }

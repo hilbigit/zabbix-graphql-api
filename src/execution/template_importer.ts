@@ -176,8 +176,8 @@ export class TemplateImporter {
                             preprocessing: item.preprocessing?.map(p => ({
                                 type: p.type,
                                 params: p.params.join("\n"),
-                                error_handler: p.error_handler,
-                                error_handler_params: p.error_handler_params
+                                error_handler: p.error_handler ?? 0,
+                                error_handler_params: p.error_handler_params ?? ""
                             })),
                             tags: item.tags?.map(t => ({ tag: t.tag, value: t.value || "" }))
                         }

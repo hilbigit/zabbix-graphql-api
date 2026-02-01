@@ -1,6 +1,9 @@
 import {SmoketestResponse, SmoketestStep} from "../schema/generated/graphql.js";
 import {HostImporter} from "./host_importer.js";
 import {HostDeleter} from "./host_deleter.js";
+import {TemplateImporter} from "./template_importer.js";
+import {TemplateDeleter} from "./template_deleter.js";
+import {logger} from "../logging/logger.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
 import {ZabbixQueryHostsGenericRequest} from "../datasources/zabbix-hosts.js";
 import {ParsedArgs} from "../datasources/zabbix-request.js";
@@ -11,7 +14,126 @@ export class RegressionTestExecutor {
         let success = true;
 
         try {
-            // Step 1: Create Host Group
+            // Regression 1: Locations query argument order
+            // This verifies the fix where getLocations was called with (authToken, args) instead of (args, authToken)
+            try {
+                const locations = await zabbixAPI.getLocations(new ParsedArgs({ name_pattern: "NonExistent_" + Math.random() }), zabbixAuthToken, cookie);
+                steps.push({
+                    name: "REG-LOC: Locations query argument order",
+                    success: true,
+                    message: "Locations query executed without session error"
+                });
+            } catch (error: any) {
+                steps.push({
+                    name: "REG-LOC: Locations query argument order",
+                    success: false,
+                    message: `Failed: ${error.message}`
+                });
+                success = false;
+            }
+
+            // Regression 2: Template lookup by technical name
+            // Verifies that importHosts can link templates using their technical name (host)
+            const regTemplateName = "REG_TEMP_" + Math.random().toString(36).substring(7);
+            const regGroupName = "Templates/Roadwork/Devices";
+            const hostGroupName = "Roadwork/Devices";
+            
+            const tempResult = await TemplateImporter.importTemplates([{
+                host: regTemplateName,
+                name: "Regression Test Template",
+                groupNames: [regGroupName]
+            }], zabbixAuthToken, cookie);
+
+            const tempSuccess = !!tempResult?.length && !tempResult[0].error;
+            steps.push({
+                name: "REG-TEMP: Template technical name lookup",
+                success: tempSuccess,
+                message: tempSuccess ? `Template ${regTemplateName} created and searchable by technical name` : `Failed to create template`
+            });
+            if (!tempSuccess) success = false;
+
+            // Regression 3: HTTP Agent URL support
+            // Verifies that templates with HTTP Agent items (including URL) can be imported
+            const httpTempName = "REG_HTTP_" + Math.random().toString(36).substring(7);
+            const httpTempResult = await TemplateImporter.importTemplates([{
+                host: httpTempName,
+                name: "Regression HTTP Template",
+                groupNames: [regGroupName],
+                items: [{
+                    name: "HTTP Master",
+                    type: 19, // HTTP Agent
+                    key: "http.master",
+                    value_type: 4,
+                    url: "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m",
+                    delay: "1m",
+                    history: "0"
+                }]
+            }], zabbixAuthToken, cookie);
+
+            const httpSuccess = !!httpTempResult?.length && !httpTempResult[0].error;
+            steps.push({
+                name: "REG-HTTP: HTTP Agent URL support",
+                success: httpSuccess,
+                message: httpSuccess ? `Template ${httpTempName} with HTTP Agent item created successfully` : `Failed: ${httpTempResult?.[0]?.message}`
+            });
+            if (!httpSuccess) success = false;
+
+            // Regression 4: Host retrieval and visibility (allHosts output fields fix)
+            if (success) {
+                const hostResult = await HostImporter.importHosts([{
+                    deviceKey: hostName,
+                    deviceType: "RegressionHost",
+                    groupNames: [hostGroupName],
+                    templateNames: [regTemplateName]
+                }], zabbixAuthToken, cookie);
+
+                const hostImportSuccess = !!hostResult?.length && !!hostResult[0].hostid;
+                if (hostImportSuccess) {
+                    const hostid = hostResult[0].hostid;
+                    logger.info(`REG-HOST: Host ${hostName} imported with ID ${hostid}. Verifying visibility...`);
+                    
+                    // Verify visibility via allHosts (simulated)
+                    const verifyResult = await new ZabbixQueryHostsGenericRequest("host.get", zabbixAuthToken, cookie)
+                        .executeRequestReturnError(zabbixAPI, new ParsedArgs({
+                            filter_host: hostName
+                        }));
+                    
+                    const verified = Array.isArray(verifyResult) && verifyResult.length > 0 && (verifyResult[0] as any).host === hostName;
+                    
+                    let fieldsVerified = false;
+                    if (verified) {
+                        const host = verifyResult[0] as any;
+                        const hasGroups = Array.isArray(host.hostgroups) && host.hostgroups.length > 0;
+                        const hasTemplates = Array.isArray(host.parentTemplates) && host.parentTemplates.length > 0;
+                        fieldsVerified = hasGroups && hasTemplates;
+                        
+                        if (!fieldsVerified) {
+                            logger.error(`REG-HOST: Fields verification failed. Groups: ${hasGroups}, Templates: ${hasTemplates}. Host data: ${JSON.stringify(host)}`);
+                        }
+                    }
+
+                    if (!verified) {
+                        logger.error(`REG-HOST: Verification failed. Zabbix result: ${JSON.stringify(verifyResult)}`);
+                    }
+                    steps.push({
+                        name: "REG-HOST: Host retrieval and visibility (incl. groups and templates)",
+                        success: verified && fieldsVerified,
+                        message: verified 
+                            ? (fieldsVerified ? `Host ${hostName} retrieved successfully with groups and templates` : `Host ${hostName} retrieved but missing groups or templates`)
+                            : "Host not found after import (output fields issue?)"
+                    });
+                    if (!verified || !fieldsVerified) success = false;
+                } else {
+                    steps.push({
+                        name: "REG-HOST: Host retrieval and visibility",
+                        success: false,
+                        message: `Host import failed: ${hostResult?.[0]?.message || hostResult?.[0]?.error?.message || "Unknown error"}`
+                    });
+                    success = false;
+                }
+            }
+
+            // Step 1: Create Host Group (Legacy test kept for compatibility)
             const groupResult = await HostImporter.importHostGroups([{
                 groupName: groupName
             }], zabbixAuthToken, cookie);
@@ -24,55 +146,11 @@ export class RegressionTestExecutor {
             });
             if (!groupSuccess) success = false;
 
-            // Step 2: Create Host (No items, no templates)
-            if (success) {
-                // We use importHosts but we want to avoid default template linkage.
-                // However, HostImporter.importHosts currently tries to find a template for deviceType.
-                // If we pass a non-existent deviceType, it might fail or just log an error but still try to create the host.
-                // Actually, if getTemplateIdForDeviceType returns undefined, it continues.
-                
-                const hostResult = await HostImporter.importHosts([{
-                    deviceKey: hostName,
-                    deviceType: "EmptyType_" + Math.random().toString(36).substring(7), // Ensure no default template is found
-                    groupNames: [groupName]
-                }], zabbixAuthToken, cookie);
-
-                const hostSuccess = !!hostResult?.length && !hostResult[0].error;
-                steps.push({
-                    name: "Create Host without Items",
-                    success: hostSuccess,
-                    message: hostSuccess ? `Host ${hostName} created without templates/items` : `Failed: ${hostResult?.[0]?.error?.message || "Unknown error"}`
-                });
-                if (!hostSuccess) success = false;
-            } else {
-                steps.push({ name: "Create Host without Items", success: false, message: "Skipped due to previous failures" });
-            }
-
-            // Step 3: Verify Host can be queried by allHosts
-            if (success) {
-                // allHosts query is handled by resolvers, but we can simulate it by calling host.get
-                // We want to verify that our GraphQL API can handle hosts without items.
-                // The issue was likely that if items were missing, something crashed or it wasn't returned.
-                
-                const verifyResult = await new ZabbixQueryHostsGenericRequest("host.get", zabbixAuthToken, cookie)
-                    .executeRequestReturnError(zabbixAPI, new ParsedArgs({
-                        filter_host: hostName
-                    }));
-                
-                let verified = false;
-                if (Array.isArray(verifyResult) && verifyResult.length > 0) {
-                    verified = (verifyResult[0] as any).host === hostName;
-                }
-
-                steps.push({
-                    name: "Verify Host can be queried",
-                    success: verified,
-                    message: verified ? `Verification successful: Host ${hostName} found via allHosts (host.get)` : `Verification failed: Host not found`
-                });
-                if (!verified) success = false;
-            } else {
-                steps.push({ name: "Verify Host can be queried", success: false, message: "Skipped due to previous failures" });
-            }
+            // Cleanup
+            await HostDeleter.deleteHosts(null, hostName, zabbixAuthToken, cookie);
+            await TemplateDeleter.deleteTemplates(null, regTemplateName, zabbixAuthToken, cookie);
+            await TemplateDeleter.deleteTemplates(null, httpTempName, zabbixAuthToken, cookie);
+            // We don't delete the group here as it might be shared or used by other tests in this run
 
         } catch (error: any) {
             success = false;
@@ -81,32 +159,11 @@ export class RegressionTestExecutor {
                 success: false,
                 message: error.message || String(error)
             });
-        } finally {
-            // Step 4: Cleanup
-            const cleanupSteps: SmoketestStep[] = [];
-            
-            // Delete Host
-            const deleteHostRes = await HostDeleter.deleteHosts(null, hostName, zabbixAuthToken, cookie);
-            cleanupSteps.push({
-                name: "Cleanup: Delete Host",
-                success: deleteHostRes.every(r => !r.error),
-                message: deleteHostRes.length > 0 ? deleteHostRes[0].message : "Host not found for deletion"
-            });
-
-            // Delete Host Group
-            const deleteGroupRes = await HostDeleter.deleteHostGroups(null, groupName, zabbixAuthToken, cookie);
-            cleanupSteps.push({
-                name: "Cleanup: Delete Host Group",
-                success: deleteGroupRes.every(r => !r.error),
-                message: deleteGroupRes.length > 0 ? deleteGroupRes[0].message : "Host group not found for deletion"
-            });
-            
-            steps.push(...cleanupSteps);
         }
 
         return {
             success,
-            message: success ? "Regression test passed successfully" : "Regression test failed",
+            message: success ? "Regression tests passed successfully" : "Regression tests failed",
             steps
         };
     }

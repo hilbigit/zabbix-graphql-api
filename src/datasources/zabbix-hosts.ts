@@ -85,7 +85,7 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A e
                 "hostid",
                 "host",
                 "name",
-                "hostgroup",
+                "hostgroups",
                 "items",
                 "description",
                 "parentTemplates"
@@ -183,6 +183,7 @@ class ZabbixCreateHostParams implements ZabbixParams {
         this.name = inputParams.name;
         this.description = inputParams.description;
         if (inputParams.location) {
+            this.inventory_mode = 0;
             this.inventory = {
                 location: inputParams.location.name,
                 location_lat: inputParams.location.location_lat,
@@ -204,6 +205,7 @@ class ZabbixCreateHostParams implements ZabbixParams {
     host: string
     name: string
     description: string
+    inventory_mode?: number
 
     inventory?: {
         location: String

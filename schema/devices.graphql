@@ -18,6 +18,10 @@ interface Device implements Host {
     name: String
     """Device configuration tags."""
     tags: DeviceConfig
+    """Host inventory data."""
+    inventory: Inventory
+    """List of monitored items for this host."""
+    items: [ZabbixItem!]
     """State of the device."""
     state: DeviceState
 }
@@ -133,6 +137,10 @@ type GenericDevice implements Host & Device  {
     name: String
     """Device configuration tags."""
     tags: DeviceConfig
+    """Host inventory data."""
+    inventory: Inventory
+    """List of monitored items for this host."""
+    items: [ZabbixItem!]
     """State of the generic device."""
     state: GenericDeviceState
 }

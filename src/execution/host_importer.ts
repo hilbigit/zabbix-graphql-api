@@ -133,6 +133,10 @@ export class HostImporter {
                 }
             }
 
+            // Deduplicate
+            groupids = Array.from(new Set(groupids));
+            templateids = Array.from(new Set(templateids));
+
             let deviceImportResult = await new ZabbixCreateHostRequest(zabbixAuthToken, cookie).executeRequestReturnError(zabbixAPI, new ParsedArgs(
                 {
                     host: device.deviceKey,

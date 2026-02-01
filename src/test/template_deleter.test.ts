@@ -69,7 +69,7 @@ describe("TemplateDeleter", () => {
         expect(zabbixAPI.post).toHaveBeenCalledWith("template.get", expect.objectContaining({
             body: expect.objectContaining({
                 params: expect.objectContaining({
-                    search: { name: "PatternTemplate%" }
+                    search: expect.objectContaining({ name: "PatternTemplate%" })
                 })
             })
         }));
@@ -148,7 +148,7 @@ describe("TemplateDeleter", () => {
         expect(zabbixAPI.post).toHaveBeenCalledWith("templategroup.get", expect.objectContaining({
             body: expect.objectContaining({
                 params: expect.objectContaining({
-                    search: { name: "PatternGroup%" }
+                    search: expect.objectContaining({ name: "PatternGroup%" })
                 })
             })
         }));

@@ -41,6 +41,14 @@ interface Host {
     of a device in the system (capabilities, functionalities, or purpose).
     """
     deviceType: String
+    """
+    Host inventory data.
+    """
+    inventory: Inventory
+    """
+    List of monitored items for this host.
+    """
+    items: [ZabbixItem!]
 }
 
 """

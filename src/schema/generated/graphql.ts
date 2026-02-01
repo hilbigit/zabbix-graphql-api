@@ -187,6 +187,8 @@ export interface CreateTemplateItem {
   type?: InputMaybe<Scalars['Int']['input']>;
   /** Units of the value. */
   units?: InputMaybe<Scalars['String']['input']>;
+  /** URL for HTTP Agent items. */
+  url?: InputMaybe<Scalars['String']['input']>;
   /** Internally used unique id. */
   uuid?: InputMaybe<Scalars['String']['input']>;
   /** Type of information (e.g. 0 for Float, 3 for Int, 4 for Text). */
@@ -217,6 +219,10 @@ export interface Device {
   hostgroups?: Maybe<Array<HostGroup>>;
   /** Internal Zabbix ID of the device. */
   hostid: Scalars['ID']['output'];
+  /** Host inventory data. */
+  inventory?: Maybe<Inventory>;
+  /** List of monitored items for this host. */
+  items?: Maybe<Array<ZabbixItem>>;
   /** Visible name of the device. */
   name?: Maybe<Scalars['String']['output']>;
   /** State of the device. */
@@ -335,6 +341,10 @@ export interface GenericDevice extends Device, Host {
   hostgroups?: Maybe<Array<HostGroup>>;
   /** Internal Zabbix ID of the device. */
   hostid: Scalars['ID']['output'];
+  /** Host inventory data. */
+  inventory?: Maybe<Inventory>;
+  /** List of monitored items for this host. */
+  items?: Maybe<Array<ZabbixItem>>;
   /** Visible name of the device. */
   name?: Maybe<Scalars['String']['output']>;
   /** State of the generic device. */
@@ -385,6 +395,10 @@ export interface Host {
   hostgroups?: Maybe<Array<HostGroup>>;
   /** Internal Zabbix ID of the host. */
   hostid: Scalars['ID']['output'];
+  /** Host inventory data. */
+  inventory?: Maybe<Inventory>;
+  /** List of monitored items for this host. */
+  items?: Maybe<Array<ZabbixItem>>;
   /** Visible name of the host. */
   name?: Maybe<Scalars['String']['output']>;
 }
@@ -1188,13 +1202,13 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = {
-  Device: ( GenericDevice );
+  Device: ( Omit<GenericDevice, 'items'> & { items?: Maybe<Array<_RefType['ZabbixItem']>> } );
   DeviceState: ( GenericDeviceState );
   DeviceValue: never;
   DeviceValueMessage: never;
   Error: ( ApiError );
   GpsPosition: ( Location );
-  Host: ( GenericDevice ) | ( Omit<ZabbixHost, 'items' | 'parentTemplates'> & { items?: Maybe<Array<_RefType['ZabbixItem']>>, parentTemplates?: Maybe<Array<_RefType['Template']>> } );
+  Host: ( Omit<GenericDevice, 'items'> & { items?: Maybe<Array<_RefType['ZabbixItem']>> } ) | ( Omit<ZabbixHost, 'items' | 'parentTemplates'> & { items?: Maybe<Array<_RefType['ZabbixItem']>>, parentTemplates?: Maybe<Array<_RefType['Template']>> } );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -1226,7 +1240,7 @@ export type ResolversTypes = {
   Error: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Error']>;
   ErrorPayload: ResolverTypeWrapper<ErrorPayload>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
-  GenericDevice: ResolverTypeWrapper<GenericDevice>;
+  GenericDevice: ResolverTypeWrapper<Omit<GenericDevice, 'items'> & { items?: Maybe<Array<ResolversTypes['ZabbixItem']>> }>;
   GenericDeviceState: ResolverTypeWrapper<GenericDeviceState>;
   GenericResponse: ResolverTypeWrapper<GenericResponse>;
   GpsPosition: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['GpsPosition']>;
@@ -1301,7 +1315,7 @@ export type ResolversParentTypes = {
   Error: ResolversInterfaceTypes<ResolversParentTypes>['Error'];
   ErrorPayload: ErrorPayload;
   Float: Scalars['Float']['output'];
-  GenericDevice: GenericDevice;
+  GenericDevice: Omit<GenericDevice, 'items'> & { items?: Maybe<Array<ResolversParentTypes['ZabbixItem']>> };
   GenericDeviceState: GenericDeviceState;
   GenericResponse: GenericResponse;
   GpsPosition: ResolversInterfaceTypes<ResolversParentTypes>['GpsPosition'];
@@ -1395,6 +1409,8 @@ export type DeviceResolvers<ContextType = any, ParentType extends ResolversParen
   host?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hostgroups?: Resolver<Maybe<Array<ResolversTypes['HostGroup']>>, ParentType, ContextType>;
   hostid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  inventory?: Resolver<Maybe<ResolversTypes['Inventory']>, ParentType, ContextType>;
+  items?: Resolver<Maybe<Array<ResolversTypes['ZabbixItem']>>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   state?: Resolver<Maybe<ResolversTypes['DeviceState']>, ParentType, ContextType>;
   tags?: Resolver<Maybe<ResolversTypes['DeviceConfig']>, ParentType, ContextType>;
@@ -1459,6 +1475,8 @@ export type GenericDeviceResolvers<ContextType = any, ParentType extends Resolve
   host?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hostgroups?: Resolver<Maybe<Array<ResolversTypes['HostGroup']>>, ParentType, ContextType>;
   hostid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  inventory?: Resolver<Maybe<ResolversTypes['Inventory']>, ParentType, ContextType>;
+  items?: Resolver<Maybe<Array<ResolversTypes['ZabbixItem']>>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   state?: Resolver<Maybe<ResolversTypes['GenericDeviceState']>, ParentType, ContextType>;
   tags?: Resolver<Maybe<ResolversTypes['DeviceConfig']>, ParentType, ContextType>;
@@ -1489,6 +1507,8 @@ export type HostResolvers<ContextType = any, ParentType extends ResolversParentT
   host?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hostgroups?: Resolver<Maybe<Array<ResolversTypes['HostGroup']>>, ParentType, ContextType>;
   hostid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  inventory?: Resolver<Maybe<ResolversTypes['Inventory']>, ParentType, ContextType>;
+  items?: Resolver<Maybe<Array<ResolversTypes['ZabbixItem']>>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 

@@ -81,8 +81,9 @@ export class TemplateHelper {
     public static async findTemplateIdsByName(templateNames: string[], zabbixApi: ZabbixAPI, zabbixAuthToken?: string, cookie?: string) {
         let result: number[] = []
         for (let templateName of templateNames) {
+            // Use name_pattern which now searches both visibility name and technical name (host)
             let templates = await new ZabbixQueryTemplatesRequest(zabbixAuthToken, cookie).executeRequestReturnError(zabbixApi, new ParsedArgs({
-                filter_name: templateName
+                name_pattern: templateName
             }))
 
             if (isZabbixErrorResult(templates) || !templates?.length) {
