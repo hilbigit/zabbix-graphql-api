@@ -15,20 +15,21 @@ export interface ZabbixQueryTemplateResponse {
 export class ZabbixQueryTemplatesRequest extends ZabbixRequest<ZabbixQueryTemplateResponse[]> {
     constructor(authToken?: string | null, cookie?: string | null,) {
         super("template.get", authToken, cookie);
+        this.skippableZabbixParams.set("selectItems", "items");
     }
 
-    createZabbixParams(args?: ParsedArgs): ZabbixParams {
-        return {
+    createZabbixParams(args?: ParsedArgs, output?: string[]): ZabbixParams {
+        return this.optimizeZabbixParams({
             "selectItems": "extend",
             "output": "extend",
             ...args?.zabbix_params
-        };
+        }, output);
     }
 
-    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: ParsedArgs): Promise<ZabbixErrorResult | ZabbixQueryTemplateResponse[]> {
-        let result = await super.executeRequestReturnError(zabbixAPI, args);
+    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: ParsedArgs, output?: string[]): Promise<ZabbixErrorResult | ZabbixQueryTemplateResponse[]> {
+        let result = await super.executeRequestReturnError(zabbixAPI, args, output);
 
-        if (result && !isZabbixErrorResult(result) && Array.isArray(result)) {
+        if (result && !isZabbixErrorResult(result) && Array.isArray(result) && (!output || output.includes("items.preprocessing"))) {
             const templateids = result.map(t => t.templateid);
             if (templateids.length > 0) {
                 // Batch fetch preprocessing for all items of these templates

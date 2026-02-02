@@ -148,17 +148,57 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
     protected requestBodyTemplate: ZabbixRequestBody;
     protected method: string
     protected prepResult: T | ZabbixErrorResult | undefined = undefined
+    protected skippableZabbixParams: Map<string, string> = new Map();
+    protected impliedFields: Map<string, string[]> = new Map();
 
     constructor(public path: string, public authToken?: string | null, public cookie?: string | null) {
         this.method = path.split(".", 2).join(".");
         this.requestBodyTemplate = new ZabbixRequestBody(this.method);
     }
 
-    createZabbixParams(args?: A): ZabbixParams {
-        return args?.zabbix_params || {}
+    optimizeZabbixParams(params: ZabbixParams, output?: string[]): ZabbixParams {
+        if (!output || output.length === 0) {
+            return params;
+        }
+
+        const requestedTopLevelFields = Array.from(new Set(output.map(field => field.split('.')[0])));
+
+        // Apply implied fields (e.g. "state" implies "items")
+        let neededTopLevelFields = [...requestedTopLevelFields];
+        this.impliedFields.forEach((implied, field) => {
+            if (requestedTopLevelFields.includes(field)) {
+                neededTopLevelFields.push(...implied.map(f => f.split('.')[0]));
+            }
+        });
+
+        const topLevelOutput = Array.from(new Set(neededTopLevelFields));
+
+        // Reduce output subfields
+        if (params.output) {
+            if (Array.isArray(params.output)) {
+                params.output = params.output.filter(field => topLevelOutput.includes(field));
+            } else if (params.output === "extend") {
+                params.output = topLevelOutput;
+            }
+        } else {
+            params.output = topLevelOutput;
+        }
+
+        // Remove skippable parameters
+        this.skippableZabbixParams.forEach((neededField, skippableParam) => {
+            if (!topLevelOutput.includes(neededField) && params.hasOwnProperty(skippableParam)) {
+                delete params[skippableParam];
+            }
+        });
+
+        return params;
     }
 
-    getRequestBody(args?: A, zabbixParams?: ZabbixParams): ZabbixRequestBody {
+    createZabbixParams(args?: A, output?: string[]): ZabbixParams {
+        return this.optimizeZabbixParams(args?.zabbix_params || {}, output)
+    }
+
+    getRequestBody(args?: A, zabbixParams?: ZabbixParams, output?: string[]): ZabbixRequestBody {
         let params: ZabbixParams
         if (Array.isArray(args?.zabbix_params)) {
             params = args?.zabbix_params.map(paramsObj => {
@@ -168,7 +208,7 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
                 return paramsObj;
             })
         } else {
-            params = {...this.requestBodyTemplate.params, ...zabbixParams ?? this.createZabbixParams(args)}
+            params = {...this.requestBodyTemplate.params, ...zabbixParams ?? this.createZabbixParams(args, output)}
         }
         return params ? {
             ...this.requestBodyTemplate,
@@ -204,12 +244,12 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
         return this.prepResult;
     }
 
-    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: A): Promise<T | ZabbixErrorResult> {
+    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: A, output?: string[]): Promise<T | ZabbixErrorResult> {
         let prepareResult = await this.prepare(zabbixAPI, args);
         if (prepareResult) {
             return prepareResult;
         }
-        let requestBody = this.getRequestBody(args);
+        let requestBody = this.getRequestBody(args, undefined, output);
 
         try {
 
@@ -236,8 +276,8 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
         }
     }
 
-    async executeRequestThrowError(zabbixApi: ZabbixAPI, args?: A): Promise<T> {
-        let response = await this.executeRequestReturnError(zabbixApi, args);
+    async executeRequestThrowError(zabbixApi: ZabbixAPI, args?: A, output?: string[]): Promise<T> {
+        let response = await this.executeRequestReturnError(zabbixApi, args, output);
         if (isZabbixErrorResult(response)) {
             throw new GraphQLError(`Called Zabbix path ${this.path} with error: ${response.error.message || "Zabbix error."} ${response.error.data}`, {
                 extensions: {

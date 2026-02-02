@@ -7,6 +7,9 @@ This directory contains detailed guides on how to use and extend the Zabbix Grap
 ### 🍳 [Cookbook](./cookbook.md)
 Practical, step-by-step recipes for common tasks, designed for both humans and AI-based test generation.
 
+### ⚡ [Query Optimization](./query_optimization.md)
+Learn how the API optimizes Zabbix requests by reducing output fields and skipping unnecessary parameters based on the GraphQL query.
+
 ### 📊 [Schema and Schema Extension](./schema.md)
 Learn about the GraphQL schema structure, how Zabbix entities map to GraphQL types, and how to use the dynamic schema extension system.
 

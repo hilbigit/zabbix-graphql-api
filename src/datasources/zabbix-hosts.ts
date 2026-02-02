@@ -17,10 +17,14 @@ export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends Pa
 
     constructor(path: string, authToken?: string | null, cookie?: string | null) {
         super(path, authToken, cookie);
+        this.skippableZabbixParams.set("selectParentTemplates", "parentTemplates");
+        this.skippableZabbixParams.set("selectTags", "tags");
+        this.skippableZabbixParams.set("selectInheritedTags", "tags");
+        this.skippableZabbixParams.set("selectHostGroups", "hostgroups");
     }
 
-    createZabbixParams(args?: A): ZabbixParams {
-        return {
+    createZabbixParams(args?: A, output?: string[]): ZabbixParams {
+        return this.optimizeZabbixParams({
             ...super.createZabbixParams(args),
             selectParentTemplates: [
                 "templateid",
@@ -43,7 +47,7 @@ export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends Pa
                 "description",
                 "parentTemplates"
             ]
-        };
+        }, output);
     }
 }
 
@@ -67,10 +71,12 @@ export class ZabbixQueryHostsMetaRequest extends ZabbixQueryHostsGenericRequest<
 export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixQueryHostsGenericRequest<T, A> {
     constructor(path: string, authToken?: string | null, cookie?: string) {
         super(path, authToken, cookie);
+        this.skippableZabbixParams.set("selectItems", "items");
+        this.impliedFields.set("state", ["items"]);
     }
 
-    createZabbixParams(args?: A): ZabbixParams {
-        return {
+    createZabbixParams(args?: A, output?: string[]): ZabbixParams {
+        return this.optimizeZabbixParams({
             ...super.createZabbixParams(args),
             selectItems: [
                 "itemid",
@@ -99,13 +105,13 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A e
                 "description",
                 "parentTemplates"
             ],
-        };
+        }, output);
     }
 
-    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: A): Promise<ZabbixErrorResult | T> {
-        let result = await super.executeRequestReturnError(zabbixAPI, args);
+    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: A, output?: string[]): Promise<ZabbixErrorResult | T> {
+        let result = await super.executeRequestReturnError(zabbixAPI, args, output);
 
-        if (result && !isZabbixErrorResult(result)) {
+        if (result && !isZabbixErrorResult(result) && (!output || output.includes("items.preprocessing"))) {
             const hosts = <ZabbixHost[]>result;
             const hostids = hosts.map(h => h.hostid);
             
@@ -125,21 +131,29 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A e
                     for (let device of hosts) {
                         for (let item of device.items || []) {
                             item.preprocessing = itemidToPreprocessing.get(item.itemid.toString());
-                            if (!item.lastclock ) {
-                                let values = await new ZabbixQueryHistoryRequest(this.authToken, this.cookie).executeRequestReturnError(
-                                    zabbixAPI, new ZabbixHistoryGetParams(item.itemid, ["clock", "value", "itemid"], 1, item.value_type))
-                                if (isZabbixErrorResult(values)) {
-                                    return values;
-                                }
-                                if (values.length) {
-                                    let latestValue = values[0];
-                                    item.lastvalue = latestValue.value;
-                                    item.lastclock = latestValue.clock;
-                                } else {
-                                    item.lastvalue = null;
-                                    item.lastclock = null;
-                                }
-                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (result && !isZabbixErrorResult(result) && (!output || output.includes("items.lastclock") || output.includes("items.lastvalue"))) {
+            const hosts = <ZabbixHost[]>result;
+            for (let device of hosts) {
+                for (let item of device.items || []) {
+                    if (!item.lastclock) {
+                        let values = await new ZabbixQueryHistoryRequest(this.authToken, this.cookie).executeRequestReturnError(
+                            zabbixAPI, new ZabbixHistoryGetParams(item.itemid, ["clock", "value", "itemid"], 1, item.value_type))
+                        if (isZabbixErrorResult(values)) {
+                            return values;
+                        }
+                        if (values.length) {
+                            let latestValue = values[0];
+                            item.lastvalue = latestValue.value;
+                            item.lastclock = latestValue.clock;
+                        } else {
+                            item.lastvalue = null;
+                            item.lastclock = null;
                         }
                     }
                 }
@@ -153,15 +167,16 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A e
 export class ZabbixQueryHostsGenericRequestWithItemsAndInventory<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixQueryHostsGenericRequestWithItems<T, A> {
     constructor(path: string, authToken?: string | null, cookie?: string) {
         super(path, authToken, cookie);
+        this.skippableZabbixParams.set("selectInventory", "inventory");
     }
 
-    createZabbixParams(args?: A): ZabbixParams {
-        return {
+    createZabbixParams(args?: A, output?: string[]): ZabbixParams {
+        return this.optimizeZabbixParams({
             ...super.createZabbixParams(args),
             selectInventory: [
                 "location", "location_lat", "location_lon"
             ]
-        };
+        }, output);
     }
 }
 
@@ -201,6 +216,7 @@ export interface ZabbixCreateHostInputParams extends ZabbixParams {
     templateids?: [number];
     hostgroupids?: [number];
     macros?: { macro: string, value: string }[];
+    tags?: { tag: string, value: string }[];
     additionalParams?: any;
 }
 
@@ -231,6 +247,9 @@ class ZabbixCreateHostParams implements ZabbixParams {
         if (inputParams.macros) {
             this.macros = inputParams.macros;
         }
+        if (inputParams.tags) {
+            this.tags = inputParams.tags;
+        }
     }
 
     host: string
@@ -246,6 +265,7 @@ class ZabbixCreateHostParams implements ZabbixParams {
     templates?: any
     groups?: any
     macros?: { macro: string, value: string }[]
+    tags?: { tag: string, value: string }[]
 }
 
 

@@ -5,7 +5,12 @@ import {TemplateImporter} from "./template_importer.js";
 import {TemplateDeleter} from "./template_deleter.js";
 import {logger} from "../logging/logger.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
-import {ZabbixQueryHostsGenericRequest, ZabbixQueryHostsGenericRequestWithItems} from "../datasources/zabbix-hosts.js";
+import {
+    ZabbixQueryDevices,
+    ZabbixQueryDevicesArgs,
+    ZabbixQueryHostsGenericRequest,
+    ZabbixQueryHostsGenericRequestWithItems
+} from "../datasources/zabbix-hosts.js";
 import {ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
 import {ParsedArgs} from "../datasources/zabbix-request.js";
 
@@ -38,6 +43,11 @@ export class RegressionTestExecutor {
             const regTemplateName = "REG_TEMP_" + Math.random().toString(36).substring(7);
             const regGroupName = "Templates/Roadwork/Devices";
             const hostGroupName = "Roadwork/Devices";
+            
+            // Assure template group exists
+            await TemplateImporter.importTemplateGroups([{
+                groupName: regGroupName
+            }], zabbixAuthToken, cookie);
             
             const tempResult = await TemplateImporter.importTemplates([{
                 host: regTemplateName,
@@ -274,6 +284,190 @@ export class RegressionTestExecutor {
                     : `Failed: TempImport=${metaTempSuccess}, HostImport=${metaHostSuccess}, Verify=${metaVerifySuccess}`
             });
             if (!metaOverallSuccess) success = false;
+            
+            // Regression 7: Query Optimization and Skippable Parameters
+            let optSuccess = false;
+            try {
+                const optRequest = new ZabbixQueryHostsGenericRequestWithItems("host.get", zabbixAuthToken, cookie);
+                
+                // 1. Test optimization logic: items NOT requested
+                const testParams1 = optRequest.createZabbixParams(new ParsedArgs({}), ["hostid", "name"]);
+                const hasSelectItems1 = "selectItems" in testParams1;
+                const hasOutput1 = Array.isArray(testParams1.output) && testParams1.output.includes("hostid") && testParams1.output.includes("name");
+                
+                // 2. Test skippable params: items requested, tags NOT requested
+                const testParams2 = optRequest.createZabbixParams(new ParsedArgs({}), ["hostid", "items"]);
+                const hasSelectItems2 = "selectItems" in testParams2;
+                const hasSelectTags2 = "selectTags" in testParams2;
+                
+                optSuccess = !hasSelectItems1 && hasOutput1 && hasSelectItems2 && !hasSelectTags2;
+                
+                // 3. Test indirect dependencies: state implies items
+                const testParams3 = optRequest.createZabbixParams(new ParsedArgs({}), ["hostid", "state"]);
+                const hasSelectItems3 = "selectItems" in testParams3;
+                const hasOutput3 = Array.isArray(testParams3.output) && testParams3.output.includes("hostid") && testParams3.output.includes("items");
+                
+                optSuccess = optSuccess && hasSelectItems3 && hasOutput3;
+                
+                if (!optSuccess) {
+                    logger.error(`REG-OPT: Optimization verification failed. hasSelectItems1: ${hasSelectItems1}, hasOutput1: ${hasOutput1}, hasSelectItems2: ${hasSelectItems2}, hasSelectTags2: ${hasSelectTags2}, hasSelectItems3: ${hasSelectItems3}, hasOutput3: ${hasOutput3}`);
+                }
+            } catch (error) {
+                logger.error(`REG-OPT: Error during optimization test: ${error}`);
+            }
+
+            steps.push({
+                name: "REG-OPT: Query Optimization and Skippable Parameters",
+                success: optSuccess,
+                message: optSuccess 
+                    ? "Optimization logic correctly filters output fields and skippable parameters" 
+                    : "Optimization logic failed to correctly filter parameters"
+            });
+            if (!optSuccess) success = false;
+
+            // Regression 8: Empty result handling with filters
+            let emptySuccess = false;
+            try {
+                const emptyResult = await new ZabbixQueryHostsGenericRequest("host.get", zabbixAuthToken, cookie)
+                    .executeRequestReturnError(zabbixAPI, new ParsedArgs({
+                        filter_host: "NonExistentHost_" + Math.random()
+                    }));
+                
+                emptySuccess = Array.isArray(emptyResult) && emptyResult.length === 0;
+            } catch (error: any) {
+                logger.error(`REG-EMPTY: Error during empty result test: ${error}`);
+            }
+
+            steps.push({
+                name: "REG-EMPTY: Empty result handling",
+                success: emptySuccess,
+                message: emptySuccess ? "Correctly returned empty array for non-existent host" : "Failed to return empty array for non-existent host"
+            });
+            if (!emptySuccess) success = false;
+
+            // Regression 9: Dependent Items in Templates
+            const depTempName = "REG_DEP_TEMP_" + Math.random().toString(36).substring(7);
+            const depTempResult = await TemplateImporter.importTemplates([{
+                host: depTempName,
+                name: "Regression Dependent Template",
+                groupNames: [regGroupName],
+                items: [
+                    {
+                        name: "Master Item",
+                        type: 2, // Trapper
+                        key: "master.item",
+                        value_type: 4, // Text
+                        history: "1d"
+                    },
+                    {
+                        name: "Dependent Item",
+                        type: 18, // Dependent
+                        key: "dependent.item",
+                        value_type: 4,
+                        master_item: { key: "master.item" },
+                        history: "1d"
+                    }
+                ]
+            }], zabbixAuthToken, cookie);
+            
+            const depSuccess = !!depTempResult?.length && !depTempResult[0].error;
+            steps.push({
+                name: "REG-DEP: Dependent Items support",
+                success: depSuccess,
+                message: depSuccess ? "Template with master and dependent items imported successfully" : `Failed: ${depTempResult?.[0]?.message}`
+            });
+            if (!depSuccess) success = false;
+
+            // Regression 10: State sub-properties retrieval (Optimization indirect dependency)
+            const stateTempName = "REG_STATE_TEMP_" + Math.random().toString(36).substring(7);
+            const stateHostName = "REG_STATE_HOST_" + Math.random().toString(36).substring(7);
+
+            const stateTempResult = await TemplateImporter.importTemplates([{
+                host: stateTempName,
+                name: "Regression State Template",
+                groupNames: [regGroupName],
+                tags: [{ tag: "deviceType", value: "GenericDevice" }],
+                items: [{
+                    name: "Temperature",
+                    type: 2, // Trapper
+                    key: "operational.temperature",
+                    value_type: 0, // Float
+                    history: "1d"
+                }]
+            }], zabbixAuthToken, cookie);
+
+            const stateTempSuccess = !!stateTempResult?.length && !stateTempResult[0].error;
+            let stateHostSuccess = false;
+            let stateVerifySuccess = false;
+
+            if (stateTempSuccess) {
+                const stateHostResult = await HostImporter.importHosts([{
+                    deviceKey: stateHostName,
+                    deviceType: "GenericDevice",
+                    groupNames: [hostGroupName],
+                    templateNames: [stateTempName]
+                }], zabbixAuthToken, cookie);
+                stateHostSuccess = !!stateHostResult?.length && !!stateHostResult[0].hostid;
+
+                if (stateHostSuccess) {
+                    // Query using ZabbixQueryDevices which handles state -> items mapping
+                    const devicesResult = await new ZabbixQueryDevices(zabbixAuthToken, cookie)
+                        .executeRequestReturnError(zabbixAPI, new ZabbixQueryDevicesArgs({
+                            filter_host: stateHostName
+                        }), ["hostid", "state.operational.temperature"]);
+
+                    if (Array.isArray(devicesResult) && devicesResult.length > 0) {
+                        const device = devicesResult[0] as any;
+                        // Check if items were fetched (indirect dependency)
+                        const hasItems = Array.isArray(device.items) && device.items.some((i: any) => i.key_ === "operational.temperature");
+                        stateVerifySuccess = hasItems;
+
+                        if (!hasItems) {
+                            logger.error(`REG-STATE: Items missing in device result despite requesting state. Device: ${JSON.stringify(device)}`);
+                        }
+                    } else {
+                        logger.error(`REG-STATE: Device not found after import. Result: ${JSON.stringify(devicesResult)}`);
+                    }
+                }
+            }
+
+            const stateOverallSuccess = stateTempSuccess && stateHostSuccess && stateVerifySuccess;
+            steps.push({
+                name: "REG-STATE: State sub-properties retrieval (indirect dependency)",
+                success: stateOverallSuccess,
+                message: stateOverallSuccess
+                    ? "State sub-properties correctly trigger item fetching and are available"
+                    : `Failed: TempImport=${stateTempSuccess}, HostImport=${stateHostSuccess}, Verify=${stateVerifySuccess}`
+            });
+            if (!stateOverallSuccess) success = false;
+
+            // Regression 11: Negative Optimization - items not requested (allDevices)
+            let optNegSuccess = false;
+            try {
+                const optRequest = new ZabbixQueryDevices(zabbixAuthToken, cookie);
+                
+                // Test optimization logic: items/state NOT requested
+                const testParams = optRequest.createZabbixParams(new ZabbixQueryDevicesArgs({}), ["hostid", "name"]);
+                const hasSelectItems = "selectItems" in testParams;
+                const hasOutputItems = Array.isArray(testParams.output) && testParams.output.includes("items");
+                
+                optNegSuccess = !hasSelectItems && !hasOutputItems;
+                
+                if (!optNegSuccess) {
+                    logger.error(`REG-OPT-NEG: Negative optimization verification failed. hasSelectItems: ${hasSelectItems}, hasOutputItems: ${hasOutputItems}`);
+                }
+            } catch (error) {
+                logger.error(`REG-OPT-NEG: Error during negative optimization test: ${error}`);
+            }
+
+            steps.push({
+                name: "REG-OPT-NEG: Negative Optimization - items not requested (allDevices)",
+                success: optNegSuccess,
+                message: optNegSuccess 
+                    ? "Optimization correctly omits items when neither items nor state are requested" 
+                    : "Optimization failed to omit items when not requested"
+            });
+            if (!optNegSuccess) success = false;
 
             // Step 1: Create Host Group (Legacy test kept for compatibility)
             const groupResult = await HostImporter.importHostGroups([{
@@ -296,6 +490,9 @@ export class RegressionTestExecutor {
             await TemplateDeleter.deleteTemplates(null, httpTempName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, macroTemplateName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, metaTempName, zabbixAuthToken, cookie);
+            await TemplateDeleter.deleteTemplates(null, depTempName, zabbixAuthToken, cookie);
+            await TemplateDeleter.deleteTemplates(null, stateTempName, zabbixAuthToken, cookie);
+            await HostDeleter.deleteHosts(null, stateHostName, zabbixAuthToken, cookie);
             // We don't delete the group here as it might be shared or used by other tests in this run
 
         } catch (error: any) {

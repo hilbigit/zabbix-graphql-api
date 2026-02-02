@@ -62,6 +62,7 @@ import {GraphQLInterfaceType, GraphQLList} from "graphql/type/index.js";
 import {isDevice} from "./resolver_helpers.js";
 import {ZabbixPermissionsHelper} from "../datasources/zabbix-permissions.js";
 import {Config} from "../common_utils.js";
+import {GraphqlParamsToNeededZabbixOutput} from "../datasources/graphql-params-to-zabbix-output.js";
 
 
 export function createResolvers(): Resolvers {
@@ -102,36 +103,39 @@ export function createResolvers(): Resolvers {
             allHosts: async (_parent: any, args: QueryAllHostsArgs, {
                 zabbixAuthToken,
                 cookie, dataSources
-            }: any) => {
+            }: any, info: any) => {
                 if (Config.HOST_TYPE_FILTER_DEFAULT) {
                     args.tag_hostType ??= [Config.HOST_TYPE_FILTER_DEFAULT];
                 }
+                const output = GraphqlParamsToNeededZabbixOutput.mapAllHosts(args, info);
                 return await new ZabbixQueryHostsRequestWithItemsAndInventory(zabbixAuthToken, cookie)
                     .executeRequestThrowError(
-                        dataSources.zabbixAPI, new ParsedArgs(args)
+                        dataSources?.zabbixAPI || zabbixAPI, new ParsedArgs(args), output
                     )
             },
             allDevices: async (_parent: any, args: QueryAllDevicesArgs, {
                 zabbixAuthToken,
                 cookie, dataSources
-            }: any) => {
+            }: any, info: any) => {
                 if (Config.HOST_TYPE_FILTER_DEFAULT) {
                     args.tag_hostType ??= [Config.HOST_TYPE_FILTER_DEFAULT];
                 }
+                const output = GraphqlParamsToNeededZabbixOutput.mapAllDevices(args, info);
                 return await new ZabbixQueryDevices(zabbixAuthToken, cookie)
                     .executeRequestThrowError(
-                        dataSources.zabbixAPI, new ZabbixQueryDevicesArgs(args)
+                        dataSources?.zabbixAPI || zabbixAPI, new ZabbixQueryDevicesArgs(args), output
                     )
             },
             allHostGroups: async (_parent: any, args: QueryAllHostGroupsArgs, {
                 zabbixAuthToken,
-                cookie
-            }: any) => {
+                cookie, dataSources
+            }: any, info: any) => {
                 if (!args.search_name && Config.HOST_GROUP_FILTER_DEFAULT) {
                     args.search_name = Config.HOST_GROUP_FILTER_DEFAULT
                 }
+                const output = GraphqlParamsToNeededZabbixOutput.mapAllHostGroups(args, info);
                 return await new ZabbixQueryHostgroupsRequest(zabbixAuthToken, cookie).executeRequestThrowError(
-                    zabbixAPI, new ZabbixQueryHostgroupsParams(args)
+                    dataSources?.zabbixAPI || zabbixAPI, new ZabbixQueryHostgroupsParams(args), output
                 )
             },
 
@@ -158,8 +162,8 @@ export function createResolvers(): Resolvers {
 
             templates: async (_parent: any, args: QueryTemplatesArgs, {
                 zabbixAuthToken,
-                cookie
-            }: any) => {
+                cookie, dataSources
+            }: any, info: any) => {
                 let params: any = {}
                 if (args.hostids) {
                     params.templateids = args.hostids
@@ -169,8 +173,9 @@ export function createResolvers(): Resolvers {
                         name: args.name_pattern
                     }
                 }
+                const output = GraphqlParamsToNeededZabbixOutput.mapTemplates(args, info);
                 return await new ZabbixQueryTemplatesRequest(zabbixAuthToken, cookie)
-                    .executeRequestThrowError(zabbixAPI, new ParsedArgs(params));
+                    .executeRequestThrowError(dataSources?.zabbixAPI || zabbixAPI, new ParsedArgs(params), output);
             },
 
             allTemplateGroups: async (_parent: any, args: any, {

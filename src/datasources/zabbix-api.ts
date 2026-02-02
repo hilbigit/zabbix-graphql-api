@@ -80,12 +80,12 @@ export class ZabbixAPI
         return super.post(path, request);
     }
 
-    async executeRequest<T extends ZabbixResult, A extends ParsedArgs>(zabbixRequest: ZabbixRequest<T, A>, args?: A, throwApiError: boolean = true): Promise<T | ZabbixErrorResult> {
-        return throwApiError ? zabbixRequest.executeRequestThrowError(this, args) : zabbixRequest.executeRequestReturnError(this, args);
+    async executeRequest<T extends ZabbixResult, A extends ParsedArgs>(zabbixRequest: ZabbixRequest<T, A>, args?: A, throwApiError: boolean = true, output?: string[]): Promise<T | ZabbixErrorResult> {
+        return throwApiError ? zabbixRequest.executeRequestThrowError(this, args, output) : zabbixRequest.executeRequestReturnError(this, args, output);
     }
 
-    async requestByPath<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs>(path: string, args?: A, authToken?: string | null, cookies?: string, throwApiError: boolean = true) {
-        return this.executeRequest<T, A>(new ZabbixRequest<T>(path, authToken, cookies), args, throwApiError);
+    async requestByPath<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs>(path: string, args?: A, authToken?: string | null, cookies?: string, throwApiError: boolean = true, output?: string[]) {
+        return this.executeRequest<T, A>(new ZabbixRequest<T>(path, authToken, cookies), args, throwApiError, output);
     }
 
     async getLocations(args?: ParsedArgs, authToken?: string, cookies?: string) {

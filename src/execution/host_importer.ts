@@ -144,7 +144,8 @@ export class HostImporter {
                     location: device.location,
                     templateids: templateids,
                     hostgroupids: groupids,
-                    macros: device.macros
+                    macros: device.macros,
+                    tags: [{ tag: "deviceType", value: device.deviceType }]
                 }
             ))
 

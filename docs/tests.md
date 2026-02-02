@@ -53,6 +53,11 @@ This document outlines the test cases and coverage for the Zabbix GraphQL API.
 - **TC-AUTH-04**: Import user rights.
 - **TC-AUTH-05**: Import user rights using sample mutation.
 
+### Query Optimization
+- **TC-OPT-01**: Verify that GraphQL queries only fetch requested fields from Zabbix (reduced output).
+- **TC-OPT-02**: Verify that skippable Zabbix parameters (like selectItems) are omitted if not requested in GraphQL.
+- **TC-OPT-03**: Verify that indirect dependencies (e.g., `state` requiring `items`) are correctly handled by the optimization logic.
+
 ### System and Configuration
 - **TC-CONF-01**: Schema loader uses Config variables.
 - **TC-CONF-02**: Zabbix API constants derived from Config.
@@ -77,6 +82,11 @@ The `runAllRegressionTests` mutation (TC-E2E-02) executes the following checks:
 - **Template technical name lookup**: Verifies that templates can be correctly identified by their technical name (`host` field) when linking them to hosts during import.
 - **HTTP Agent URL support**: Verifies that templates containing HTTP Agent items with a configured URL can be imported successfully (verifying the addition of the `url` field to `CreateTemplateItem`).
 - **Host retrieval and visibility**: Verifies that newly imported hosts are immediately visible and retrievable via the `allHosts` query, including correctly delivered assigned templates and assigned host groups (verifying the fix for `output` fields in the host query data source).
+- **Query Optimization**: Verifies that GraphQL requests correctly translate into optimized Zabbix parameters, reducing the amount of data fetched (verifying the query optimization feature).
+- **Empty result handling**: Verifies that queries return an empty array instead of an error when no entities match the provided filters.
+- **Dependent Items**: Verifies that templates with master and dependent items can be imported successfully, correctly resolving the dependency within the same import operation.
+- **State sub-properties**: Verifies that requesting device state sub-properties correctly triggers the retrieval of required Zabbix items, even if `items` is not explicitly requested (verifying the indirect dependency logic).
+- **Negative Optimization (allDevices)**: Verifies that items are NOT requested from Zabbix if neither `items` nor `state` (or state sub-properties) are requested within the `allDevices` query.
 
 ## ✅ Test Coverage Checklist
 
@@ -116,6 +126,9 @@ The `runAllRegressionTests` mutation (TC-E2E-02) executes the following checks:
 | TC-AUTH-03 | hasPermissions query | Unit | Jest | [src/test/user_rights.test.ts](../src/test/user_rights.test.ts) |
 | TC-AUTH-04 | importUserRights mutation | Unit | Jest | [src/test/user_rights.test.ts](../src/test/user_rights.test.ts) |
 | TC-AUTH-05 | Import user rights using sample | Integration | Jest | [src/test/user_rights_integration.test.ts](../src/test/user_rights_integration.test.ts) |
+| TC-OPT-01 | Verify Query Optimization (reduced output) | Unit/E2E | Jest/Regression | [src/test/query_optimization.test.ts](../src/test/query_optimization.test.ts) |
+| TC-OPT-02 | Verify skippable parameters | Unit/E2E | Jest/Regression | [src/test/query_optimization.test.ts](../src/test/query_optimization.test.ts) |
+| TC-OPT-03 | Verify indirect dependencies | Unit | Jest | [src/test/indirect_dependencies.test.ts](../src/test/indirect_dependencies.test.ts) |
 | TC-CONF-01 | schema_loader uses Config variables | Unit | Jest | [src/test/schema_config.test.ts](../src/test/schema_config.test.ts) |
 | TC-CONF-02 | constants are derived from Config | Unit | Jest | [src/test/zabbix_api_config.test.ts](../src/test/zabbix_api_config.test.ts) |
 | TC-CONF-03 | logger levels initialized from Config | Unit | Jest | [src/test/logger_config.test.ts](../src/test/logger_config.test.ts) |
