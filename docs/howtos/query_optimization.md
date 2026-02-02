@@ -22,7 +22,7 @@ The `GraphqlParamsToNeededZabbixOutput` class provides static methods to map Gra
 ### 3. Resolver Integration
 Resolvers use the mapper to determine the required output and pass it to the datasource:
 ```typescript
-const output = GraphqlParamsToNeededZabbixOutput.mapAllHosts(args, info);
+const output = GraphqlParamsToNeededZabbixOutput.mapAllHosts(info);
 return await new ZabbixQueryHostsRequestWithItemsAndInventory(...)
     .executeRequestThrowError(dataSources.zabbixAPI, new ParsedArgs(args), output);
 ```
@@ -30,6 +30,7 @@ return await new ZabbixQueryHostsRequestWithItemsAndInventory(...)
 ### 4. Indirect Dependencies
 Some GraphQL fields are not directly returned by Zabbix but are computed from other data. The optimization logic ensures these dependencies are handled:
 - **`state`**: Requesting the `state` field on a `Device` requires Zabbix `items`. The mapper automatically adds `items` to the requested output if `state` is present.
+- **`deviceType`**: Requesting `deviceType` requires Zabbix `tags` (or `inheritedTags`). This is needed because the `deviceType` is resolved from a Zabbix tag and will be empty otherwise. The optimization logic ensures that `selectTags` and `selectInheritedTags` are not skipped when `deviceType` is requested.
 
 ## 🛠️ Configuration
 Optimization rules are defined in the constructor of specialized `ZabbixRequest` classes.
@@ -37,7 +38,7 @@ Optimization rules are defined in the constructor of specialized `ZabbixRequest`
 ### 📋 Supported Optimizations
 - **Hosts & Devices**:
     - `selectParentTemplates` skipped if `parentTemplates` not requested.
-    - `selectTags` and `selectInheritedTags` skipped if `tags` not requested.
+    - `selectTags` and `selectInheritedTags` skipped if `tags` (or `deviceType`) not requested.
     - `selectHostGroups` skipped if `hostgroups` not requested.
     - `selectItems` skipped if `items` (or `state`) not requested.
     - `selectInventory` skipped if `inventory` not requested.

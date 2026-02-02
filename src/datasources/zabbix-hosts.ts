@@ -21,6 +21,8 @@ export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends Pa
         this.skippableZabbixParams.set("selectTags", "tags");
         this.skippableZabbixParams.set("selectInheritedTags", "tags");
         this.skippableZabbixParams.set("selectHostGroups", "hostgroups");
+        this.impliedFields.set("deviceType", ["tags"]);
+        this.impliedFields.set("hostType", ["tags"]);
     }
 
     createZabbixParams(args?: A, output?: string[]): ZabbixParams {

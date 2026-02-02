@@ -73,12 +73,14 @@ Compare the GraphQL response with the expected output described in the Zabbix do
 
 This recipe shows how to add support for a new specialized device type without modifying the core API code. We will use the `DistanceTrackerDevice` as an example.
 
+> **Important**: Schema extensions are not part of the core API source code. They are loaded dynamically at runtime via environment variables. The extensions provided in the `samples/extensions/` directory of this repository are **samples** to demonstrate how to use this mechanism. You can place your own extension files in any directory accessible by the API server.
+
 ### 📋 Prerequisites
 - Zabbix Template Group `Templates/Roadwork/Devices` exists.
 - Zabbix GraphQL API is running.
 
 ### 🛠️ Step 1: Define the Schema Extension
-Create a new `.graphql` file in `schema/extensions/` (e.g. `distance_tracker.graphql`). 
+Create a new `.graphql` file in `samples/extensions/` (e.g. `distance_tracker.graphql`). 
 
 > **Advice**: A new device type must always implement both the `Host` and `Device` interfaces to ensure compatibility with the API's core logic and resolvers.
 
@@ -102,20 +104,20 @@ type DistanceTrackerState implements DeviceState {
 }
 
 type DistanceTrackerValues {
-  timeFrom: Time
-  timeUntil: Time
+  timeFrom: String
+  timeUntil: String
   count: Int
   # The distances are modelled using a type which is already defined in location_tracker_commons.graphql
   distances: [SensorDistanceValue!]
 }
 ```
 
-> **Reference**: This example is based on the already prepared sample: [location_tracker_devices.graphql](../../schema/extensions/location_tracker_devices.graphql).
+> **Reference**: This example is based on the already prepared sample: [location_tracker_devices.graphql](../../samples/extensions/location_tracker_devices.graphql).
 
 ### ⚙️ Step 2: Configure Environment Variables
 Add the new schema and resolver to your `.env` file:
 ```env
-ADDITIONAL_SCHEMAS=./schema/extensions/distance_tracker.graphql,./schema/extensions/location_tracker_commons.graphql
+ADDITIONAL_SCHEMAS=./samples/extensions/distance_tracker.graphql,./samples/extensions/location_tracker_commons.graphql
 ADDITIONAL_RESOLVERS=DistanceTrackerDevice
 ```
 Restart the API server.
@@ -203,7 +205,7 @@ This recipe demonstrates how to extend the schema with new device types that ret
 - The device has geo-coordinates set via user macros (e.g. `{$LAT}` and `{$LON}`).
 
 ### 🛠️ Step 1: Define the Schema Extension
-Create a new `.graphql` file in `schema/extensions/` (e.g. `weather_sensor.graphql` or `ground_value_checker.graphql`).
+Create a new `.graphql` file in `samples/extensions/` (e.g. `weather_sensor.graphql` or `ground_value_checker.graphql`).
 
 **Sample: Weather Sensor**
 ```graphql
@@ -262,7 +264,7 @@ type GroundValues {
 ### ⚙️ Step 2: Register the Resolver
 Add the new types and schemas to your `.env` file to enable the dynamic resolver:
 ```env
-ADDITIONAL_SCHEMAS=./schema/extensions/weather_sensor.graphql,./schema/extensions/ground_value_checker.graphql
+ADDITIONAL_SCHEMAS=./samples/extensions/weather_sensor.graphql,./samples/extensions/ground_value_checker.graphql
 ADDITIONAL_RESOLVERS=WeatherSensorDevice,GroundValueChecker
 ```
 Restart the API server to apply the changes.
@@ -341,6 +343,30 @@ Create a host, assign it macros for coordinates, and query its state.
       }
     }
     ```
+
+---
+
+## 🍳 Recipe: Testing Specialized Device Types
+
+This recipe shows how to execute a comprehensive query to verify the state and configuration of specialized device types, such as the `DistanceTrackerDevice`. This is useful for validating that your schema extensions and hierarchical mappings are working correctly.
+
+### 📋 Prerequisites
+- Zabbix GraphQL API is running.
+- The schema has been extended with the `DistanceTrackerDevice` type (see [Recipe: Extending Schema with a New Device Type](#-recipe-extending-schema-with-a-new-device-type)). Sample extensions can be found in the `samples/extensions` directory.
+- At least one host with `deviceType` set to `DistanceTrackerDevice` exists in Zabbix.
+
+### 🛠️ Step 1: Get the Sample Query
+1.  **Open the Sample**: Open [docs/queries/sample_distance_tracker_test_query.graphql](../queries/sample_distance_tracker_test_query.graphql).
+2.  **Copy the Query**: Copy the GraphQL code block under the `### Query` header.
+
+### 🚀 Step 2: Execution/Action
+Execute the query against your GraphQL endpoint. This query retrieves information from `allHostGroups`, `allDevices`, and `allHosts`, using inline fragments to access fields specific to `DistanceTrackerDevice`.
+
+### ✅ Step 3: Verification
+Check the response for the following:
+- **apiVersion** and **zabbixVersion** are returned.
+- **allHostGroups** contains the expected groups.
+- **allDevices** and **allHosts** include your `DistanceTrackerDevice` with its specialized `state` (count, timeFrom, timeUntil) and `tags` (deviceWidgetPreview).
 
 ---
 

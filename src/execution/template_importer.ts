@@ -108,7 +108,7 @@ export class TemplateImporter {
                 let templateNames = template.templates.map(t => t.name)
                 let queryResult = await new ZabbixQueryTemplatesRequest(zabbixAuthToken, cookie).executeRequestReturnError(zabbixAPI, new ParsedArgs({
                     filter_host: templateNames
-                }))
+                }), ["templateid"])
 
                 if (isZabbixErrorResult(queryResult)) {
                     let errorMessage = queryResult.error.message;

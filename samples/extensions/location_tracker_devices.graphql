@@ -42,11 +42,11 @@ type DistanceTrackerValues {
     """
     Start of time interval for the delivered device counting value.
     """
-    timeFrom: Time
+    timeFrom: String
     """
     End of time interval for the delivered device counting value.
     """
-    timeUntil: Time
+    timeUntil: String
 
     """
     Number of unique device keys detected between timeFrom and timeUntil.

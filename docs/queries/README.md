@@ -8,6 +8,7 @@ This directory contains practical examples of GraphQL operations for the Zabbix 
 - [Query All Hosts](./sample_all_hosts_query.graphql): Retrieve basic host information and inventory.
 - [Import Hosts](./sample_import_hosts_mutation.graphql): Create or update multiple hosts with tags and group assignments.
 - [Query All Devices](./sample_all_devices_query.graphql): Query specialized devices using the `allDevices` query.
+- [Distance Tracker Test Query](./sample_distance_tracker_test_query.graphql): Comprehensive query for testing specialized `DistanceTrackerDevice` types.
 
 ### 📄 Templates
 - [Query Templates](./sample_templates_query.graphql): List available templates and their items.

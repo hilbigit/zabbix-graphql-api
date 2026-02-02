@@ -115,7 +115,7 @@ export class TemplateHelper {
             // Use name_pattern which now searches both visibility name and technical name (host)
             let templates = await new ZabbixQueryTemplatesRequest(zabbixAuthToken, cookie).executeRequestReturnError(zabbixApi, new ParsedArgs({
                 name_pattern: templateName
-            }))
+            }), ["templateid", "host"])
 
             if (isZabbixErrorResult(templates) || !templates?.length) {
                 logger.error(`Unable to find templateName=${templateName}`)

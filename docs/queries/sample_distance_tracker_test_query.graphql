@@ -1,0 +1,118 @@
+### Query
+This query demonstrates how to retrieve data from multiple sources, including specialized device types like `DistanceTrackerDevice`.
+
+> **Precondition**: This query will only work if the GraphQL schema has been extended with the `DistanceTrackerDevice` type (see the sample in `samples/extensions/location_tracker_devices.graphql`).
+
+```graphql
+query DistanceTrackerDeviceTest {
+     apiVersion
+     zabbixVersion
+     allHostGroups(search_name: "Roadwork/Devices/*") {
+         groupid
+         name
+     }
+     allDevices {
+         deviceType
+         host
+         name
+         ... on DistanceTrackerDevice {
+             state {
+                 current {
+                     count
+                     timeFrom
+                     timeUntil
+                 }
+             }
+         }
+     }
+     allHosts {
+         hostid
+         host
+         name
+         deviceType
+         ... on Device {
+             tags {
+                 deviceWidgetPreview {
+                     TOP_LEFT {
+                         key
+                         emptyValue
+                         unit
+                         value_font_size
+                         g_value_transform
+                         unit_font_size
+                         g_unit_transform
+                     }
+                     TOP_RIGHT {
+                         key
+                         emptyValue
+                         unit
+                         value_font_size
+                         g_value_transform
+                         unit_font_size
+                         g_unit_transform
+                     }
+                     BOTTOM_LEFT {
+                         key
+                         emptyValue
+                         unit
+                         value_font_size
+                         g_value_transform
+                         unit_font_size
+                         g_unit_transform
+                     }
+                     BOTTOM_RIGHT {
+                         key
+                         emptyValue
+                         unit
+                         value_font_size
+                         g_value_transform
+                         unit_font_size
+                         g_unit_transform
+                     }
+                 }
+             }
+         }
+         ... on DistanceTrackerDevice {
+             state {
+                 current {
+                     count
+                     timeFrom
+                     timeUntil
+                 }
+             }
+         }
+         ... on ZabbixHost {
+             items {
+                 itemid
+                 name
+                 key_
+                 hostid
+                 lastclock
+                 lastvalue
+                 value_type
+                 attributeName
+                 status
+                 type
+             }
+         }
+         ... on GenericDevice {
+             deviceType
+             state {
+                 generic: current
+             }
+         }
+         ... on SinglePanelDevice {
+             deviceType
+             state {
+                 current {
+                     values {
+                         contentIndex
+                         contentKey
+                         contentText
+                     }
+                 }
+             }
+         }
+     }
+ }
+```

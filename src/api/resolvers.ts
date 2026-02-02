@@ -107,7 +107,7 @@ export function createResolvers(): Resolvers {
                 if (Config.HOST_TYPE_FILTER_DEFAULT) {
                     args.tag_hostType ??= [Config.HOST_TYPE_FILTER_DEFAULT];
                 }
-                const output = GraphqlParamsToNeededZabbixOutput.mapAllHosts(args, info);
+                const output = GraphqlParamsToNeededZabbixOutput.mapAllHosts(info);
                 return await new ZabbixQueryHostsRequestWithItemsAndInventory(zabbixAuthToken, cookie)
                     .executeRequestThrowError(
                         dataSources?.zabbixAPI || zabbixAPI, new ParsedArgs(args), output
@@ -120,7 +120,7 @@ export function createResolvers(): Resolvers {
                 if (Config.HOST_TYPE_FILTER_DEFAULT) {
                     args.tag_hostType ??= [Config.HOST_TYPE_FILTER_DEFAULT];
                 }
-                const output = GraphqlParamsToNeededZabbixOutput.mapAllDevices(args, info);
+                const output = GraphqlParamsToNeededZabbixOutput.mapAllDevices(info);
                 return await new ZabbixQueryDevices(zabbixAuthToken, cookie)
                     .executeRequestThrowError(
                         dataSources?.zabbixAPI || zabbixAPI, new ZabbixQueryDevicesArgs(args), output
@@ -133,7 +133,7 @@ export function createResolvers(): Resolvers {
                 if (!args.search_name && Config.HOST_GROUP_FILTER_DEFAULT) {
                     args.search_name = Config.HOST_GROUP_FILTER_DEFAULT
                 }
-                const output = GraphqlParamsToNeededZabbixOutput.mapAllHostGroups(args, info);
+                const output = GraphqlParamsToNeededZabbixOutput.mapAllHostGroups(info);
                 return await new ZabbixQueryHostgroupsRequest(zabbixAuthToken, cookie).executeRequestThrowError(
                     dataSources?.zabbixAPI || zabbixAPI, new ZabbixQueryHostgroupsParams(args), output
                 )
@@ -173,7 +173,7 @@ export function createResolvers(): Resolvers {
                         name: args.name_pattern
                     }
                 }
-                const output = GraphqlParamsToNeededZabbixOutput.mapTemplates(args, info);
+                const output = GraphqlParamsToNeededZabbixOutput.mapTemplates(info);
                 return await new ZabbixQueryTemplatesRequest(zabbixAuthToken, cookie)
                     .executeRequestThrowError(dataSources?.zabbixAPI || zabbixAPI, new ParsedArgs(params), output);
             },
@@ -287,11 +287,11 @@ export function createResolvers(): Resolvers {
             }: any) => {
                 return SmoketestExecutor.runSmoketest(args.hostName, args.templateName, args.groupName, zabbixAuthToken, cookie)
             },
-            runAllRegressionTests: async (_parent: any, args: any, {
+            runAllRegressionTests: async (_parent: any, _args: any, {
                 zabbixAuthToken,
                 cookie
             }: any) => {
-                return RegressionTestExecutor.runAllRegressionTests(args.hostName, args.groupName, zabbixAuthToken, cookie)
+                return RegressionTestExecutor.runAllRegressionTests(zabbixAuthToken, cookie)
             }
         },
 

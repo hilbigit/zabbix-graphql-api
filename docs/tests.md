@@ -71,6 +71,9 @@ This document outlines the test cases and coverage for the Zabbix GraphQL API.
 - **TC-DOCS-01**: Validate all Zabbix documentation sample queries.
 - **TC-MCP-01**: Validate all MCP operation files against the schema.
 
+### Schema-dependent Tests
+- **TC-SCHEMA-01**: Verify comprehensive query for `DistanceTrackerDevice` works correctly when schema is extended.
+
 ### End-to-End (E2E) Tests
 - **TC-E2E-01**: Run a complete smoketest using MCP (creates template, group, and host, verifies, and cleans up).
 - **TC-E2E-02**: Run all regression tests to verify critical system behavior and prevent known issues.
@@ -87,6 +90,7 @@ The `runAllRegressionTests` mutation (TC-E2E-02) executes the following checks:
 - **Dependent Items**: Verifies that templates with master and dependent items can be imported successfully, correctly resolving the dependency within the same import operation.
 - **State sub-properties**: Verifies that requesting device state sub-properties correctly triggers the retrieval of required Zabbix items, even if `items` is not explicitly requested (verifying the indirect dependency logic).
 - **Negative Optimization (allDevices)**: Verifies that items are NOT requested from Zabbix if neither `items` nor `state` (or state sub-properties) are requested within the `allDevices` query.
+- **allDevices deviceType filter**: Verifies that the `allDevices` query only returns hosts that have a `deviceType` tag, and that the `deviceType` field is populated for all results.
 
 ## ✅ Test Coverage Checklist
 
@@ -138,6 +142,7 @@ The `runAllRegressionTests` mutation (TC-E2E-02) executes the following checks:
 | TC-CONF-07 | Parse Zabbix Args | Unit | Jest | [src/test/zabbix_api_args_parser.test.ts](../src/test/zabbix_api_args_parser.test.ts) |
 | TC-DOCS-01 | Zabbix Docs Samples Integration | Integration | Jest | [src/test/zabbix_docs_samples.test.ts](../src/test/zabbix_docs_samples.test.ts) |
 | TC-MCP-01 | MCP Operations Validation | Integration | Jest | [src/test/mcp_operations_validation.test.ts](../src/test/mcp_operations_validation.test.ts) |
+| TC-SCHEMA-01 | DistanceTrackerDevice Query | Integration | Jest | [src/test/schema_dependent_queries.test.ts](../src/test/schema_dependent_queries.test.ts) |
 | TC-E2E-01 | Run complete smoketest | E2E | GraphQL / MCP | [mcp/operations/runSmoketest.graphql](../mcp/operations/runSmoketest.graphql) |
 | TC-E2E-02 | Run all regression tests | E2E | GraphQL / MCP | [mcp/operations/runAllRegressionTests.graphql](../mcp/operations/runAllRegressionTests.graphql) |
 

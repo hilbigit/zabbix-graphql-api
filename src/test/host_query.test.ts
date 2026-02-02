@@ -57,8 +57,8 @@ describe("Host and HostGroup Resolvers", () => {
         }));
     });
 
-    test("allDevices query", async () => {
-        const mockDevices = [{ hostid: "2", host: "Device 1" }];
+    test("allDevices query - with hostid", async () => {
+        const mockDevices = [{ hostid: "2", host: "Device 1", deviceType: "GenericDevice" }];
         (zabbixAPI.post as jest.Mock).mockResolvedValueOnce(mockDevices);
 
         const args: QueryAllDevicesArgs = { hostids: 2 };
@@ -74,7 +74,63 @@ describe("Host and HostGroup Resolvers", () => {
             body: expect.objectContaining({
                 method: "host.get",
                 params: expect.objectContaining({
-                    hostids: 2
+                    hostids: 2,
+                    tags: expect.arrayContaining([{
+                        tag: "deviceType",
+                        operator: 4
+                    }])
+                })
+            })
+        }));
+    });
+
+    test("allDevices query - with deviceType filter", async () => {
+        const mockDevices = [{ hostid: "2", host: "Device 1", deviceType: "SomeType" }];
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce(mockDevices);
+
+        const args: QueryAllDevicesArgs = { tag_deviceType: ["SomeType"] };
+        const context = { 
+            zabbixAuthToken: "test-token",
+            dataSources: { zabbixAPI: zabbixAPI }
+        };
+
+        const result = await resolvers.Query.allDevices(null, args, context);
+
+        expect(result).toEqual(mockDevices);
+        expect(zabbixAPI.post).toHaveBeenCalledWith("host.get.with_items", expect.objectContaining({
+            body: expect.objectContaining({
+                params: expect.objectContaining({
+                    tags: expect.arrayContaining([{
+                        tag: "deviceType",
+                        operator: 1,
+                        value: "SomeType"
+                    }])
+                })
+            })
+        }));
+    });
+
+    test("allDevices query - ensures deviceType exists if no filter provided", async () => {
+        const mockDevices = [{ hostid: "3", host: "Device with tag", deviceType: "SomeType" }];
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce(mockDevices);
+
+        const args: QueryAllDevicesArgs = {};
+        const context = { 
+            zabbixAuthToken: "test-token",
+            dataSources: { zabbixAPI: zabbixAPI }
+        };
+
+        const result = await resolvers.Query.allDevices(null, args, context);
+
+        expect(result).toEqual(mockDevices);
+        expect(zabbixAPI.post).toHaveBeenCalledWith("host.get.with_items", expect.objectContaining({
+            body: expect.objectContaining({
+                method: "host.get",
+                params: expect.objectContaining({
+                    tags: expect.arrayContaining([{
+                        tag: "deviceType",
+                        operator: 4
+                    }])
                 })
             })
         }));

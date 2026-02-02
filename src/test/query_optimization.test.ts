@@ -163,6 +163,37 @@ describe("Query Optimization", () => {
         expect(callParams.output).toContain("items");
     });
 
+    test("allHosts optimization - keep selectTags when deviceType requested", async () => {
+        (zabbixAPI.post as jest.Mock).mockResolvedValueOnce([]);
+
+        const args: QueryAllHostsArgs = {};
+        const context = { 
+            zabbixAuthToken: "test-token",
+            dataSources: { zabbixAPI: zabbixAPI }
+        };
+        const info = {
+            fieldNodes: [{
+                selectionSet: {
+                    selections: [
+                        { kind: 'Field', name: { value: 'hostid' } },
+                        { kind: 'Field', name: { value: 'deviceType' } }
+                    ]
+                }
+            }]
+        };
+
+        await resolvers.Query.allHosts(null, args, context, info);
+
+        expect(zabbixAPI.post).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
+            body: expect.objectContaining({
+                params: expect.objectContaining({
+                    output: ["hostid"],
+                    selectTags: expect.any(Array)
+                })
+            })
+        }));
+    });
+
     test("allDevices optimization - skip items when not requested", async () => {
         (zabbixAPI.post as jest.Mock).mockResolvedValueOnce([]);
 

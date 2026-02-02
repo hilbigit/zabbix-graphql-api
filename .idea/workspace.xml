@@ -5,18 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="docs: refactor documentation and upgrade to Node.js 24&#10;&#10;This commit upgrades the project to Node.js 24 (LTS) and performs a major refactoring of the documentation to support both advanced users and AI-based automation (MCP).&#10;&#10;Changes:&#10;- Environment &amp; CI/CD:&#10;  - Set Node.js version to &gt;=24 in package.json and .nvmrc.&#10;  - Updated Dockerfile to use Node 24 base image.&#10;  - Updated @types/node to ^24.10.9.&#10;- Documentation:&#10;  - Refactored README.md with comprehensive technical reference, configuration details, and Zabbix-to-GraphQL mapping.&#10;  - Created docs/howtos/cookbook.md with practical recipes for common tasks and AI test generation.&#10;  - Updated docs/howtos/mcp.md to emphasize GraphQL's advantages for AI agents and Model Context Protocol.&#10;  - Added readme.improvement.plan.md to track documentation evolution.&#10;  - Enhanced all how-to guides with improved cross-references and up-to-date information.&#10;- Guidelines:&#10;  - Updated .junie/guidelines.md with Node 24 requirements and enhanced commit message standards (Conventional Commits 1.0.0).&#10;- Infrastructure &amp; Code:&#10;  - Updated docker-compose.yml with Apollo MCP server integration.&#10;  - Refined configuration and schema handling in src/api/ and src/datasources/.&#10;  - Synchronized generated TypeScript types with schema updates.">
+      <change afterPath="$PROJECT_DIR$/docs/queries/sample_distance_tracker_test_query.graphql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/schema_dependent_queries.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/index_ts.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/index_ts.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/howtos/cookbook.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/howtos/cookbook.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/queries/sample_import_weather_sensor_template.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/sample_import_weather_sensor_template.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/howtos/query_optimization.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/howtos/query_optimization.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/howtos/schema.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/howtos/schema.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/queries/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/tests.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/tests.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mcp/operations/runAllRegressionTests.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/mcp/operations/runAllRegressionTests.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/extensions/display_devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/samples/extensions/display_devices.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/extensions/ground_value_checker.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/samples/extensions/ground_value_checker.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/extensions/location_tracker_commons.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/samples/extensions/location_tracker_commons.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/extensions/location_tracker_devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/samples/extensions/location_tracker_devices.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema/extensions/weather_sensor.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/samples/extensions/weather_sensor.graphql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/schema/mutations.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/mutations.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/resolvers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolvers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/graphql-params-to-zabbix-output.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/graphql-params-to-zabbix-output.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-hosts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-hosts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-templates.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-templates.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/execution/host_importer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/execution/host_importer.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/execution/regression_test_executor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/execution/regression_test_executor.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/execution/template_importer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/execution/template_importer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/model_enum_values.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/model_enum_values.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/schema/generated/graphql.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schema/generated/graphql.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/host_importer.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/host_importer.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/template_importer.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/template_importer.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/host_query.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/host_query.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/query_optimization.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/query_optimization.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,13 +43,13 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="149" />
+    <option name="cachedIndexableFilesCount" value="163" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="license" />
+        <entry key="$PROJECT_DIR$" value="vlsv" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -95,7 +111,7 @@
     "go.import.settings.migrated": "true",
     "javascript.preferred.runtime.type.id": "node",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/src",
+    "last_opened_file_path": "//wsl.localhost/Ubuntu/home/ahilbig/git/vcr/zabbix-graphql-api/docs",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -107,8 +123,8 @@
     "npm.copy-schema.executor": "Run",
     "npm.prod.executor": "Run",
     "npm.test.executor": "Run",
-    "settings.editor.selected.configurable": "ml.llm.mcp",
-    "settings.editor.splitter.proportion": "0.28812414",
+    "settings.editor.selected.configurable": "junie.mcp",
+    "settings.editor.splitter.proportion": "0.23751687",
     "to.speed.mode.migration.done": "true",
     "ts.external.directory.path": "\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
@@ -116,16 +132,16 @@
 }]]></component>
   <component name="RecapSpentCounter">
     <option name="endsOfQuotaMs" value="1772398800000" />
-    <option name="spentUsd" value="0.01011225" />
+    <option name="spentUsd" value="0.0915201" />
   </component>
   <component name="RecapUselessUpdatesCounter">
-    <option name="suspendCountdown" value="8" />
+    <option name="suspendCountdown" value="0" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\docs" />
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\src" />
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\dist" />
-      <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\docs" />
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\src\testdata\templates" />
       <recent name="\\wsl.localhost\Ubuntu\home\ahilbig\git\vcr\zabbix-graphql-api\src\test" />
     </key>
@@ -153,7 +169,7 @@
       <node-interpreter value="project" />
       <envs>
         <env name="ADDITIONAL_RESOLVERS" value="SinglePanelDevice,FourPanelDevice,DistanceTrackerDevice" />
-        <env name="ADDITIONAL_SCHEMAS" value="./schema/extensions/display_devices.graphql,./schema/extensions/location_tracker_devices.graphql,./schema/extensions/location_tracker_commons.graphql" />
+        <env name="ADDITIONAL_SCHEMAS" value="./samples/extensions/display_devices.graphql,./samples/extensions/location_tracker_devices.graphql,./samples/extensions/location_tracker_commons.graphql" />
         <env name="DEBUG" value="device-control-center-api:*" />
         <env name="ZABBIX_PRIVILEGE_ESCALATION_TOKEN" value="$ZABBIX_AUTH_TOKEN_VCR_DEV$" />
         <env name="ZABBIX_BASE_URL" value="http://cockpit.vcr.develop.hilbigit.com/" />
@@ -185,11 +201,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.prod" />
+        <item itemvalue="npm.copy-schema" />
+        <item itemvalue="npm.test" />
         <item itemvalue="npm.test" />
         <item itemvalue="npm.prod" />
-        <item itemvalue="npm.copy-schema" />
-        <item itemvalue="npm.prod" />
-        <item itemvalue="npm.copy-schema" />
       </list>
     </recent_temporary>
   </component>
@@ -488,7 +504,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/datasources/zabbix-request.ts</url>
-          <line>213</line>
+          <line>253</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>

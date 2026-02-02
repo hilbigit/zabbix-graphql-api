@@ -142,12 +142,7 @@ type Mutation {
     """
     Runs all regression tests.
     """
-    runAllRegressionTests(
-        """Technical name for the test host."""
-        hostName: String!, 
-        """Technical name for the test host group."""
-        groupName: String!
-    ): SmoketestResponse!
+    runAllRegressionTests: SmoketestResponse!
 }
 
 """

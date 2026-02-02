@@ -174,7 +174,7 @@ export class HostImporter {
                 {
                     tag_deviceType: deviceType
                 }
-            ));
+            ), ["templateid"]);
 
         if (templates?.length) {
             result = Number(templates[0].templateid)

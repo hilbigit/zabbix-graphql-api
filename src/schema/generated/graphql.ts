@@ -642,12 +642,6 @@ export interface MutationImportUserRightsArgs {
 }
 
 
-export interface MutationRunAllRegressionTestsArgs {
-  groupName: Scalars['String']['input'];
-  hostName: Scalars['String']['input'];
-}
-
-
 export interface MutationRunSmoketestArgs {
   groupName: Scalars['String']['input'];
   hostName: Scalars['String']['input'];
@@ -1597,7 +1591,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   importTemplateGroups?: Resolver<Maybe<Array<ResolversTypes['CreateTemplateGroupResponse']>>, ParentType, ContextType, RequireFields<MutationImportTemplateGroupsArgs, 'templateGroups'>>;
   importTemplates?: Resolver<Maybe<Array<ResolversTypes['ImportTemplateResponse']>>, ParentType, ContextType, RequireFields<MutationImportTemplatesArgs, 'templates'>>;
   importUserRights?: Resolver<Maybe<ResolversTypes['ImportUserRightsResult']>, ParentType, ContextType, RequireFields<MutationImportUserRightsArgs, 'dryRun' | 'input'>>;
-  runAllRegressionTests?: Resolver<ResolversTypes['SmoketestResponse'], ParentType, ContextType, RequireFields<MutationRunAllRegressionTestsArgs, 'groupName' | 'hostName'>>;
+  runAllRegressionTests?: Resolver<ResolversTypes['SmoketestResponse'], ParentType, ContextType>;
   runSmoketest?: Resolver<ResolversTypes['SmoketestResponse'], ParentType, ContextType, RequireFields<MutationRunSmoketestArgs, 'groupName' | 'hostName' | 'templateName'>>;
 };
 

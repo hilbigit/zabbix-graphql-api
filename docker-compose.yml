@@ -11,6 +11,8 @@ services:
     environment:
       - SCHEMA_PATH=/usr/app/dist/schema/
       - ZABBIX_DEVELOPMENT_TOKEN=${ZABBIX_DEVELOPMENT_TOKEN}
+    volumes:
+      - ./samples:/usr/app/dist/samples
 
   apollo-mcp-server:
     image: ghcr.io/apollographql/apollo-mcp-server:latest

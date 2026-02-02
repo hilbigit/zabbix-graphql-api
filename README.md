@@ -18,7 +18,7 @@ The Zabbix GraphQL API acts as a wrapper and enhancer for the native Zabbix JSON
   - *Reference*: `schema/mutations.graphql` (importHosts, importTemplates, importUserRights, etc.), `docs/sample_import_*.graphql`
 
 - **Dynamic Schema Extension**: Extend the schema without code changes using environment variables
-  - *Reference*: `src/api/schema.ts`, `schema/extensions/`, `src/common_utils.ts` (ADDITIONAL_SCHEMAS, ADDITIONAL_RESOLVERS)
+  - *Reference*: `src/api/schema.ts`, `samples/extensions/` (sample extensions), `src/common_utils.ts` (ADDITIONAL_SCHEMAS, ADDITIONAL_RESOLVERS)
 
 - **Permission System**: Role-based access control using Zabbix template groups
   - *Reference*: `schema/api_commons.graphql` (Permission enum, PermissionRequest), `src/api/resolvers.ts` (hasPermissions, userPermissions), `docs/sample_import_permissions_template_groups_mutation.graphql`
@@ -213,7 +213,7 @@ HOST_GROUP_FILTER_DEFAULT=Roadwork/Devices/*
 HOST_TYPE_FILTER_DEFAULT=Roadwork/Devices
 
 # Schema Extensions (No-Code)
-ADDITIONAL_SCHEMAS=./schema/extensions/display_devices.graphql,./schema/extensions/location_tracker_devices.graphql,./schema/extensions/location_tracker_commons.graphql
+ADDITIONAL_SCHEMAS=./samples/extensions/display_devices.graphql,./samples/extensions/location_tracker_devices.graphql,./samples/extensions/location_tracker_commons.graphql
 ADDITIONAL_RESOLVERS=SinglePanelDevice,FourPanelDevice,DistanceTrackerDevice
 
 # Logging

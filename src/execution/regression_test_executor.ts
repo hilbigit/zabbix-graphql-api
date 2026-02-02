@@ -12,12 +12,15 @@ import {
     ZabbixQueryHostsGenericRequestWithItems
 } from "../datasources/zabbix-hosts.js";
 import {ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
-import {ParsedArgs} from "../datasources/zabbix-request.js";
+import {isZabbixErrorResult, ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
 
 export class RegressionTestExecutor {
-    public static async runAllRegressionTests(hostName: string, groupName: string, zabbixAuthToken?: string, cookie?: string): Promise<SmoketestResponse> {
+    public static async runAllRegressionTests(zabbixAuthToken?: string, cookie?: string): Promise<SmoketestResponse> {
         const steps: SmoketestStep[] = [];
         let success = true;
+
+        const hostName = "REG_HOST_" + Math.random().toString(36).substring(7);
+        const groupName = "REG_GROUP_" + Math.random().toString(36).substring(7);
 
         try {
             // Regression 1: Locations query argument order
@@ -309,8 +312,15 @@ export class RegressionTestExecutor {
                 
                 optSuccess = optSuccess && hasSelectItems3 && hasOutput3;
                 
+                // 4. Test indirect dependencies: deviceType implies tags
+                const testParams4 = optRequest.createZabbixParams(new ParsedArgs({}), ["hostid", "deviceType"]);
+                const hasSelectTags4 = "selectTags" in testParams4;
+                const hasOutput4 = Array.isArray(testParams4.output) && testParams4.output.includes("hostid");
+                
+                optSuccess = optSuccess && hasSelectTags4 && hasOutput4;
+
                 if (!optSuccess) {
-                    logger.error(`REG-OPT: Optimization verification failed. hasSelectItems1: ${hasSelectItems1}, hasOutput1: ${hasOutput1}, hasSelectItems2: ${hasSelectItems2}, hasSelectTags2: ${hasSelectTags2}, hasSelectItems3: ${hasSelectItems3}, hasOutput3: ${hasOutput3}`);
+                    logger.error(`REG-OPT: Optimization verification failed. hasSelectItems1: ${hasSelectItems1}, hasOutput1: ${hasOutput1}, hasSelectItems2: ${hasSelectItems2}, hasSelectTags2: ${hasSelectTags2}, hasSelectItems3: ${hasSelectItems3}, hasOutput3: ${hasOutput3}, hasSelectTags4: ${hasSelectTags4}, hasOutput4: ${hasOutput4}`);
                 }
             } catch (error) {
                 logger.error(`REG-OPT: Error during optimization test: ${error}`);
@@ -469,6 +479,57 @@ export class RegressionTestExecutor {
             });
             if (!optNegSuccess) success = false;
 
+            // Regression 12: allDevices deviceType filter
+            // Verifies that allDevices only returns hosts with a deviceType tag
+            const devHostNameWithTag = "REG_DEV_WITH_TAG_" + Math.random().toString(36).substring(7);
+            const devHostNameWithoutTag = "REG_DEV_WITHOUT_TAG_" + Math.random().toString(36).substring(7);
+
+            // Get groupid for hostGroupName
+            const groupQuery: any = await new ZabbixRequest("hostgroup.get", zabbixAuthToken, cookie)
+                .executeRequestReturnError(zabbixAPI, new ParsedArgs({ filter_name: hostGroupName }));
+            const regGroupId = Array.isArray(groupQuery) && groupQuery[0]?.groupid;
+
+            if (regGroupId) {
+                await HostImporter.importHosts([{
+                    deviceKey: devHostNameWithTag,
+                    deviceType: "RegressionDevice",
+                    groupNames: [hostGroupName]
+                }], zabbixAuthToken, cookie);
+
+                await new ZabbixRequest("host.create", zabbixAuthToken, cookie).executeRequestReturnError(zabbixAPI, new ParsedArgs({
+                    host: devHostNameWithoutTag,
+                    name: devHostNameWithoutTag,
+                    groups: [{ groupid: regGroupId }]
+                }));
+
+                const allDevicesResult: any = await new ZabbixQueryDevices(zabbixAuthToken, cookie)
+                    .executeRequestReturnError(zabbixAPI, new ZabbixQueryDevicesArgs({
+                        filter_host: [devHostNameWithTag, devHostNameWithoutTag]
+                    }), ["name", "host", "hostid", "deviceType"]);
+
+                if (isZabbixErrorResult(allDevicesResult)) {
+                    steps.push({
+                        name: "REG-DEV-FILTER: allDevices deviceType filter",
+                        success: false,
+                        message: `Zabbix error: ${allDevicesResult.error.message}`
+                    });
+                } else {
+                    const hasHostWithTag = allDevicesResult.some((d: any) => d.host === devHostNameWithTag);
+                    const hasHostWithoutTag = allDevicesResult.some((d: any) => d.host === devHostNameWithoutTag);
+                    const devTypeNotNull = allDevicesResult.length > 0 && allDevicesResult.every((d: any) => d.deviceType !== null && d.deviceType !== undefined && d.deviceType !== "");
+
+                    const devFilterSuccess = hasHostWithTag && !hasHostWithoutTag && devTypeNotNull;
+                    steps.push({
+                        name: "REG-DEV-FILTER: allDevices deviceType filter",
+                        success: devFilterSuccess,
+                        message: devFilterSuccess 
+                            ? `allDevices correctly filtered out hosts without deviceType tag`
+                            : `Failed: withTag=${hasHostWithTag}, withoutTag=${hasHostWithoutTag}, typeNotNull=${devTypeNotNull}, result=${JSON.stringify(allDevicesResult)}`
+                    });
+                    if (!devFilterSuccess) success = false;
+                }
+            }
+
             // Step 1: Create Host Group (Legacy test kept for compatibility)
             const groupResult = await HostImporter.importHostGroups([{
                 groupName: groupName
@@ -486,6 +547,8 @@ export class RegressionTestExecutor {
             await HostDeleter.deleteHosts(null, hostName, zabbixAuthToken, cookie);
             await HostDeleter.deleteHosts(null, macroHostName, zabbixAuthToken, cookie);
             await HostDeleter.deleteHosts(null, metaHostName, zabbixAuthToken, cookie);
+            await HostDeleter.deleteHosts(null, devHostNameWithTag, zabbixAuthToken, cookie);
+            await HostDeleter.deleteHosts(null, devHostNameWithoutTag, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, regTemplateName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, httpTempName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, macroTemplateName, zabbixAuthToken, cookie);

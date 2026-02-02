@@ -10,7 +10,7 @@ The GraphQL schema is located in the `../../schema/` directory and consists of:
 - `zabbix.graphql` - Zabbix-specific types (see detailed documentation in file comments)
 - `device_value_commons.graphql` - Common value types (see detailed documentation in file comments)
 - `api_commons.graphql` - Common API types and permission system (see detailed documentation in file comments)
-- `extensions/` - Custom device type extensions
+- `samples/extensions/` - Sample device type extensions (not part of the core source)
 
 For comprehensive understanding of each operation, read the detailed comments in the respective schema files.
 
@@ -38,7 +38,8 @@ The `Location` type represents geographical information from Zabbix host invento
 Extend the schema without code changes using environment variables:
 
 ```bash
-ADDITIONAL_SCHEMAS=./schema/extensions/display_devices.graphql,./schema/extensions/location_tracker_devices.graphql
+# Extensions can be located anywhere; samples are provided in samples/extensions/
+ADDITIONAL_SCHEMAS=./samples/extensions/display_devices.graphql,./samples/extensions/location_tracker_devices.graphql
 ADDITIONAL_RESOLVERS=SinglePanelDevice,FourPanelDevice,DistanceTrackerDevice
 ```
 
