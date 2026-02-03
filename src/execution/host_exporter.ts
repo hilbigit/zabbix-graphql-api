@@ -85,8 +85,7 @@ export class HostValueExporter {
                     filter: {
                         host: hostFilter,
                         key_: itemKeyFilter
-                    },
-                    tags: [{"tag": "hasValue", "operator": 1, "value": "true"}]
+                    }
                 }))
 
         if (isZabbixErrorResult(items)) {

@@ -11,6 +11,7 @@ import {logger} from "../logging/logger.js";
 import {zabbixAPI, zabbixDevelopmentToken} from "../datasources/zabbix-api.js";
 import {WebSocketServer} from "ws";
 import {useServer} from "graphql-ws/lib/use/ws";
+import {Config} from "../common_utils.js";
 
 const GRAPHQL_PATH = "/"
 const GRAPHQL_PORT = 4000
@@ -55,6 +56,25 @@ async function startApolloServer() {
                         return {
                             async drainServer() {
                                 await serverCleanup.dispose();
+                            },
+                        };
+                    },
+                },
+                // Request logging plugin
+                {
+                    async requestDidStart(requestContext) {
+                        if (Config.VERBOSITY > 0) {
+                            logger.info(`GraphQL Request: ${requestContext.request.operationName || 'Unnamed Operation'}`);
+                            if (requestContext.request.variables) {
+                                logger.info(`Parameters: ${JSON.stringify(requestContext.request.variables, null, 2)}`);
+                            }
+                        }
+                        return {
+                            async willSendResponse(requestContext) {
+                                if (Config.VERBOSITY > 1) {
+                                    logger.info(`GraphQL Response for ${requestContext.request.operationName || 'Unnamed Operation'}:`);
+                                    logger.info(JSON.stringify(requestContext.response.body, null, 2));
+                                }
                             },
                         };
                     },

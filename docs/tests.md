@@ -53,6 +53,9 @@ This document outlines the test cases and coverage for the Zabbix GraphQL API.
 - **TC-AUTH-04**: Import user rights.
 - **TC-AUTH-05**: Import user rights using sample mutation.
 
+### History and Data Pushing
+- **TC-HIST-01**: Push history data using `pushHistory` mutation.
+
 ### Query Optimization
 - **TC-OPT-01**: Verify that GraphQL queries only fetch requested fields from Zabbix (reduced output).
 - **TC-OPT-02**: Verify that skippable Zabbix parameters (like selectItems) are omitted if not requested in GraphQL.
@@ -91,6 +94,7 @@ The `runAllRegressionTests` mutation (TC-E2E-02) executes the following checks:
 - **State sub-properties**: Verifies that requesting device state sub-properties correctly triggers the retrieval of required Zabbix items, even if `items` is not explicitly requested (verifying the indirect dependency logic).
 - **Negative Optimization (allDevices)**: Verifies that items are NOT requested from Zabbix if neither `items` nor `state` (or state sub-properties) are requested within the `allDevices` query.
 - **allDevices deviceType filter**: Verifies that the `allDevices` query only returns hosts that have a `deviceType` tag, and that the `deviceType` field is populated for all results.
+- **pushHistory mutation**: Verifies that the `pushHistory` mutation correctly pushes data to ZABBIX_TRAP items, using either item ID or a combination of host and item key.
 
 ## ✅ Test Coverage Checklist
 

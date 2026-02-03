@@ -128,6 +128,22 @@ type Mutation {
     ): [DeleteResponse!]
 
     """
+    Pushes history data to Zabbix (ZABBIX_TRAP items).
+    
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+    """
+    pushHistory(
+        """Item ID to push data to."""
+        itemid: Int,
+        """Item key to push data to (required if itemid is empty)."""
+        key: String,
+        """Host name the item belongs to (required if itemid is empty)."""
+        host: String,
+        """Values to push."""
+        values: [HistoryPushInput!]!
+    ): HistoryPushResponse
+
+    """
     Runs a smoketest: creates a template, links a host, verifies it, and cleans up.
     """
     runSmoketest(
@@ -768,5 +784,37 @@ type ImportUserRightResult {
     List of errors encountered during import.
     """
     errors: [ApiError!]
+}
+
+"""
+Input for pushing history data.
+"""
+input HistoryPushInput {
+    """Timestamp of the value."""
+    timestamp: DateTime!
+    """The value to push (JSON object)."""
+    value: JSONObject!
+}
+
+"""
+Response object for pushHistory operation.
+"""
+type HistoryPushResponse {
+    """Overall status message."""
+    message: String
+    """Error information if the operation failed."""
+    error: ApiError
+    """Detailed results for each pushed value."""
+    data: [HistoryPushData!]
+}
+
+"""
+Detailed result for a single pushed value.
+"""
+type HistoryPushData {
+    """The Zabbix item ID."""
+    itemid: String
+    """Error information if the push failed for this item."""
+    error: ApiError
 }
 

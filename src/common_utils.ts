@@ -15,6 +15,7 @@ static readonly DRY_RUN = process.env.DRY_RUN
     static readonly ZABBIX_ROADWORK_BASE_GROUP = process.env.ZABBIX_ROADWORK_BASE_GROUP
     static readonly ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX = process.env.ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX || "Permissions"
     static readonly LOG_LEVELS = process.env.LOG_LEVELS
+    static readonly VERBOSITY = process.env.VERBOSITY ? parseInt(process.env.VERBOSITY) : 0
     static readonly HOST_TYPE_FILTER_DEFAULT = process.env.HOST_TYPE_FILTER_DEFAULT;
     static readonly HOST_GROUP_FILTER_DEFAULT = process.env.HOST_GROUP_FILTER_DEFAULT;
 }

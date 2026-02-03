@@ -1,0 +1,19 @@
+### Query
+Retrieve the state of tracked devices.
+
+```graphql
+query GetSimulatedState {
+  allDevices(tag_deviceType: ["TrackedDevice"]) {
+    name
+    host
+    deviceType
+    ... on TrackedDevice {
+      state {
+        current {
+          geojson
+        }
+      }
+    }
+  }
+}
+```

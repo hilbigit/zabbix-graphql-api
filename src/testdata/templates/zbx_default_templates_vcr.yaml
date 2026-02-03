@@ -55,7 +55,7 @@ zabbix_export:
             key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/location"]'
         - uuid: 380c4a7d752848cba3b5a59a0f9b13c0
           name: MQTT_LOCATION
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/location"]'
           history: '0'
           value_type: TEXT
@@ -135,23 +135,23 @@ zabbix_export:
             key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/count"]'
         - uuid: 905c5f1b6e524bd2b227769a59f4df1b
           name: MQTT_COUNT
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/count"]'
           history: '0'
           value_type: TEXT
         - uuid: 6fa441872c3140f4adecf39956245603
           name: MQTT_DISTANCE
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/distance"]'
           value_type: TEXT
         - uuid: 69d2afa4a0324d818150e9473c3264f3
           name: MQTT_NAME
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/name"]'
           value_type: TEXT
         - uuid: 45ff9430d27f47a492c98fce03fc7962
           name: MQTT_SERVICE_DATA
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","deviceValue/ServiceData"]'
           value_type: TEXT
         - uuid: 3bf0d3017ea54e1da2a764c3f96bf97e
@@ -224,6 +224,89 @@ zabbix_export:
           value: '8'
         - tag: deviceWidgetPreview.TOP_LEFT.value_font_size
           value: '24'
+    - uuid: 27474f627cb344b782a81c16d7e0c7d1
+      template: BT_DEVICE_TRACKER
+      name: BT_DEVICE_TRACKER
+      vendor:
+        name: 'Hilbig IT GmbH'
+        version: 2.1.1
+      templates:
+        - name: ROADWORK_DEVICE
+      groups:
+        - name: Templates/Roadwork/Devices
+      items:
+        - name: location
+          type: DEPENDENT
+          key: location
+          history: 2d
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var obj=JSON.parse(value);
+                  
+                  if (obj["isFiltered"]) {
+                    throw "Result is filtered";
+                    return "filtered";
+                  }
+                  
+                  return value;
+            - type: NOT_MATCHES_REGEX
+              parameters:
+                - filtered
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: 'mqtt.trap[deviceValue/location]'
+        - name: MQTT_LOCATION
+          type: TRAP
+          key: 'mqtt.trap[deviceValue/location]'
+          history: '0'
+          value_type: TEXT
+        - name: coords
+          type: DEPENDENT
+          key: state.current.values.coords
+          history: 2d
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var obj=JSON.parse(value);
+                  var location = obj["location"];
+                  var coords = location["coords"];
+                  return JSON.stringify({
+                  	"btDeviceKey": obj["btDeviceKey"],
+                  	"timestamp": location["timestamp"],
+                      "deviceName": obj["deviceName"],
+                  	"latitude": coords[1],
+                  	"longitude": coords[0],
+                  	"coords": coords
+                  });
+          master_item:
+            key: location
+          tags:
+            - tag: hasValue
+              value: 'true'
+        - name: geojson
+          type: DEPENDENT
+          key: state.current.values.geojson
+          history: 2d
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.location.setup
+          master_item:
+            key: location
+          tags:
+            - tag: hasValue
+              value: 'true'
+      tags:
+        - tag: class
+          value: roadwork
+        - tag: deviceType
+          value: GenericDevice
     - uuid: 6490907a74964d0797c7acd1938bc553
       template: GEOLOCATION
       name: GEOLOCATION
@@ -236,7 +319,7 @@ zabbix_export:
       items:
         - uuid: 4ad4d9a769744615816d190c34cb49c7
           name: GPS_LOCATION_MQTT
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/location"]'
           history: '0'
           value_type: TEXT
@@ -338,25 +421,25 @@ zabbix_export:
       items:
         - uuid: 602290e9f42f4135b548e1cd45abe135
           name: DENSITY_MQTT
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/density"]'
           history: '0'
           value_type: TEXT
         - uuid: 87e0a14266984247b81fdc757dea5bde
           name: ERROR_MQTT
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/error"]'
           history: '0'
           value_type: TEXT
         - uuid: 644b0ec2e3d9448da1a69561ec10d19d
           name: SIGNALSTRENGTH_MQTT
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/signalstrength"]'
           history: '0'
           value_type: TEXT
         - uuid: 67c01d7334a24823832bba74073cf356
           name: TEMPERATURE_MQTT
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/temperature"]'
           history: '0'
           value_type: TEXT
@@ -373,7 +456,7 @@ zabbix_export:
               value: operationalValue
         - uuid: 0352c80c749d4d91b386dab9c74ef3c6
           name: VOLTAGE_MQTT
-          type: ZABBIX_AGENT
+          type: TRAP
           key: 'mqtt.get["tcp://mqtt-broker:1883","operationalValue/voltage"]'
           history: '0'
           value_type: TEXT

@@ -18,3 +18,7 @@ introspection:
     enabled: true
   search:
     enabled: true
+logging:
+  level: ${MCP_LOG_LEVEL:-info}
+  parameters: ${MCP_LOG_PARAMETERS:-false}
+  responses: ${MCP_LOG_RESPONSES:-false}

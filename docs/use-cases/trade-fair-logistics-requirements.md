@@ -1,6 +1,6 @@
 # 🏗️ Trade Fair Logistics Requirements
 
-This document outlines the requirements for extending the Zabbix GraphQL API to support trade fair logistics, derived from the analysis of the "KI-gestützte Orchestrierung in der Messelogistik" (AI-supported orchestration in trade fair logistics) pilot at Koelnmesse.
+This document outlines the requirements for extending the Zabbix GraphQL API to support trade fair logistics, derived from the analysis of the planned "AI-supported orchestration in trade fair logistics" pilot at Koelnmesse.
 
 ## 📋 Project Context
 The goal is to use the **Virtual Control Room (VCR)** as an orchestration platform to improve punctuality, throughput, and exception handling in trade fair logistics.

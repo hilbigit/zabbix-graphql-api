@@ -11,6 +11,7 @@ import {
     MutationImportTemplateGroupsArgs,
     MutationImportTemplatesArgs,
     MutationImportUserRightsArgs,
+    MutationPushHistoryArgs,
     Permission,
     QueryAllDevicesArgs,
     QueryAllHostGroupsArgs,
@@ -34,6 +35,7 @@ import {TemplateDeleter} from "../execution/template_deleter.js";
 import {HostValueExporter} from "../execution/host_exporter.js";
 import {logger} from "../logging/logger.js";
 import {ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
+import {ZabbixHistoryGetParams, ZabbixHistoryPushParams, ZabbixHistoryPushRequest, ZabbixQueryHistoryRequest} from "../datasources/zabbix-history.js";
 import {
     ZabbixCreateHostRequest,
     ZabbixQueryDevices,
@@ -256,6 +258,21 @@ export function createResolvers(): Resolvers {
                 cookie
             }: any) => {
                 return TemplateImporter.importTemplates(args.templates, zabbixAuthToken, cookie)
+            },
+            pushHistory: async (_parent: any, args: MutationPushHistoryArgs, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                const result = await new ZabbixHistoryPushRequest(zabbixAuthToken, cookie)
+                    .executeRequestThrowError(zabbixAPI, new ZabbixHistoryPushParams(args.values, args.itemid?.toString(), args.key ?? undefined, args.host ?? undefined));
+
+                return {
+                    message: result.response === "success" ? "History pushed successfully" : "Some errors occurred",
+                    data: result.data.map(d => ({
+                        itemid: d.itemid,
+                        error: Array.isArray(d.error) ? {message: d.error.join(", ")} : d.error
+                    }))
+                }
             },
             deleteTemplates: async (_parent: any, args: MutationDeleteTemplatesArgs, {
                 zabbixAuthToken,

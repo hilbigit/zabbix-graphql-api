@@ -102,3 +102,17 @@ The MCP server can be used in conjunction with the [**Cookbook**](./cookbook.md)
 
 Example prompt for an LLM:
 > "Using the `zabbix-graphql` MCP server, follow the 'Provisioning a New Host' recipe from the cookbook. Create a host named 'Test-Host-01' in the 'Linux servers' group and link the 'ICMP Ping' template."
+
+### 📝 Logging & Verbosity
+
+You can control the logging level and verbosity of both the GraphQL API and the MCP server via environment variables. This is particularly useful for debugging MCP calls and seeing the exact parameters and responses.
+
+- **GraphQL API Verbosity**:
+    - `VERBOSITY=1`: Logs GraphQL operation names and parameters (variables).
+    - `VERBOSITY=2`: Logs operation names, parameters, and the full response body.
+- **MCP Server Logging**:
+    - `MCP_LOG_LEVEL`: Sets the log level for the Apollo MCP server (`debug`, `info`, `warn`, `error`).
+    - `MCP_LOG_PARAMETERS=true`: Enables logging of parameters in the MCP server.
+    - `MCP_LOG_RESPONSES=true`: Enables logging of responses in the MCP server.
+
+When running via Docker Compose, these can be set in your `.env` file.

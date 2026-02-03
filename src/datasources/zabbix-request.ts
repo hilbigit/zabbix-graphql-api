@@ -208,7 +208,8 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
                 return paramsObj;
             })
         } else {
-            params = {...this.requestBodyTemplate.params, ...zabbixParams ?? this.createZabbixParams(args, output)}
+            const p = zabbixParams ?? this.createZabbixParams(args, output);
+            params = Array.isArray(p) ? p : {...this.requestBodyTemplate.params, ...p}
         }
         return params ? {
             ...this.requestBodyTemplate,

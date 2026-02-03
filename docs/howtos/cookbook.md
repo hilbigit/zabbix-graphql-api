@@ -346,6 +346,91 @@ Create a host, assign it macros for coordinates, and query its state.
 
 ---
 
+## 🍳 Recipe: Extending Schema with a Simulated Device (Zabbix Trap)
+
+This recipe demonstrates how to create a simulated device type that receives data via Zabbix Trapper items. This is useful for testing or for devices that push their state (like Path/GeoJSON data) to Zabbix instead of being polled.
+
+### 📋 Prerequisites
+- Zabbix GraphQL API is running.
+- You have an external script or system capable of pushing data to Zabbix (e.g. using `zabbix_sender` or the `pushHistory` mutation).
+
+### 🛠️ Step 1: Define the Schema Extension
+Add the `TrackedDevice` type to `samples/extensions/location_tracker_devices.graphql`:
+
+```graphql
+type TrackedDevice implements Host & Device {
+    hostid: ID!
+    host: String!
+    deviceType: String
+    hostgroups: [HostGroup!]
+    name: String
+    tags: DeviceConfig
+    inventory: Inventory
+    items: [ZabbixItem!]
+    state: TrackedState
+}
+
+type TrackedState implements DeviceState {
+    operational: OperationalDeviceData
+    current: TrackedValues
+}
+
+type TrackedValues {
+    """
+    GeoJSON representation of the tracked device's location or path.
+    """
+    geojson: JSONObject
+}
+```
+
+### ⚙️ Step 2: Register the Resolver
+Add `TrackedDevice` to your `.env` file:
+```env
+ADDITIONAL_RESOLVERS=...,TrackedDevice
+```
+Restart the API server.
+
+### 🚀 Step 3: Import the Simulated Device Template
+Use the `importTemplates` mutation to create a template with a **Zabbix Trapper** item. We use the `json_` prefix in the item key to ensure the JSON string is automatically parsed into a `JSONObject`.
+
+> **Reference**: Use the [Sample: Import Simulated BT Template](../../docs/queries/sample_import_simulated_bt_template.graphql) for a complete mutation and variables example.
+
+### 🚀 Step 4: Push History Data
+Push GeoJSON data to your simulated device using the `pushHistory` mutation. This allows you to simulate a device moving along a path by providing multiple data points with different timestamps.
+
+> **Reference**: See the [Sample: Push GeoJSON History](../../docs/queries/sample_push_geojson_history.graphql) for a complete example of pushing historical data.
+
+### ✅ Step 5: Verification
+Verify that the device correctly resolves to the new type and that both the current state and historical data are accessible.
+
+-   **Create Host**: Use the `importHosts` mutation to create a host (e.g. `Vehicle1`) and link it to the simulated template.
+-   **Query Current State**: Use the `allDevices` query to verify the latest pushed position.
+    - *Reference*: See the [Sample: Tracked Device Query](../../docs/queries/sample_tracked_device_query.graphql).
+-   **Query Historical Data**: Use the `exportHostValueHistory` query to retrieve the path history.
+
+```graphql
+query GetVehicleHistory($host: [String!], $key: [String!]) {
+  exportHostValueHistory(
+    host_filter: $host,
+    itemKey_filter: $key,
+    type: TEXT,
+    limit: 100
+  ) {
+    result
+  }
+}
+```
+
+**Variables**:
+```json
+{
+  "host": ["Vehicle1"],
+  "key": ["state.current.json_geojson"]
+}
+```
+
+---
+
 ## 🍳 Recipe: Testing Specialized Device Types
 
 This recipe shows how to execute a comprehensive query to verify the state and configuration of specialized device types, such as the `DistanceTrackerDevice`. This is useful for validating that your schema extensions and hierarchical mappings are working correctly.
@@ -583,6 +668,77 @@ AI agents can use the following MCP tools to automate this:
 #### 🤖 Prompting Junie
 You can ask **Junie** to automate the entire cloning process:
 > "Using MCP, clone the template 'Generic SNMP' to a new template named 'Custom SNMP v2'. Ensure all items are copied and dependent items have their master item keys correctly mapped."
+
+---
+
+## 🍳 Recipe: Pushing History Data to Trapper Items
+
+This recipe shows how to push data into Zabbix items of type `ZABBIX_TRAP` using the `pushHistory` mutation. This is particularly useful for IoT devices or external systems that push data to Zabbix instead of being polled.
+
+### 📋 Prerequisites
+- Zabbix GraphQL API is running.
+- A host exists in Zabbix.
+- An item of type `ZABBIX_TRAP` (type 2) exists on that host.
+
+### 🛠️ Step 1: Preparation
+Identify the `itemid` or the combination of `host` and `key` for the target item.
+
+### 🚀 Step 2: Execution/Action
+Execute the `pushHistory` mutation. You can provide multiple values with different timestamps. The `value` field accepts a `JSONObject`, which will be automatically stringified before being sent to Zabbix.
+
+```graphql
+mutation PushDeviceData($host: String, $key: String, $itemid: Int, $values: [HistoryPushInput!]!) {
+  pushHistory(host: $host, key: $key, itemid: $itemid, values: $values) {
+    message
+    data {
+      itemid
+      error {
+        message
+      }
+    }
+  }
+}
+```
+
+**Sample Variables**:
+```json
+{
+  "host": "IoT-Sensor-01",
+  "key": "sensor.data.json",
+  "values": [
+    {
+      "timestamp": "2024-01-01T12:00:00Z",
+      "value": {
+        "temperature": 22.5,
+        "humidity": 45
+      }
+    },
+    {
+      "timestamp": "2024-01-01T12:01:00Z",
+      "value": {
+        "temperature": 22.6,
+        "humidity": 44
+      }
+    }
+  ]
+}
+```
+
+### ✅ Step 3: Verification
+Verify that the data was successfully pushed by querying the item's last value:
+
+```graphql
+query VerifyPushedData($host: String!) {
+  allHosts(filter_host: $host) {
+    items {
+      name
+      key_
+      lastvalue
+      lastclock
+    }
+  }
+}
+```
 
 ---
 

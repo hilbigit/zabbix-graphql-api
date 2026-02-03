@@ -11,6 +11,8 @@ services:
     environment:
       - SCHEMA_PATH=/usr/app/dist/schema/
       - ZABBIX_DEVELOPMENT_TOKEN=${ZABBIX_DEVELOPMENT_TOKEN}
+      - VERBOSITY=${VERBOSITY:-0}
+      - LOG_LEVELS=${LOG_LEVELS:-INFO}
     volumes:
       - ./samples:/usr/app/dist/samples
 
@@ -25,6 +27,9 @@ services:
     command: /mcp-config.yaml
     environment:
       - APOLLO_GRAPH_REF=local@main
+      - MCP_LOG_LEVEL=${MCP_LOG_LEVEL:-info}
+      - MCP_LOG_PARAMETERS=${MCP_LOG_PARAMETERS:-false}
+      - MCP_LOG_RESPONSES=${MCP_LOG_RESPONSES:-false}
     depends_on:
       schema-gen:
         condition: service_completed_successfully

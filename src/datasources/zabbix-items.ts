@@ -33,4 +33,3 @@ export class ZabbixQueryItemsRequest extends ZabbixRequest<ZabbixItem[]> {
         };
     }
 }
-

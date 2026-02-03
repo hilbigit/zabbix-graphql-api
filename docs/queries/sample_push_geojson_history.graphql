@@ -1,0 +1,470 @@
+### Mutation
+Use this mutation to push multiple GeoJSON data points to a simulated device. Each point is pushed with its own timestamp extracted from the GeoJSON properties.
+
+```graphql
+mutation PushGeoJsonHistory($host: String!, $key: String!, $values: [HistoryPushInput!]!) {
+  pushHistory(host: $host, key: $key, values: $values) {
+    message
+    data {
+      itemid
+      error {
+        message
+      }
+    }
+  }
+}
+```
+
+### Variables
+The following variables push 20 GeoJSON features to the `Vehicle1` host. 
+
+Note that we use the technical Zabbix key `state.current.json_geojson` (including the `json_` prefix) to target the correct trapper item.
+
+```json
+{
+  "host": "Vehicle1",
+  "key": "state.current.json_geojson",
+  "values": [
+    {
+      "timestamp": "2026-02-02T16:00:00.000Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:00:00.000Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.980238638943689,
+            50.94213786322479
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:00:12.838Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:00:12.838Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.979929916761165,
+            50.9418828739594
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:00:24.413Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:00:24.413Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.97947100540884,
+            50.9418828739594
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:00:38.910Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:00:38.910Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.978962030999412,
+            50.94205111445655
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:00:48.218Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:00:48.218Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.97871171571623,
+            50.94222198308785
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:00:55.942Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:00:55.942Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.978469744275316,
+            50.9423402763876
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:01:07.048Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:01:07.048Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.978269492048469,
+            50.94209317448525
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:01:18.399Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:01:18.399Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.97871171571623,
+            50.94214574946821
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:01:27.785Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:01:27.785Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.9789870625279775,
+            50.942303474059884
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:01:38.408Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:01:38.408Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.979103876326803,
+            50.94255846101797
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:01:50.930Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:01:50.930Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.979337503923659,
+            50.94283447625244
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:01:58.600Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:01:58.600Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.979475177329533,
+            50.94300534200477
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:02:15.429Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:02:15.429Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.979212346282509,
+            50.942618921637944
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:02:30.260Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:02:30.260Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.97896620292093,
+            50.94228244414538
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:02:36.242Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:02:36.242Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.978816013750361,
+            50.942166779444534
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:02:46.091Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:02:46.091Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.978582386152624,
+            50.94196962304159
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:02:56.752Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:02:56.752Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.979003750213366,
+            50.941948592976075
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:03:15.630Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:03:15.630Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.979721320691965,
+            50.94181452608393
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:03:24.823Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:03:24.823Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.980071762088585,
+            50.9418776164344
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-02T16:03:36.019Z",
+      "value": {
+        "type": "Feature",
+        "properties": {
+          "time": "2026-02-02T16:03:36.019Z",
+          "deviceType": "locationTracker",
+          "parent": {
+            "type": "vehicle",
+            "subType": "forklift",
+            "name": "vehicle1"
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            6.980234467022115,
+            50.94213786322479
+          ]
+        }
+      }
+    }
+  ]
+}
+```

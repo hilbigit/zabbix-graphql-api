@@ -99,7 +99,11 @@ The API is configured via environment variables. Create a `.env` file or set the
 | `SCHEMA_PATH` | Path to schema files | `./schema/` | No |
 | `ADDITIONAL_SCHEMAS` | Comma-separated list of additional schema files | - | No |
 | `ADDITIONAL_RESOLVERS` | Comma-separated list of resolver types to generate | - | No |
-| `LOG_LEVEL` | Log level configuration (e.g. `debug`, `info`, `warn`, `error`) | `info` | No |
+| `LOG_LEVELS` | Comma-separated list of log levels to enable (e.g. `DEBUG,INFO,ERROR`) | - | No |
+| `VERBOSITY` | Verbosity level for GraphQL logging (0=off, 1=parameters, 2=parameters+responses) | `0` | No |
+| `MCP_LOG_LEVEL` | Log level for the MCP server | `info` | No |
+| `MCP_LOG_PARAMETERS` | Whether to log parameters of MCP calls | `false` | No |
+| `MCP_LOG_RESPONSES` | Whether to log responses of MCP calls | `false` | No |
 | `HOST_TYPE_FILTER_DEFAULT` | Default filter for host types | - | No |
 | `HOST_GROUP_FILTER_DEFAULT` | Default filter for host groups | - | No |
 
@@ -194,7 +198,7 @@ The **Virtual Control Room (VCR)** is a professional cockpit and control center 
 - **Data Visualization**: It uses the `exportHostValueHistory` endpoint to power dashboards showing historical trends, such as traffic density, battery levels, or sensor readings over time.
 
 For more detailed information about the VCR product, please refer to the technical presentation:
-[VCR - Technical product information](docs/VCR%20-%20Technical%20product%20information.pdf)
+[VCR - Technical product information](docs/use-cases/VCR%20-%20Technical%20product%20information.pdf)
 
 ## Sample Environment File
 

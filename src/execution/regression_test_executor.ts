@@ -13,6 +13,7 @@ import {
 } from "../datasources/zabbix-hosts.js";
 import {ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
 import {isZabbixErrorResult, ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
+import {ZabbixHistoryPushParams, ZabbixHistoryPushRequest} from "../datasources/zabbix-history.js";
 
 export class RegressionTestExecutor {
     public static async runAllRegressionTests(zabbixAuthToken?: string, cookie?: string): Promise<SmoketestResponse> {
@@ -530,6 +531,52 @@ export class RegressionTestExecutor {
                 }
             }
 
+            // Regression 13: pushHistory mutation
+            const pushHostName = "REG_PUSH_HOST_" + Math.random().toString(36).substring(7);
+            const pushItemKey = "trap.json";
+            
+            // Create host
+            const pushHostResult = await HostImporter.importHosts([{
+                deviceKey: pushHostName,
+                deviceType: "RegressionHost",
+                groupNames: [hostGroupName],
+                templateNames: []
+            }], zabbixAuthToken, cookie);
+
+            let pushSuccess = false;
+            if (pushHostResult?.length && pushHostResult[0].hostid) {
+                const pushHostId = pushHostResult[0].hostid;
+                
+                // Add trapper item to host
+                const pushItemResult = await new ZabbixRequest("item.create", zabbixAuthToken, cookie).executeRequestReturnError(zabbixAPI, new ParsedArgs({
+                    name: "Trapper JSON Item",
+                    key_: pushItemKey,
+                    hostid: pushHostId,
+                    type: 2, // Zabbix trapper
+                    value_type: 4, // Text
+                    history: "1d"
+                }));
+
+                if (!isZabbixErrorResult(pushItemResult)) {
+                    // Push data
+                    const pushRequest = new ZabbixHistoryPushRequest(zabbixAuthToken, cookie);
+                    const pushParams = new ZabbixHistoryPushParams(
+                        [{ timestamp: new Date().toISOString(), value: { hello: "world" } }],
+                        undefined, pushItemKey, pushHostName
+                    );
+                    
+                    const pushDataResult = await pushRequest.executeRequestReturnError(zabbixAPI, pushParams);
+                    pushSuccess = !isZabbixErrorResult(pushDataResult) && pushDataResult.response === "success";
+                }
+            }
+
+            steps.push({
+                name: "REG-PUSH: pushHistory mutation",
+                success: pushSuccess,
+                message: pushSuccess ? "Successfully pushed history data to trapper item" : "Failed to push history data"
+            });
+            if (!pushSuccess) success = false;
+
             // Step 1: Create Host Group (Legacy test kept for compatibility)
             const groupResult = await HostImporter.importHostGroups([{
                 groupName: groupName
@@ -549,6 +596,7 @@ export class RegressionTestExecutor {
             await HostDeleter.deleteHosts(null, metaHostName, zabbixAuthToken, cookie);
             await HostDeleter.deleteHosts(null, devHostNameWithTag, zabbixAuthToken, cookie);
             await HostDeleter.deleteHosts(null, devHostNameWithoutTag, zabbixAuthToken, cookie);
+            await HostDeleter.deleteHosts(null, pushHostName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, regTemplateName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, httpTempName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, macroTemplateName, zabbixAuthToken, cookie);

@@ -1,0 +1,46 @@
+### Mutation
+Use this mutation to import a template for a simulated device that pushes GeoJSON data via Zabbix Trapper items.
+
+```graphql
+mutation ImportSimulatedBTTemplate($templates: [CreateTemplate!]!) {
+  importTemplates(templates: $templates) {
+    host
+    templateid
+    message
+    error {
+      message
+    }
+  }
+}
+```
+
+### Variables
+The following sample defines the `SIMULATED_BT_DEVICE` template. Note the `deviceType` tag set to `TrackedDevice`, which instructs the GraphQL API to resolve this host using the specialized `TrackedDevice` type.
+
+We use the `state.current.json_geojson` key for the trapper item. The `json_` prefix ensures that the JSON string received from Zabbix is automatically parsed into a `JSONObject` by the GraphQL resolver.
+
+```json
+{
+  "templates": [
+    {
+      "host": "SIMULATED_BT_DEVICE",
+      "name": "Simulated BT Device",
+      "groupNames": ["Templates/Roadwork/Devices"],
+      "tags": [
+        { "tag": "class", "value": "roadwork" },
+        { "tag": "deviceType", "value": "TrackedDevice" }
+      ],
+      "items": [
+        {
+          "name": "GeoJSON Data",
+          "type": 2,
+          "key": "state.current.json_geojson",
+          "value_type": 4,
+          "history": "7d",
+          "description": "Trapper item receiving GeoJSON payloads"
+        }
+      ]
+    }
+  ]
+}
+```

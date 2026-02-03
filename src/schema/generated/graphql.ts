@@ -400,6 +400,34 @@ export interface GpsPosition {
   longitude?: Maybe<Scalars['Float']['output']>;
 }
 
+/** Detailed result for a single pushed value. */
+export interface HistoryPushData {
+  __typename?: 'HistoryPushData';
+  /** Error information if the push failed for this item. */
+  error?: Maybe<ApiError>;
+  /** The Zabbix item ID. */
+  itemid?: Maybe<Scalars['String']['output']>;
+}
+
+/** Input for pushing history data. */
+export interface HistoryPushInput {
+  /** Timestamp of the value. */
+  timestamp: Scalars['DateTime']['input'];
+  /** The value to push (JSON object). */
+  value: Scalars['JSONObject']['input'];
+}
+
+/** Response object for pushHistory operation. */
+export interface HistoryPushResponse {
+  __typename?: 'HistoryPushResponse';
+  /** Detailed results for each pushed value. */
+  data?: Maybe<Array<HistoryPushData>>;
+  /** Error information if the operation failed. */
+  error?: Maybe<ApiError>;
+  /** Overall status message. */
+  message?: Maybe<Scalars['String']['output']>;
+}
+
 /** Common interface for all host-like entities in Zabbix. */
 export interface Host {
   /**
@@ -576,6 +604,12 @@ export interface Mutation {
    * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
    */
   importUserRights?: Maybe<ImportUserRightsResult>;
+  /**
+   * Pushes history data to Zabbix (ZABBIX_TRAP items).
+   *
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+   */
+  pushHistory?: Maybe<HistoryPushResponse>;
   /** Runs all regression tests. */
   runAllRegressionTests: SmoketestResponse;
   /** Runs a smoketest: creates a template, links a host, verifies it, and cleans up. */
@@ -639,6 +673,14 @@ export interface MutationImportTemplatesArgs {
 export interface MutationImportUserRightsArgs {
   dryRun?: Scalars['Boolean']['input'];
   input: UserRightsInput;
+}
+
+
+export interface MutationPushHistoryArgs {
+  host?: InputMaybe<Scalars['String']['input']>;
+  itemid?: InputMaybe<Scalars['Int']['input']>;
+  key?: InputMaybe<Scalars['String']['input']>;
+  values: Array<HistoryPushInput>;
 }
 
 
@@ -1259,6 +1301,9 @@ export type ResolversTypes = {
   GenericDeviceState: ResolverTypeWrapper<GenericDeviceState>;
   GenericResponse: ResolverTypeWrapper<GenericResponse>;
   GpsPosition: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['GpsPosition']>;
+  HistoryPushData: ResolverTypeWrapper<HistoryPushData>;
+  HistoryPushInput: HistoryPushInput;
+  HistoryPushResponse: ResolverTypeWrapper<HistoryPushResponse>;
   Host: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Host']>;
   HostGroup: ResolverTypeWrapper<HostGroup>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
@@ -1335,6 +1380,9 @@ export type ResolversParentTypes = {
   GenericDeviceState: GenericDeviceState;
   GenericResponse: GenericResponse;
   GpsPosition: ResolversInterfaceTypes<ResolversParentTypes>['GpsPosition'];
+  HistoryPushData: HistoryPushData;
+  HistoryPushInput: HistoryPushInput;
+  HistoryPushResponse: HistoryPushResponse;
   Host: ResolversInterfaceTypes<ResolversParentTypes>['Host'];
   HostGroup: HostGroup;
   ID: Scalars['ID']['output'];
@@ -1517,6 +1565,19 @@ export type GpsPositionResolvers<ContextType = any, ParentType extends Resolvers
   longitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
 };
 
+export type HistoryPushDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['HistoryPushData'] = ResolversParentTypes['HistoryPushData']> = {
+  error?: Resolver<Maybe<ResolversTypes['ApiError']>, ParentType, ContextType>;
+  itemid?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type HistoryPushResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['HistoryPushResponse'] = ResolversParentTypes['HistoryPushResponse']> = {
+  data?: Resolver<Maybe<Array<ResolversTypes['HistoryPushData']>>, ParentType, ContextType>;
+  error?: Resolver<Maybe<ResolversTypes['ApiError']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type HostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Host'] = ResolversParentTypes['Host']> = {
   __resolveType: TypeResolveFn<'GenericDevice' | 'ZabbixHost', ParentType, ContextType>;
   deviceType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1591,6 +1652,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   importTemplateGroups?: Resolver<Maybe<Array<ResolversTypes['CreateTemplateGroupResponse']>>, ParentType, ContextType, RequireFields<MutationImportTemplateGroupsArgs, 'templateGroups'>>;
   importTemplates?: Resolver<Maybe<Array<ResolversTypes['ImportTemplateResponse']>>, ParentType, ContextType, RequireFields<MutationImportTemplatesArgs, 'templates'>>;
   importUserRights?: Resolver<Maybe<ResolversTypes['ImportUserRightsResult']>, ParentType, ContextType, RequireFields<MutationImportUserRightsArgs, 'dryRun' | 'input'>>;
+  pushHistory?: Resolver<Maybe<ResolversTypes['HistoryPushResponse']>, ParentType, ContextType, RequireFields<MutationPushHistoryArgs, 'values'>>;
   runAllRegressionTests?: Resolver<ResolversTypes['SmoketestResponse'], ParentType, ContextType>;
   runSmoketest?: Resolver<ResolversTypes['SmoketestResponse'], ParentType, ContextType, RequireFields<MutationRunSmoketestArgs, 'groupName' | 'hostName' | 'templateName'>>;
 };
@@ -1786,6 +1848,8 @@ export type Resolvers<ContextType = any> = {
   GenericDeviceState?: GenericDeviceStateResolvers<ContextType>;
   GenericResponse?: GenericResponseResolvers<ContextType>;
   GpsPosition?: GpsPositionResolvers<ContextType>;
+  HistoryPushData?: HistoryPushDataResolvers<ContextType>;
+  HistoryPushResponse?: HistoryPushResponseResolvers<ContextType>;
   Host?: HostResolvers<ContextType>;
   HostGroup?: HostGroupResolvers<ContextType>;
   ImportHostResponse?: ImportHostResponseResolvers<ContextType>;

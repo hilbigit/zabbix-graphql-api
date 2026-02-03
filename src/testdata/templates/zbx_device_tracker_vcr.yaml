@@ -1,0 +1,90 @@
+zabbix_export:
+  version: '7.4'
+  templates:
+    - uuid: 27474f627cb344b782a81c16d7e0c7d1
+      template: BT_DEVICE_TRACKER
+      name: BT_DEVICE_TRACKER
+      vendor:
+        name: 'Hilbig IT GmbH'
+        version: 2.1.1
+      templates:
+        - name: ROADWORK_DEVICE
+      groups:
+        - name: Templates/Roadwork/Devices
+      items:
+        - uuid: d4d3ec9f3ca940a39a721b6cfd2f3471
+          name: location
+          type: DEPENDENT
+          key: location
+          history: 2d
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var obj=JSON.parse(value);
+                  
+                  if (obj["isFiltered"]) {
+                    throw "Result is filtered";
+                    return "filtered";
+                  }
+                  
+                  return value;
+            - type: NOT_MATCHES_REGEX
+              parameters:
+                - filtered
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: 'mqtt.trap[deviceValue/location]'
+        - uuid: 380c4a7d752848cba3b5a59a0f9b13c0
+          name: MQTT_LOCATION
+          type: TRAP
+          key: 'mqtt.trap[deviceValue/location]'
+          history: '0'
+          value_type: TEXT
+        - uuid: 29faf53c033840c0b1405f8240e30312
+          name: coords
+          type: DEPENDENT
+          key: state.current.values.coords
+          history: 2d
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var obj=JSON.parse(value);
+                  var location = obj["location"];
+                  var coords = location["coords"];
+                  return JSON.stringify({
+                  	"btDeviceKey": obj["btDeviceKey"],
+                  	"timestamp": location["timestamp"],
+                      "deviceName": obj["deviceName"],
+                  	"latitude": coords[1],
+                  	"longitude": coords[0],
+                  	"coords": coords
+                  });
+          master_item:
+            key: location
+          tags:
+            - tag: hasValue
+              value: 'true'
+        - uuid: 1ae9486c18394e56b114c9cb4546deaf
+          name: geojson
+          type: DEPENDENT
+          key: state.current.values.geojson
+          history: 2d
+          value_type: TEXT
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.location.setup
+          master_item:
+            key: location
+          tags:
+            - tag: hasValue
+              value: 'true'
+      tags:
+        - tag: class
+          value: roadwork
+        - tag: deviceType
+          value: bt_device_tracker_generic

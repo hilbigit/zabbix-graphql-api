@@ -26,6 +26,34 @@ type DistanceTrackerDevice implements Host & Device {
 }
 
 """
+TrackedDevice represents a device used for simulation or tracking purposes,
+pushing its state (e.g. geojson) via Zabbix Trap.
+"""
+type TrackedDevice implements Host & Device {
+    hostid: ID!
+    host: String!
+    deviceType: String
+    hostgroups: [HostGroup!]
+    name: String
+    tags: DeviceConfig
+    inventory: Inventory
+    items: [ZabbixItem!]
+    state: TrackedState
+}
+
+type TrackedState implements DeviceState {
+    operational: OperationalDeviceData
+    current: TrackedValues
+}
+
+type TrackedValues {
+    """
+    GeoJSON representation of the tracked device's location or path.
+    """
+    geojson: JSONObject
+}
+
+"""
 Represents the state of a distance tracker device.
 """
 type DistanceTrackerState implements DeviceState {
