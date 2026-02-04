@@ -8,6 +8,7 @@ import {zabbixAPI} from '../datasources/zabbix-api.js';
 jest.mock("../datasources/zabbix-api.js", () => ({
     zabbixAPI: {
         post: jest.fn(),
+        getVersion: jest.fn().mockResolvedValue("7.0.0"),
         executeRequest: jest.fn(),
         baseURL: 'http://localhost/zabbix',
         getLocations: jest.fn(),
@@ -43,7 +44,8 @@ describe("User Rights Integration Tests", () => {
             .mockResolvedValueOnce([{ groupid: "101", name: "Group1", uuid: "uuid1" }]) // templategroup.get for groups (in prepare)
             .mockResolvedValueOnce([{ groupid: "201", name: "ConstructionSite/Test", uuid: "uuid2" }]) // hostgroup.get for groups (in prepare)
             .mockResolvedValueOnce([{ usrgrpid: "1", name: "Test Group" }]) // usergroup.get
-            .mockResolvedValueOnce({ usrgrpids: ["1"] }); // usergroup.update
+            .mockResolvedValueOnce({ usrgrpids: ["1"] }) // usergroup.update
+            .mockResolvedValueOnce({ usrgrpids: [] }); // hostgroup.propagate
 
         const response = await server.executeOperation({
             query: mutation,

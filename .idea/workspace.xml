@@ -5,30 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d7a71994-2699-4ae4-9fd2-ee13b7f33d35" name="Changes" comment="docs: refactor documentation and upgrade to Node.js 24&#10;&#10;This commit upgrades the project to Node.js 24 (LTS) and performs a major refactoring of the documentation to support both advanced users and AI-based automation (MCP).&#10;&#10;Changes:&#10;- Environment &amp; CI/CD:&#10;  - Set Node.js version to &gt;=24 in package.json and .nvmrc.&#10;  - Updated Dockerfile to use Node 24 base image.&#10;  - Updated @types/node to ^24.10.9.&#10;- Documentation:&#10;  - Refactored README.md with comprehensive technical reference, configuration details, and Zabbix-to-GraphQL mapping.&#10;  - Created docs/howtos/cookbook.md with practical recipes for common tasks and AI test generation.&#10;  - Updated docs/howtos/mcp.md to emphasize GraphQL's advantages for AI agents and Model Context Protocol.&#10;  - Added readme.improvement.plan.md to track documentation evolution.&#10;  - Enhanced all how-to guides with improved cross-references and up-to-date information.&#10;- Guidelines:&#10;  - Updated .junie/guidelines.md with Node 24 requirements and enhanced commit message standards (Conventional Commits 1.0.0).&#10;- Infrastructure &amp; Code:&#10;  - Updated docker-compose.yml with Apollo MCP server integration.&#10;  - Refined configuration and schema handling in src/api/ and src/datasources/.&#10;  - Synchronized generated TypeScript types with schema updates.">
-      <change afterPath="$PROJECT_DIR$/docs/use-cases/VCR - Technical product information.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testdata/templates/zbx_device_tracker_vcr.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/VCR - Technical product information.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/howtos/cookbook.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/howtos/cookbook.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/howtos/mcp.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/howtos/mcp.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/queries/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/queries/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/tests.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/tests.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/use-cases/trade-fair-logistics-requirements.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/use-cases/trade-fair-logistics-requirements.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mcp-config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/mcp-config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/extensions/location_tracker_devices.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/samples/extensions/location_tracker_devices.graphql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema/mutations.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/mutations.graphql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/resolvers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/resolvers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/start.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/start.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common_utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/common_utils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-history.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-history.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-items.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-items.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/howtos/local_development.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/howtos/local_development.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/howtos/maintenance.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/howtos/maintenance.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roadmap.md" beforeDir="false" afterPath="$PROJECT_DIR$/roadmap.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-hosts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-hosts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-permissions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-permissions.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-request.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-request.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/execution/host_exporter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/execution/host_exporter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/execution/regression_test_executor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/execution/regression_test_executor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schema/generated/graphql.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/schema/generated/graphql.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/testdata/templates/zbx_default_templates_vcr.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/testdata/templates/zbx_default_templates_vcr.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/datasources/zabbix-usergroups.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/datasources/zabbix-usergroups.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/history_push.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/history_push.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/zabbix_6_0_compatibility.test.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +26,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="169" />
+    <option name="cachedIndexableFilesCount" value="172" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -103,7 +90,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature-improve-zabbix-version-compatiblity",
     "go.import.settings.migrated": "true",
     "javascript.preferred.runtime.type.id": "node",
     "junie.onboarding.icon.badge.shown": "true",
@@ -124,6 +111,11 @@
     "to.speed.mode.migration.done": "true",
     "ts.external.directory.path": "\\\\wsl.localhost\\Ubuntu\\home\\ahilbig\\git\\vcr\\zabbix-graphql-api\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "TEXT"
+    ]
   }
 }]]></component>
   <component name="RecapSpentCounter">
@@ -231,7 +223,10 @@
       <workItem from="1769789496322" duration="14281000" />
       <workItem from="1769849767328" duration="18404000" />
       <workItem from="1769955114366" duration="3276000" />
-      <workItem from="1770107035156" duration="3830000" />
+      <workItem from="1770107035156" duration="4817000" />
+      <workItem from="1770129804879" duration="13000" />
+      <workItem from="1770129846593" duration="5283000" />
+      <workItem from="1770167580486" duration="16982000" />
     </task>
     <task id="LOCAL-00001" summary="chore: Update IntelliJ workspace settings and add GitHub Actions workflow for Docker deployment">
       <option name="closed" value="true" />
@@ -496,12 +491,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/datasources/zabbix-request.ts</url>
-          <line>134</line>
+          <line>135</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/datasources/zabbix-request.ts</url>
-          <line>254</line>
+          <line>276</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>

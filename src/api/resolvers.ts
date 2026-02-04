@@ -25,7 +25,7 @@ import {
     StorageItemType,
 } from "../schema/generated/graphql.js";
 
-import { DateTimeResolver, JSONObjectResolver, TimeResolver } from "graphql-scalars";
+import {DateTimeResolver, JSONObjectResolver, TimeResolver} from "graphql-scalars";
 import {HostImporter} from "../execution/host_importer.js";
 import {HostDeleter} from "../execution/host_deleter.js";
 import {SmoketestExecutor} from "../execution/smoketest_executor.js";
@@ -35,7 +35,7 @@ import {TemplateDeleter} from "../execution/template_deleter.js";
 import {HostValueExporter} from "../execution/host_exporter.js";
 import {logger} from "../logging/logger.js";
 import {ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
-import {ZabbixHistoryGetParams, ZabbixHistoryPushParams, ZabbixHistoryPushRequest, ZabbixQueryHistoryRequest} from "../datasources/zabbix-history.js";
+import {ZabbixHistoryPushParams, ZabbixHistoryPushRequest} from "../datasources/zabbix-history.js";
 import {
     ZabbixCreateHostRequest,
     ZabbixQueryDevices,
@@ -166,32 +166,22 @@ export function createResolvers(): Resolvers {
                 zabbixAuthToken,
                 cookie, dataSources
             }: any, info: any) => {
-                let params: any = {}
                 if (args.hostids) {
-                    params.templateids = args.hostids
-                }
-                if (args.name_pattern) {
-                    params.search = {
-                        name: args.name_pattern
-                    }
+                    // @ts-ignore
+                    args.templateids = args.hostids
+                    delete args.hostids
                 }
                 const output = GraphqlParamsToNeededZabbixOutput.mapTemplates(info);
                 return await new ZabbixQueryTemplatesRequest(zabbixAuthToken, cookie)
-                    .executeRequestThrowError(dataSources?.zabbixAPI || zabbixAPI, new ParsedArgs(params), output);
+                    .executeRequestThrowError(dataSources?.zabbixAPI || zabbixAPI, new ParsedArgs(args), output);
             },
 
             allTemplateGroups: async (_parent: any, args: any, {
                 zabbixAuthToken,
                 cookie
             }: any) => {
-                let params: any = {}
-                if (args.name_pattern) {
-                    params.search = {
-                        name: args.name_pattern
-                    }
-                }
                 return await new ZabbixQueryTemplateGroupRequest(zabbixAuthToken, cookie)
-                    .executeRequestThrowError(zabbixAPI, new ParsedArgs(params));
+                    .executeRequestThrowError(zabbixAPI, new ParsedArgs(args));
             }
         },
         Mutation: {

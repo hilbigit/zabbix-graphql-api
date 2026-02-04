@@ -1,4 +1,4 @@
-import {ParsedArgs, ZabbixErrorResult, ZabbixRequest, ZabbixResult} from "./zabbix-request.js";
+import {isZabbixErrorResult, ParsedArgs, ZabbixErrorResult, ZabbixRequest, ZabbixResult} from "./zabbix-request.js";
 import {ZabbixAPI} from "./zabbix-api.js";
 import {InputMaybe, Permission, QueryHasPermissionsArgs, UserPermission} from "../schema/generated/graphql.js";
 import {ApiErrorCode, PermissionNumber} from "../model/model_enum_values.js";
@@ -18,6 +18,10 @@ export class ZabbixRequestWithPermissions<T extends ZabbixResult, A extends Pars
         return this.prepResult;
     }
     async assureUserPermissions(zabbixAPI: ZabbixAPI) {
+        if (this.authToken && this.authToken === Config.ZABBIX_PRIVILEGE_ESCALATION_TOKEN) {
+            // Bypass permission check for the privilege escalation token as it is assumed to have required rights
+            return undefined;
+        }
         if (this.permissionsNeeded &&
             !await ZabbixPermissionsHelper.hasUserPermissions(zabbixAPI, this.permissionsNeeded, this.authToken, this.cookie)) {
             return {
@@ -75,7 +79,11 @@ class ZabbixQueryUserGroupPermissionsRequest extends ZabbixRequest<ZabbixUserGro
         super("usergroup.get.permissions", authToken, cookie);
     }
 
-    createZabbixParams(args?: ParsedArgs) {
+    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: ParsedArgs, output?: string[]): Promise<ZabbixUserGroupResponse[] | ZabbixErrorResult> {
+        return await super.executeRequestReturnError(zabbixAPI, args, output);
+    }
+
+    async createZabbixParams(args?: ParsedArgs) {
         return {
             ...super.createZabbixParams(args),
             "output": [
@@ -110,7 +118,7 @@ export class ZabbixPermissionsHelper {
         const userGroupPermissions = await new ZabbixQueryUserGroupPermissionsRequest(zabbixAuthToken, cookie).executeRequestThrowError(zabbixAPI)
 
         // Prepare the list of templateIds that are not loaded yet
-        const templateIdsToLoad = new Set(userGroupPermissions.flatMap(usergroup => usergroup.templategroup_rights.map(templateGroupRight => templateGroupRight.id)));
+        const templateIdsToLoad = new Set(userGroupPermissions.flatMap(usergroup => (usergroup.templategroup_rights || []).map(templateGroupRight => templateGroupRight.id)));
 
         // Remove all templateIds that are already in the permissionObjectNameCache
         templateIdsToLoad.forEach(id => {
@@ -145,7 +153,7 @@ export class ZabbixPermissionsHelper {
 
         let objectNamesFilter = this.createMatcherFromWildcardArray(objectNames);
 
-        usergroup.templategroup_rights.forEach(templateGroupPermission => {
+        (usergroup.templategroup_rights || []).forEach(templateGroupPermission => {
             const objectName = this.permissionObjectNameCache.get(templateGroupPermission.id);
             if (objectName && (objectNamesFilter == undefined || objectNamesFilter.test(objectName))) {
                 const permissionValue = Number(templateGroupPermission.permission) as PermissionNumber;

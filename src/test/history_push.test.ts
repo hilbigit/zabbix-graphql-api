@@ -1,11 +1,11 @@
 import {ZabbixHistoryPushParams, ZabbixHistoryPushRequest} from "../datasources/zabbix-history.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
-import {GraphQLError} from "graphql";
 
 // Mocking ZabbixAPI
 jest.mock("../datasources/zabbix-api.js", () => ({
     zabbixAPI: {
         post: jest.fn(),
+        getVersion: jest.fn().mockResolvedValue("7.0.0")
     }
 }));
 
@@ -62,5 +62,13 @@ describe("ZabbixHistoryPushRequest", () => {
         const params = new ZabbixHistoryPushParams(values, undefined, undefined, "host.name");
 
         await expect(request.prepare(zabbixAPI, params)).rejects.toThrow("if itemid is empty both key and host must be filled");
+    });
+
+    test("prepare - throw error if Zabbix version < 7.0.0", async () => {
+        (zabbixAPI.getVersion as jest.Mock).mockResolvedValue("6.2.0");
+        const values = [{ timestamp: "2024-01-01T10:00:00Z", value: "val" }];
+        const params = new ZabbixHistoryPushParams(values, "1");
+
+        await expect(request.prepare(zabbixAPI, params)).rejects.toThrow("history.push is only supported in Zabbix 7.0.0 and newer");
     });
 });

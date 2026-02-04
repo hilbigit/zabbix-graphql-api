@@ -22,6 +22,9 @@ Discover how the permission system works, how to define permission levels using 
 ### 🛠️ [Technical Maintenance](./maintenance.md)
 Guide on code generation (GraphQL Codegen), running Jest tests, and local Docker builds.
 
+### 💻 [Local Development Environment](./local_development.md)
+Detailed instructions for setting up a fully isolated local development environment with Zabbix using Docker Compose.
+
 ### 🧪 [Test Specification](../tests.md)
 Detailed list of test cases, categories (Unit, Integration, E2E), and coverage checklist.
 

@@ -9,6 +9,7 @@ class ZabbixRequestBody {
     public method
     public id = 1
     public params?: ZabbixParams
+    public auth?: string | null
 
     constructor(method: string) {
         this.method = method;
@@ -138,6 +139,7 @@ export class ParsedArgs {
             (<any>result).search.name = this.name_pattern;
             (<any>result).search.host = this.name_pattern;
             (<any>result).searchByAny = true;
+            (<any>result).searchWildcardsEnabled = true;
         }
 
         return result
@@ -177,6 +179,12 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
         if (params.output) {
             if (Array.isArray(params.output)) {
                 params.output = params.output.filter(field => topLevelOutput.includes(field));
+                // Add any missing top-level fields that are needed
+                topLevelOutput.forEach(top => {
+                    if (!params.output.includes(top)) {
+                        params.output.push(top);
+                    }
+                });
             } else if (params.output === "extend") {
                 params.output = topLevelOutput;
             }
@@ -198,7 +206,7 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
         return this.optimizeZabbixParams(args?.zabbix_params || {}, output)
     }
 
-    getRequestBody(args?: A, zabbixParams?: ZabbixParams, output?: string[]): ZabbixRequestBody {
+    getRequestBody(args?: A, zabbixParams?: ZabbixParams, output?: string[], version?: string): ZabbixRequestBody {
         let params: ZabbixParams
         if (Array.isArray(args?.zabbix_params)) {
             params = args?.zabbix_params.map(paramsObj => {
@@ -211,10 +219,18 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
             const p = zabbixParams ?? this.createZabbixParams(args, output);
             params = Array.isArray(p) ? p : {...this.requestBodyTemplate.params, ...p}
         }
-        return params ? {
+        const body: ZabbixRequestBody = params ? {
             ...this.requestBodyTemplate,
             params: params
-        } : this.requestBodyTemplate
+        } : {...this.requestBodyTemplate}
+
+        if (this.authToken && this.method !== "apiinfo.version" && this.method !== "user.login") {
+            if (!version || version < "6.4.0") {
+                body.auth = this.authToken;
+            }
+        }
+
+        return body
     };
 
     headers() {
@@ -250,7 +266,13 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
         if (prepareResult) {
             return prepareResult;
         }
-        let requestBody = this.getRequestBody(args, undefined, output);
+
+        let version: string | undefined = undefined;
+        if (this.method !== "apiinfo.version") {
+            version = await zabbixAPI.getVersion();
+        }
+
+        let requestBody = this.getRequestBody(args, undefined, output, version);
 
         try {
 

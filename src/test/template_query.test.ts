@@ -7,6 +7,7 @@ jest.mock("../datasources/zabbix-api.js", () => ({
     zabbixAPI: {
         executeRequest: jest.fn(),
         post: jest.fn(),
+        getVersion: jest.fn().mockResolvedValue("7.0.0"),
         baseURL: "http://mock-zabbix"
     },
     ZABBIX_EDGE_DEVICE_BASE_GROUP: "Roadwork"
@@ -82,8 +83,11 @@ describe("Template Resolver", () => {
                 method: "template.get",
                 params: expect.objectContaining({
                     search: {
-                        name: "Template"
-                    }
+                        name: "Template",
+                        host: "Template"
+                    },
+                    searchByAny: true,
+                    searchWildcardsEnabled: true
                 })
             })
         }));
@@ -105,8 +109,11 @@ describe("Template Resolver", () => {
                 method: "template.get",
                 params: expect.objectContaining({
                     search: {
-                        name: "Temp%1"
-                    }
+                        name: "Temp%1",
+                        host: "Temp%1"
+                    },
+                    searchByAny: true,
+                    searchWildcardsEnabled: true
                 })
             })
         }));

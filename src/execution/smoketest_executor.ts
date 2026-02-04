@@ -66,11 +66,11 @@ export class SmoketestExecutor {
                     templateNames: [templateName]
                 }], zabbixAuthToken, cookie);
 
-                const hostSuccess = !!hostResult?.length && !hostResult[0].error;
+                const hostSuccess = !!hostResult?.length && !hostResult[0].error && !!hostResult[0].hostid;
                 steps.push({
                     name: "Create and Link Host",
                     success: hostSuccess,
-                    message: hostSuccess ? `Host ${hostName} created and linked to ${templateName}` : `Failed: ${hostResult?.[0]?.error?.message || "Unknown error"}`
+                    message: hostSuccess ? `Host ${hostName} created and linked to ${templateName}` : `Failed: ${hostResult?.[0]?.error?.message || hostResult?.[0]?.message || "Unknown error"}`
                 });
                 if (!hostSuccess) success = false;
             } else {

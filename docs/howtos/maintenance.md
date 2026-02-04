@@ -34,6 +34,9 @@ We use [Jest](https://jestjs.io/) for unit and integration testing.
   npm run test
   ```
 
+#### Local Development Setup
+For running integration tests against a real Zabbix instance, it is recommended to use the [Local Development Environment](./local_development.md). This setup allows you to test the API against specific Zabbix versions (e.g. 6.4, 7.0) in an isolated way.
+
 #### Adding New Tests
 - **Location**: Place new test files in `src/test/` with the `.test.ts` extension.
 - **Coverage**: Ensure you cover both successful operations and error scenarios.

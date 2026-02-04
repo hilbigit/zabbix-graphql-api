@@ -1,4 +1,4 @@
-import {GraphQLResolveInfo, FieldNode, FragmentDefinitionNode, InlineFragmentNode} from "graphql";
+import {FieldNode, GraphQLResolveInfo, InlineFragmentNode} from "graphql";
 
 export function getRequestedFields(info: GraphQLResolveInfo): string[] {
     if (!info || !info.fieldNodes) return [];

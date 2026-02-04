@@ -43,5 +43,50 @@ services:
       - mcp-shared:/mcp-data
     command: sh -c "cat /schema/*.graphql > /mcp-data/schema.graphql"
 
+  postgres-server:
+    image: postgres:16-alpine
+    profiles:
+      - zabbix-local
+    environment:
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=zabbix
+      - POSTGRES_DB=zabbix
+    volumes:
+      - zbx_db_data:/var/lib/postgresql/data
+
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:${ZABBIX_VERSION:-alpine-7.0-latest}
+    profiles:
+      - zabbix-local
+    ports:
+      - "10051:10051"
+    environment:
+      - DB_SERVER_HOST=postgres-server
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=zabbix
+      - POSTGRES_DB=zabbix
+      - ZBX_ALLOWUNSUPPORTEDDBVERSIONS=1
+    depends_on:
+      - postgres-server
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:${ZABBIX_VERSION:-alpine-7.0-latest}
+    profiles:
+      - zabbix-local
+    ports:
+      - "8080:8080"
+    environment:
+      - ZBX_SERVER_HOST=zabbix-server
+      - DB_SERVER_HOST=postgres-server
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=zabbix
+      - POSTGRES_DB=zabbix
+      - PHP_TZ=UTC
+      - ZBX_ALLOWUNSUPPORTEDDBVERSIONS=1
+    depends_on:
+      - postgres-server
+      - zabbix-server
+
 volumes:
   mcp-shared:
+  zbx_db_data:

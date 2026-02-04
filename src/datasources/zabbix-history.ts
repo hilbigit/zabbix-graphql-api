@@ -81,6 +81,10 @@ export class ZabbixHistoryPushRequest extends ZabbixRequest<ZabbixHistoryPushRes
     async prepare(zabbixAPI: ZabbixAPI, args?: ZabbixHistoryPushParams): Promise<ZabbixHistoryPushResult | ZabbixErrorResult | undefined> {
         if (!args) return undefined;
 
+        const version = await zabbixAPI.getVersion();
+        if (version < "7.0.0") {
+            throw new GraphQLError(`history.push is only supported in Zabbix 7.0.0 and newer. Current version is ${version}. For older versions, please use Zabbix trapper items and zabbix_sender protocol.`);
+        }
 
         if (!args.itemid && (!args.key || !args.host)) {
             throw new GraphQLError("if itemid is empty both key and host must be filled");

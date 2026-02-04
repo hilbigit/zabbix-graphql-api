@@ -6,6 +6,7 @@ jest.mock("../datasources/zabbix-api.js", () => ({
     zabbixAPI: {
         executeRequest: jest.fn(),
         post: jest.fn(),
+        getVersion: jest.fn().mockResolvedValue("7.0.0"),
         requestByPath: jest.fn()
     },
     ZABBIX_EDGE_DEVICE_BASE_GROUP: "Roadwork"

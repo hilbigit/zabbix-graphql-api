@@ -80,6 +80,20 @@ export class ZabbixAPI
         return super.post(path, request);
     }
 
+    private static version: string | undefined
+
+    async getVersion(): Promise<string> {
+        if (!ZabbixAPI.version) {
+            const response = await this.requestByPath<string>("apiinfo.version")
+            if (typeof response === "string") {
+                ZabbixAPI.version = response
+            } else {
+                return "0.0.0"
+            }
+        }
+        return ZabbixAPI.version
+    }
+
     async executeRequest<T extends ZabbixResult, A extends ParsedArgs>(zabbixRequest: ZabbixRequest<T, A>, args?: A, throwApiError: boolean = true, output?: string[]): Promise<T | ZabbixErrorResult> {
         return throwApiError ? zabbixRequest.executeRequestThrowError(this, args, output) : zabbixRequest.executeRequestReturnError(this, args, output);
     }

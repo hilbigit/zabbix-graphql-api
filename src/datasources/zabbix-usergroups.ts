@@ -17,8 +17,9 @@ import {
     ZabbixGroupRightInput
 } from "../schema/generated/graphql.js";
 import {ZabbixAPI} from "./zabbix-api.js";
+import {logger} from "../logging/logger.js";
 import {ZabbixQueryTemplateGroupRequest, ZabbixQueryTemplateGroupResponse} from "./zabbix-templates.js";
-import {ZabbixQueryHostgroupsRequest, ZabbixQueryHostgroupsResult} from "./zabbix-hostgroups.js";
+import {GroupHelper, ZabbixQueryHostgroupsRequest, ZabbixQueryHostgroupsResult} from "./zabbix-hostgroups.js";
 import {ApiErrorCode} from "../model/model_enum_values.js";
 
 
@@ -153,19 +154,22 @@ export class ZabbixImportUserGroupsRequest
         let createGroupRequest = new ZabbixCreateOrUpdateRequest<
             ZabbixCreateUserGroupResponse, ZabbixQueryUserGroupsRequest, ZabbixCreateOrUpdateParams>(
             "usergroup", "usrgrpid", ZabbixQueryUserGroupsRequest, this.authToken, this.cookie);
+
         for (let userGroup of args?.usergroups || []) {
             let templategroup_rights = this.calc_templategroup_rights(userGroup);
             let hostgroup_rights = this.calc_hostgroup_rights(userGroup);
 
             let errors: ApiError[] = [];
 
-            let params = new ZabbixCreateOrUpdateParams({
+            let paramsObj: any = {
                 name: userGroup.name,
                 gui_access: userGroup.gui_access,
                 users_status: userGroup.users_status,
                 hostgroup_rights: hostgroup_rights.hostgroup_rights,
                 templategroup_rights: templategroup_rights.templategroup_rights,
-            }, args?.dryRun)
+            };
+
+            let params = new ZabbixCreateOrUpdateParams(paramsObj, args?.dryRun)
             let result = await createGroupRequest.executeRequestReturnError(zabbixAPI, params);
             if (isZabbixErrorResult(result)) {
 
@@ -214,30 +218,36 @@ export class ZabbixImportUserGroupsRequest
         for (let hostgroup_right of usergroup.hostgroup_rights || []) {
             let success = false;
             let matchedName = "";
+            let matchedId: number | undefined = undefined;
+
+            // Try matching by UUID first
             for (let hostgroup of this.hostgroups) {
-                if (hostgroup.uuid == hostgroup_right.uuid) {
-                    result.push(
-                        {
-                            id: Number(hostgroup.groupid),
-                            permission: hostgroup_right.permission,
-                        }
-                    )
-                    success = true;
+                if (hostgroup.uuid && hostgroup_right.uuid && hostgroup.uuid === hostgroup_right.uuid) {
+                    matchedId = Number(hostgroup.groupid);
                     matchedName = hostgroup.name;
+                    success = true;
                     break;
                 }
-
             }
-            if (success && hostgroup_right.name && hostgroup_right.name != matchedName) {
-                errors.push(
+
+            if (success) {
+                result.push(
                     {
-                        code: ApiErrorCode.OK,
-                        message: `WARNING: Hostgroup found and permissions set, but target name=${matchedName} does not match`,
-                        data: hostgroup_right,
+                        id: matchedId!,
+                        permission: hostgroup_right.permission,
                     }
                 )
-            }
-            if (!success) {
+
+                if (hostgroup_right.name && hostgroup_right.name != matchedName) {
+                    errors.push(
+                        {
+                            code: ApiErrorCode.OK,
+                            message: `WARNING: Hostgroup found and permissions set, but target name=${matchedName} does not match provided name=${hostgroup_right.name}`,
+                            data: hostgroup_right,
+                        }
+                    )
+                }
+            } else {
                 errors.push(
                     {
                         code: ApiErrorCode.ZABBIX_HOSTGROUP_NOT_FOUND,
@@ -262,29 +272,36 @@ export class ZabbixImportUserGroupsRequest
         for (let templategroup_right of usergroup.templategroup_rights || []) {
             let success = false;
             let matchedName = "";
+            let matchedId: number | undefined = undefined;
+
+            // Try matching by UUID first
             for (let templategroup of this.templategroups) {
-                if (templategroup.uuid == templategroup_right.uuid) {
-                    result.push(
-                        {
-                            id: Number(templategroup.groupid),
-                            permission: templategroup_right.permission,
-                        }
-                    )
+                if (templategroup.uuid && templategroup_right.uuid && templategroup.uuid === templategroup_right.uuid) {
+                    matchedId = Number(templategroup.groupid);
+                    matchedName = templategroup.name;
                     success = true;
-                    matchedName = templategroup.name
                     break;
                 }
             }
-            if (success && templategroup_right.name && templategroup_right.name != matchedName) {
-                errors.push(
+
+            if (success) {
+                result.push(
                     {
-                        code: ApiErrorCode.OK,
-                        message: `WARNING: Templategroup found and permissions set, but target name=${matchedName} does not match`,
-                        data: templategroup_right,
+                        id: matchedId!,
+                        permission: templategroup_right.permission,
                     }
                 )
-            }
-            if (!success) {
+
+                if (templategroup_right.name && templategroup_right.name != matchedName) {
+                    errors.push(
+                        {
+                            code: ApiErrorCode.OK,
+                            message: `WARNING: Templategroup found and permissions set, but target name=${matchedName} does not match provided name=${templategroup_right.name}`,
+                            data: templategroup_right,
+                        }
+                    )
+                }
+            } else {
                 errors.push(
                     {
                         code: ApiErrorCode.ZABBIX_TEMPLATEGROUP_NOT_FOUND,
@@ -315,6 +332,10 @@ export class ZabbixPropagateHostGroupsRequest extends ZabbixRequest<ZabbixCreate
     ZabbixPropagateHostGroupsParams> {
     constructor(authToken?: string | null, cookie?: string | null) {
         super("hostgroup.propagate", authToken, cookie);
+    }
+
+    async prepare(zabbixAPI: ZabbixAPI, args?: ZabbixPropagateHostGroupsParams): Promise<ZabbixCreateUserGroupResponse | ZabbixErrorResult | undefined> {
+        return super.prepare(zabbixAPI, args);
     }
 
     createZabbixParams(args?: ZabbixPropagateHostGroupsParams): ZabbixParams {

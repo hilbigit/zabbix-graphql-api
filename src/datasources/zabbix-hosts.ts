@@ -25,8 +25,12 @@ export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends Pa
         this.impliedFields.set("hostType", ["tags"]);
     }
 
+    async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: A, output?: string[]): Promise<ZabbixErrorResult | T> {
+        return await super.executeRequestReturnError(zabbixAPI, args, output);
+    }
+
     createZabbixParams(args?: A, output?: string[]): ZabbixParams {
-        return this.optimizeZabbixParams({
+        const params: any = {
             ...super.createZabbixParams(args),
             selectParentTemplates: [
                 "templateid",
@@ -45,11 +49,11 @@ export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends Pa
                 "hostid",
                 "host",
                 "name",
-                "hostgroups",
                 "description",
-                "parentTemplates"
             ]
-        }, output);
+        };
+
+        return this.optimizeZabbixParams(params, output);
     }
 }
 
@@ -102,10 +106,7 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A e
                 "hostid",
                 "host",
                 "name",
-                "hostgroups",
-                "items",
                 "description",
-                "parentTemplates"
             ],
         }, output);
     }

@@ -7,6 +7,7 @@ jest.mock("../datasources/zabbix-api.js", () => ({
     zabbixAPI: {
         executeRequest: jest.fn(),
         post: jest.fn(),
+        getVersion: jest.fn().mockResolvedValue("7.0.0"),
         baseURL: "http://mock-zabbix",
     }
 }));
@@ -90,7 +91,7 @@ describe("Query Optimization", () => {
         expect(zabbixAPI.post).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
             body: expect.objectContaining({
                 params: expect.objectContaining({
-                    output: ["hostid"],
+                    output: expect.arrayContaining(["hostid", "tags"]),
                     selectTags: expect.any(Array)
                 })
             })
@@ -187,7 +188,7 @@ describe("Query Optimization", () => {
         expect(zabbixAPI.post).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
             body: expect.objectContaining({
                 params: expect.objectContaining({
-                    output: ["hostid"],
+                    output: expect.arrayContaining(["hostid", "tags"]),
                     selectTags: expect.any(Array)
                 })
             })

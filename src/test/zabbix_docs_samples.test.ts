@@ -8,6 +8,7 @@ import {zabbixAPI} from '../datasources/zabbix-api.js';
 jest.mock("../datasources/zabbix-api.js", () => ({
     zabbixAPI: {
         post: jest.fn(),
+        getVersion: jest.fn().mockResolvedValue("7.0.0"),
         executeRequest: jest.fn(),
         baseURL: 'http://localhost/zabbix',
         getLocations: jest.fn(),

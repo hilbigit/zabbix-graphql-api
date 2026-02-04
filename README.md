@@ -52,7 +52,7 @@ Before you begin, ensure you have met the following requirements:
 
 - **Node.js**: Version 24 (LTS) or higher recommended.
 - **Docker**: Version 27 or higher and **Docker Compose** v2.29 or higher (use `docker compose` instead of `docker-compose`).
-- **Zabbix**: A running Zabbix instance (compatible with Zabbix 6.0+) with API access.
+- **Zabbix**: A running Zabbix instance (**Zabbix 6.2+ mandatory**) with API access. See [Zabbix Version Compatibility](#-zabbix-version-compatibility) for details.
 - **Zabbix Super Admin Token** (for full functionality / privilege escalation).
 - **Zabbix User Access** (groups and roles depending on your use case).
 
@@ -80,6 +80,20 @@ Builds the project and runs the compiled code:
 ```bash
 npm run prod
 ```
+
+#### 🐳 Local Zabbix Environment
+For development and testing, you can start a complete environment including Zabbix from scratch:
+
+```bash
+# Start with local Zabbix (latest 7.0)
+docker compose --profile zabbix-local up -d
+
+# Start with a specific Zabbix version (e.g. 6.4)
+ZABBIX_VERSION=alpine-6.4-latest docker compose --profile zabbix-local up -d
+```
+
+> **Guide**: For detailed setup and configuration of the local environment, see [Local Development Environment](./docs/howtos/local_development.md).
+> **Important**: On fresh Zabbix installations, you must manually create the base host group (e.g., `Roadwork`) before the API can import devices.
 
 The API will be available at `http://localhost:4000/`.
 
@@ -236,7 +250,27 @@ The API version is automatically set during the Docker build process based on th
 
 ### 🔧 Zabbix Version Compatibility
 
-This API is designed to work with Zabbix 7.4, which is the version it runs productively with. While it may work with earlier versions (like 6.0+), 7.4 is the officially supported and tested version.
+This API is officially supported and productively used with **Zabbix 7.0 (LTS)**, **7.4**, and newer. It maintains compatibility with **Zabbix 6.4** and **6.2**, with the following version-specific behaviors:
+
+- **Zabbix 7.0+ (including 7.4)**:
+    - Full feature support.
+    - **History Push**: Uses the native `history.push` API for efficient data ingestion.
+- **Zabbix 6.4**:
+    - **History Push**: Not supported (requires Zabbix 7.0+). The `pushHistory` mutation returns a clear error.
+    - **Group Propagation**: Fully supported via the `hostgroup.propagate` API.
+    - **UUIDs**: Fully supported for both Host Groups and Template Groups.
+- **Zabbix 6.2**:
+    - **History Push**: Not supported.
+    - **Authentication**: Fully supported. The API automatically falls back to using the `auth` field in JSON-RPC request bodies since Bearer token headers were only introduced in 6.4.
+
+#### ⚠️ Dropped Support for Zabbix 6.0
+Support for Zabbix 6.0 (LTS) has been discontinued due to the excessive complexity of maintaining backward compatibility with its legacy API structure. The high amount of differences between 6.0 and 6.2 would have required several intrusive fallbacks:
+- **API Methods**: A translation layer to redirect `templategroup.*` calls to `hostgroup.*` methods, as these entities were not yet separated.
+- **Permission Management**: Manual recursive expansion of group rights during import because `hostgroup.propagate` was unavailable.
+- **Entity Matching**: Unreliable name-based fallback for host groups due to the lack of UUID support in the 6.0 API.
+- **JSON-RPC**: Complexity in restoring the `auth` field in request bodies for versions lacking modern Bearer token header support.
+
+By requiring **Zabbix 6.2+**, the API leverages native modern features, ensuring higher reliability and a more maintainable codebase.
 
 ## 🛠️ Technical Maintenance
 
