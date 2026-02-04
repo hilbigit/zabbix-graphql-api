@@ -12,16 +12,16 @@ The Zabbix GraphQL API acts as a wrapper and enhancer for the native Zabbix JSON
   - *Reference*: `schema/queries.graphql`, `schema/mutations.graphql`, `src/api/start.ts`
 
 - **Hierarchical Data Mapping**: Automatic mapping of Zabbix items/tags to nested GraphQL objects
-  - *Reference*: `src/api/resolver_helpers.ts`, `schema/device_value_commons.graphql`, `docs/sample_all_devices_query.graphql`
+  - *Reference*: `src/api/resolver_helpers.ts`, `schema/device_value_commons.graphql`, `docs/queries/sample_all_devices_query.graphql`
 
 - **Mass Operations**: Import/export capabilities for hosts, templates, and user rights
-  - *Reference*: `schema/mutations.graphql` (importHosts, importTemplates, importUserRights, etc.), `docs/sample_import_*.graphql`
+  - *Reference*: `schema/mutations.graphql` (importHosts, importTemplates, importUserRights, etc.), `docs/queries/sample_import_*.graphql`
 
 - **Dynamic Schema Extension**: Extend the schema without code changes using environment variables
   - *Reference*: `src/api/schema.ts`, `samples/extensions/` (sample extensions), `src/common_utils.ts` (ADDITIONAL_SCHEMAS, ADDITIONAL_RESOLVERS)
 
 - **Permission System**: Role-based access control using Zabbix template groups
-  - *Reference*: `schema/api_commons.graphql` (Permission enum, PermissionRequest), `src/api/resolvers.ts` (hasPermissions, userPermissions), `docs/sample_import_permissions_template_groups_mutation.graphql`
+  - *Reference*: `schema/api_commons.graphql` (Permission enum, PermissionRequest), `src/api/resolvers.ts` (hasPermissions, userPermissions), `docs/queries/sample_import_permissions_template_groups_mutation.graphql`
 
 - **Type Safety**: Full TypeScript support with generated types
   - *Reference*: `codegen.ts`, `src/schema/generated/graphql.ts`, `tsconfig.json`, `package.json` (devDependencies for GraphQL Codegen)
@@ -52,7 +52,7 @@ Before you begin, ensure you have met the following requirements:
 
 - **Node.js**: Version 24 (LTS) or higher recommended.
 - **Docker**: Version 27 or higher and **Docker Compose** v2.29 or higher (use `docker compose` instead of `docker-compose`).
-- **Zabbix**: A running Zabbix instance (**Zabbix 6.2+ mandatory**) with API access. See [Zabbix Version Compatibility](#-zabbix-version-compatibility) for details.
+- **Zabbix**: A running Zabbix instance (**Zabbix 6.2+ mandatory**) with API access. See [Zabbix Version Compatibility](#zabbix-version-compatibility) for details.
 - **Zabbix Super Admin Token** (for full functionality / privilege escalation).
 - **Zabbix User Access** (groups and roles depending on your use case).
 

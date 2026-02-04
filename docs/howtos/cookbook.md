@@ -136,7 +136,7 @@ If you prefer to configure Zabbix manually:
 
 #### Method B: Automated Import
 Execute the `importTemplates` mutation to create the template and items automatically. 
-> **Reference**: Use the [Sample: Distance Tracker Import](../../docs/queries/sample_import_distance_tracker_template.graphql) for a complete mutation and variables example.
+> **Reference**: Use the [Sample: Distance Tracker Import](../queries/sample_import_distance_tracker_template.graphql) for a complete mutation and variables example.
 
 ### ✅ Step 4: Verify the Extension
 Verify that the new type is available and correctly mapped by creating a test host and querying it.
@@ -278,7 +278,7 @@ Before configuring the Zabbix template, analyse how often the data source actual
 ### 🚀 Step 4: Import the Device Template
 Use the `importTemplates` mutation to create the template. Use **HTTP agent** or **Script** items as master items to fetch data, and **dependent items** to parse the results.
 
-> **Reference**: See the [Sample: Weather Sensor Template Import](../../docs/queries/sample_import_weather_sensor_template.graphql) and [Sample: Ground Value Checker Template Import](../../docs/queries/sample_import_ground_value_checker_template.graphql) for complete mutations.
+> **Reference**: See the [Sample: Weather Sensor Template Import](../queries/sample_import_weather_sensor_template.graphql) and [Sample: Ground Value Checker Template Import](../queries/sample_import_ground_value_checker_template.graphql) for complete mutations.
 
 **Key Configuration for Weather Sensor**:
 - **Master Item**: `weather.get` (HTTP Agent)
@@ -393,19 +393,19 @@ Restart the API server.
 ### 🚀 Step 3: Import the Simulated Device Template
 Use the `importTemplates` mutation to create a template with a **Zabbix Trapper** item. We use the `json_` prefix in the item key to ensure the JSON string is automatically parsed into a `JSONObject`.
 
-> **Reference**: Use the [Sample: Import Simulated BT Template](../../docs/queries/sample_import_simulated_bt_template.graphql) for a complete mutation and variables example.
+> **Reference**: Use the [Sample: Import Simulated BT Template](../queries/sample_import_simulated_bt_template.graphql) for a complete mutation and variables example.
 
 ### 🚀 Step 4: Push History Data
 Push GeoJSON data to your simulated device using the `pushHistory` mutation. This allows you to simulate a device moving along a path by providing multiple data points with different timestamps.
 
-> **Reference**: See the [Sample: Push GeoJSON History](../../docs/queries/sample_push_geojson_history.graphql) for a complete example of pushing historical data.
+> **Reference**: See the [Sample: Push GeoJSON History](../queries/sample_push_geojson_history.graphql) for a complete example of pushing historical data.
 
 ### ✅ Step 5: Verification
 Verify that the device correctly resolves to the new type and that both the current state and historical data are accessible.
 
 -   **Create Host**: Use the `importHosts` mutation to create a host (e.g. `Vehicle1`) and link it to the simulated template.
 -   **Query Current State**: Use the `allDevices` query to verify the latest pushed position.
-    - *Reference*: See the [Sample: Tracked Device Query](../../docs/queries/sample_tracked_device_query.graphql).
+    - *Reference*: See the [Sample: Tracked Device Query](../queries/sample_tracked_device_query.graphql).
 -   **Query Historical Data**: Use the `exportHostValueHistory` query to retrieve the path history.
 
 ```graphql
@@ -437,7 +437,7 @@ This recipe shows how to execute a comprehensive query to verify the state and c
 
 ### 📋 Prerequisites
 - Zabbix GraphQL API is running.
-- The schema has been extended with the `DistanceTrackerDevice` type (see [Recipe: Extending Schema with a New Device Type](#-recipe-extending-schema-with-a-new-device-type)). Sample extensions can be found in the `samples/extensions` directory.
+- The schema has been extended with the `DistanceTrackerDevice` type (see [Recipe: Extending Schema with a New Device Type](#recipe-extending-schema-with-a-new-device-type)). Sample extensions can be found in the `samples/extensions` directory.
 - At least one host with `deviceType` set to `DistanceTrackerDevice` exists in Zabbix.
 
 ### 🛠️ Step 1: Get the Sample Query
@@ -561,7 +561,7 @@ query VerifyBulkImport($pattern: String!) {
 }
 ```
 
-For detailed examples of the input structures, refer to [Sample Import Templates](../../docs/queries/sample_import_templates_mutation.graphql) and [Sample Import Hosts](../../docs/queries/sample_import_hosts_mutation.graphql).
+For detailed examples of the input structures, refer to [Sample Import Templates](../queries/sample_import_templates_mutation.graphql) and [Sample Import Hosts](../queries/sample_import_hosts_mutation.graphql).
 
 ---
 

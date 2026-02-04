@@ -85,4 +85,4 @@ Supported tags can be found on the [Zabbix Docker Hub](https://hub.docker.com/u/
 
 ---
 **Related Guide**: [Technical Maintenance](./maintenance.md)
-**Related Reference**: [Zabbix Version Compatibility](../../README.md#-zabbix-version-compatibility)
+**Related Reference**: [Zabbix Version Compatibility](../../README.md#zabbix-version-compatibility)
