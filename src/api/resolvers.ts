@@ -67,6 +67,11 @@ import {Config} from "../common_utils.js";
 import {GraphqlParamsToNeededZabbixOutput} from "../datasources/graphql-params-to-zabbix-output.js";
 
 
+/**
+ * Creates the GraphQL resolvers for the Zabbix API.
+ * Defines how queries, mutations, and types are resolved by interacting with the Zabbix data sources and execution logic.
+ * @returns The GraphQL resolvers object.
+ */
 export function createResolvers(): Resolvers {
     // @ts-ignore
     // @ts-ignore

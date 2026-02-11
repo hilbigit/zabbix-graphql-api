@@ -12,8 +12,19 @@ import {
 import {isZabbixErrorResult, ParsedArgs} from "../datasources/zabbix-request.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
 
+/**
+ * Handles deleting hosts and host groups from Zabbix.
+ */
 export class HostDeleter {
 
+    /**
+     * Deletes hosts based on their IDs or a name pattern.
+     * @param hostids - The IDs of the hosts to delete.
+     * @param name_pattern - Optional wildcard name pattern for filtering hosts.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to an array of delete responses.
+     */
     public static async deleteHosts(hostids: number[] | null | undefined, name_pattern?: string | null, zabbixAuthToken?: string, cookie?: string): Promise<DeleteResponse[]> {
         const result: DeleteResponse[] = [];
         let idsToDelete = hostids ? [...hostids] : [];
@@ -60,6 +71,14 @@ export class HostDeleter {
         return result;
     }
 
+    /**
+     * Deletes host groups based on their IDs or a name pattern.
+     * @param groupids - The IDs of the host groups to delete.
+     * @param name_pattern - Optional wildcard name pattern for filtering host groups.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to an array of delete responses.
+     */
     public static async deleteHostGroups(groupids: number[] | null | undefined, name_pattern?: string | null, zabbixAuthToken?: string, cookie?: string): Promise<DeleteResponse[]> {
         const result: DeleteResponse[] = [];
         let idsToDelete = groupids ? [...groupids] : [];

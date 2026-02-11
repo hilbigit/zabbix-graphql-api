@@ -2,6 +2,11 @@ import {isObjectType} from "graphql";
 import {logger} from "../logging/logger.js";
 import {Device, Host} from "../schema/generated/graphql.js";
 
+/**
+ * Checks if a host object is a specialized device.
+ * @param value - The host object to check.
+ * @returns True if the host is a device, false otherwise.
+ */
 export const isDevice = (value: Host | undefined): value is Device => !!(value as Device)?.deviceType;
 /*
     As a default all . - seperators within a key shall be replaced by a Capital letter of the following word
@@ -49,6 +54,13 @@ export function createHierarchicalValueFieldResolver(
     return resolver
 }
 
+/**
+ * Maps Zabbix item values to GraphQL type fields based on the field name.
+ * @param fieldname - The name of the GraphQL field.
+ * @param parent - The parent object containing Zabbix items.
+ * @param objectTypeRequested - Whether the requested field is an object type.
+ * @returns The mapped value or hierarchical object.
+ */
 export function zabbixItemValueSourceFieldMapper(
     fieldname: string,
     parent: {
@@ -76,6 +88,13 @@ export function zabbixItemValueSourceFieldMapper(
     return result;
 }
 
+/**
+ * Maps Zabbix tag values to GraphQL type fields based on the field name.
+ * @param fieldname - The name of the GraphQL field.
+ * @param tags - The array of Zabbix tags.
+ * @param objectTypeRequested - Whether the requested field is an object type.
+ * @returns The mapped value or hierarchical object.
+ */
 export function zabbixTagsValueSourceFieldMapper(
     fieldname: string,
     tags:  [{ tag: string, value: any }],

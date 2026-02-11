@@ -8,8 +8,19 @@ import {
 import {isZabbixErrorResult, ParsedArgs} from "../datasources/zabbix-request.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
 
+/**
+ * Handles deleting templates and template groups from Zabbix.
+ */
 export class TemplateDeleter {
 
+    /**
+     * Deletes templates based on their IDs or a name pattern.
+     * @param templateids - The IDs of the templates to delete.
+     * @param name_pattern - Optional wildcard name pattern for filtering templates.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to an array of delete responses.
+     */
     public static async deleteTemplates(templateids: number[] | null | undefined, name_pattern?: string | null, zabbixAuthToken?: string, cookie?: string): Promise<DeleteResponse[]> {
         const result: DeleteResponse[] = [];
         let idsToDelete = templateids ? [...templateids] : [];
@@ -55,6 +66,14 @@ export class TemplateDeleter {
         return result;
     }
 
+    /**
+     * Deletes template groups based on their IDs or a name pattern.
+     * @param groupids - The IDs of the template groups to delete.
+     * @param name_pattern - Optional wildcard name pattern for filtering template groups.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to an array of delete responses.
+     */
     public static async deleteTemplateGroups(groupids: number[] | null | undefined, name_pattern?: string | null, zabbixAuthToken?: string, cookie?: string): Promise<DeleteResponse[]> {
         const result: DeleteResponse[] = [];
         let idsToDelete = groupids ? [...groupids] : [];

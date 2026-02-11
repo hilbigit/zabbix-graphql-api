@@ -21,7 +21,17 @@ type ItemMapResponse = {
     error?: ApiError
 }
 
+/**
+ * Handles exporting host history data from Zabbix.
+ */
 export class HostValueExporter {
+    /**
+     * Exports history data based on the provided filter arguments.
+     * @param args - The filter and output options for the export.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to a generic response containing the history data.
+     */
     static async exportHistory(args: QueryExportHostValueHistoryArgs, zabbixAuthToken?: string, cookie?: string): Promise<GenericResponse> {
         let itemMapResponse: ItemMapResponse = await HostValueExporter.queryItemsForFilterArgs(args, zabbixAuthToken, cookie);
         if (itemMapResponse.error || !itemMapResponse.items) {
@@ -75,6 +85,13 @@ export class HostValueExporter {
         }
     }
 
+    /**
+     * Queries for items matching the provided filter arguments to be used in history export.
+     * @param args - The filter arguments.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to an item map response.
+     */
     static async queryItemsForFilterArgs(args: QueryExportHostValueHistoryArgs, zabbixAuthToken?: string, cookie?: string): Promise<ItemMapResponse> {
         let hostFilter = args.host_filter
         let itemKeyFilter = args.itemKey_filter

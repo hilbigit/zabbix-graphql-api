@@ -15,7 +15,16 @@ import {ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
 import {isZabbixErrorResult, ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
 import {ZabbixHistoryPushParams, ZabbixHistoryPushRequest} from "../datasources/zabbix-history.js";
 
+/**
+ * Handles the execution of regression tests to ensure bug fixes remain effective.
+ */
 export class RegressionTestExecutor {
+    /**
+     * Runs all regression tests, including locations query order, template lookup, HTTP Agent support, macro assignment, and more.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to a smoketest response containing the success status and detailed steps.
+     */
     public static async runAllRegressionTests(zabbixAuthToken?: string, cookie?: string): Promise<SmoketestResponse> {
         const steps: SmoketestStep[] = [];
         let success = true;

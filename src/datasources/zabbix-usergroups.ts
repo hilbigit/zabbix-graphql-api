@@ -56,9 +56,16 @@ abstract class ZabbixPrepareGetTemplatesAndHostgroupsRequest<T extends ZabbixRes
     }
 }
 
+/**
+ * Arguments for exporting user groups.
+ */
 export class ZabbixExportUserGroupArgs extends ParsedArgs {
     public exclude_hostgroups_pattern?: RegExp | undefined = undefined;
 
+    /**
+     * @param name_pattern - Optional wildcard name pattern for filtering user groups.
+     * @param exclude_hostgroups_pattern_str - Optional regex string to exclude host groups by name.
+     */
     constructor(name_pattern?: string | null, exclude_hostgroups_pattern_str?: string | null) {
         super(name_pattern? {name_pattern: name_pattern} : undefined);
         if (exclude_hostgroups_pattern_str) {
@@ -67,8 +74,15 @@ export class ZabbixExportUserGroupArgs extends ParsedArgs {
     }
 }
 
+/**
+ * Request to export user groups from Zabbix.
+ */
 export class ZabbixExportUserGroupsRequest extends ZabbixPrepareGetTemplatesAndHostgroupsRequest<
     UserGroup[], ZabbixExportUserGroupArgs> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string) {
         super("usergroup.get.withuuids", authToken, cookie);
     }
@@ -117,7 +131,14 @@ export class ZabbixExportUserGroupsRequest extends ZabbixPrepareGetTemplatesAndH
     }
 }
 
+/**
+ * Request to query user groups from Zabbix.
+ */
 export class ZabbixQueryUserGroupsRequest extends ZabbixRequest<UserGroup[]> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string | null) {
         super("usergroup.get", authToken, cookie);
     }
@@ -130,15 +151,29 @@ export class ZabbixQueryUserGroupsRequest extends ZabbixRequest<UserGroup[]> {
     }
 }
 
+/**
+ * Parameters for importing user groups.
+ */
 export class ZabbixImportUserGroupsParams extends ParsedArgs {
+    /**
+     * @param usergroups - The user groups to import.
+     * @param dryRun - Whether to perform a dry run (default: true).
+     */
     constructor(public usergroups: UserGroupInput[], public dryRun = true) {
         super();
     }
 }
 
+/**
+ * Request to import user groups into Zabbix.
+ */
 export class ZabbixImportUserGroupsRequest
     extends ZabbixPrepareGetTemplatesAndHostgroupsRequest<ImportUserRightResult[],
         ZabbixImportUserGroupsParams> {
+    /**
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(zabbixAuthToken: any, cookie: any) {
         super("usergroup.create.import", zabbixAuthToken, cookie);
     }
@@ -328,8 +363,15 @@ class ZabbixPropagateHostGroupsParams extends ParsedArgs {
     }
 }
 
+/**
+ * Request to propagate host group permissions to children in Zabbix.
+ */
 export class ZabbixPropagateHostGroupsRequest extends ZabbixRequest<ZabbixCreateUserGroupResponse,
     ZabbixPropagateHostGroupsParams> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string | null) {
         super("hostgroup.propagate", authToken, cookie);
     }

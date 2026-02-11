@@ -26,7 +26,14 @@ export class ZabbixPrepareGetModulesRequest<T extends ZabbixResult, A extends Pa
     }
 }
 
+/**
+ * Request to query user roles from Zabbix.
+ */
 export class ZabbixQueryUserRolesRequest extends ZabbixPrepareGetModulesRequest<UserRole[]> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string | null) {
         super("role.get", authToken, cookie);
     }
@@ -63,14 +70,28 @@ export class ZabbixQueryUserRolesRequest extends ZabbixPrepareGetModulesRequest<
     }
 }
 
+/**
+ * Parameters for importing user roles.
+ */
 export class ZabbixImportUserRolesParams extends ParsedArgs {
+    /**
+     * @param userRoles - The user roles to import.
+     * @param dryRun - Whether to perform a dry run (default: false).
+     */
     constructor(public userRoles: UserRoleInput[], public dryRun: boolean = false) {
         super();
     }
 }
 
+/**
+ * Request to import user roles into Zabbix.
+ */
 export class ZabbixImportUserRolesRequest extends ZabbixPrepareGetModulesRequest<ImportUserRightResult[],
     ZabbixImportUserRolesParams> {
+    /**
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(zabbixAuthToken: any, cookie: any) {
         super("role.create.import", zabbixAuthToken, cookie);
     }

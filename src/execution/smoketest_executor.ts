@@ -7,7 +7,19 @@ import {zabbixAPI} from "../datasources/zabbix-api.js";
 import {ZabbixQueryHostsGenericRequest} from "../datasources/zabbix-hosts.js";
 import {ParsedArgs} from "../datasources/zabbix-request.js";
 
+/**
+ * Handles the execution of a complete smoketest in Zabbix.
+ */
 export class SmoketestExecutor {
+    /**
+     * Runs a smoketest by creating a template, host group, and host, verifying their creation and linkage, and then cleaning up.
+     * @param hostName - The technical name of the host to create during the test.
+     * @param templateName - The technical name of the template to create during the test.
+     * @param groupName - The technical name of the host group to create during the test.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to a smoketest response containing the success status and detailed steps.
+     */
     public static async runSmoketest(hostName: string, templateName: string, groupName: string, zabbixAuthToken?: string, cookie?: string): Promise<SmoketestResponse> {
         const steps: SmoketestStep[] = [];
         let success = true;

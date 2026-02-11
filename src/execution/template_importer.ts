@@ -17,8 +17,18 @@ import {
 import {isZabbixErrorResult, ParsedArgs, ZabbixErrorResult} from "../datasources/zabbix-request.js";
 import {zabbixAPI} from "../datasources/zabbix-api.js";
 
+/**
+ * Handles importing templates and template groups into Zabbix.
+ */
 export class TemplateImporter {
 
+    /**
+     * Imports template groups into Zabbix.
+     * @param templateGroups - The list of template groups to import.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to an array of import responses.
+     */
     public static async importTemplateGroups(templateGroups: InputMaybe<Array<CreateTemplateGroup>> | undefined, zabbixAuthToken?: string, cookie?: string) {
         if (!templateGroups) {
             return null
@@ -79,6 +89,13 @@ export class TemplateImporter {
         return result
     }
 
+    /**
+     * Imports templates into Zabbix, including their items and linked templates.
+     * @param templates - The list of templates to import.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to an array of import responses.
+     */
     public static async importTemplates(templates: InputMaybe<Array<CreateTemplate>> | undefined, zabbixAuthToken?: string, cookie?: string) {
         if (!templates) {
             return null

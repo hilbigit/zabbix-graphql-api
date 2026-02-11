@@ -14,10 +14,18 @@ export const zabbixPrivilegeEscalationToken = Config.ZABBIX_PRIVILEGE_ESCALATION
 export const ZABBIX_EDGE_DEVICE_BASE_GROUP = Config.ZABBIX_EDGE_DEVICE_BASE_GROUP || Config.ZABBIX_ROADWORK_BASE_GROUP || "Roadwork"
 export const FIND_ZABBIX_EDGE_DEVICE_BASE_GROUP_PREFIX = new RegExp(`^(${ZABBIX_EDGE_DEVICE_BASE_GROUP})\/`)
 
+/**
+ * Data source for interacting with the Zabbix API.
+ * Extends RESTDataSource to handle JSON-RPC requests to Zabbix.
+ */
 export class ZabbixAPI
     extends RESTDataSource {
     private static readonly MAX_LOG_REQUEST_BODY_LIMIT_LENGTH = 500
 
+    /**
+     * @param baseURL - The base URL of the Zabbix API.
+     * @param config - Optional data source configuration.
+     */
     constructor(public baseURL: string, config?: DataSourceConfig) {
         super(config);
         logger.info("Connecting to Zabbix at url=" + this.baseURL)
@@ -82,6 +90,10 @@ export class ZabbixAPI
 
     private static version: string | undefined
 
+    /**
+     * Retrieves the Zabbix API version.
+     * @returns A promise that resolves to the version string.
+     */
     async getVersion(): Promise<string> {
         if (!ZabbixAPI.version) {
             const response = await this.requestByPath<string>("apiinfo.version")
@@ -94,14 +106,39 @@ export class ZabbixAPI
         return ZabbixAPI.version
     }
 
+    /**
+     * Executes a Zabbix API request.
+     * @param zabbixRequest - The request object to execute.
+     * @param args - The parsed arguments for the request.
+     * @param throwApiError - Whether to throw an error if the request fails (default: true).
+     * @param output - The list of fields to return.
+     * @returns A promise that resolves to the result or an error result.
+     */
     async executeRequest<T extends ZabbixResult, A extends ParsedArgs>(zabbixRequest: ZabbixRequest<T, A>, args?: A, throwApiError: boolean = true, output?: string[]): Promise<T | ZabbixErrorResult> {
         return throwApiError ? zabbixRequest.executeRequestThrowError(this, args, output) : zabbixRequest.executeRequestReturnError(this, args, output);
     }
 
+    /**
+     * Executes a Zabbix API request by its method path.
+     * @param path - The Zabbix API method path.
+     * @param args - The parsed arguments for the request.
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookies - Optional session cookies.
+     * @param throwApiError - Whether to throw an error if the request fails (default: true).
+     * @param output - The list of fields to return.
+     * @returns A promise that resolves to the result or an error result.
+     */
     async requestByPath<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs>(path: string, args?: A, authToken?: string | null, cookies?: string, throwApiError: boolean = true, output?: string[]) {
         return this.executeRequest<T, A>(new ZabbixRequest<T>(path, authToken, cookies), args, throwApiError, output);
     }
 
+    /**
+     * Retrieves locations from host inventory.
+     * @param args - The parsed arguments for filtering locations.
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookies - Optional session cookies.
+     * @returns A promise that resolves to an array of location objects.
+     */
     async getLocations(args?: ParsedArgs, authToken?: string, cookies?: string) {
         const hosts_promise = this.requestByPath("host.get", args, authToken, cookies);
         return hosts_promise.then(response => {

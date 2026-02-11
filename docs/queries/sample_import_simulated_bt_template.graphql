@@ -36,7 +36,7 @@ We use the `state.current.json_geojson` key for the trapper item. The `json_` pr
           "type": 2,
           "key": "state.current.json_geojson",
           "value_type": 4,
-          "history": "7d",
+          "history": "31d",
           "description": "Trapper item receiving GeoJSON payloads"
         }
       ]

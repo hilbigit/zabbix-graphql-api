@@ -12,9 +12,17 @@ import {ZabbixHistoryGetParams, ZabbixQueryHistoryRequest} from "./zabbix-histor
 import {ZabbixQueryItemRequest} from "./zabbix-templates.js";
 
 
+/**
+ * Generic request to query hosts from Zabbix.
+ */
 export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixRequest<T, A> {
     public static PATH = "host.get";
 
+    /**
+     * @param path - The Zabbix API method path.
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(path: string, authToken?: string | null, cookie?: string | null) {
         super(path, authToken, cookie);
         this.skippableZabbixParams.set("selectParentTemplates", "parentTemplates");
@@ -25,10 +33,23 @@ export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends Pa
         this.impliedFields.set("hostType", ["tags"]);
     }
 
+    /**
+     * Executes the request and returns the result or an error.
+     * @param zabbixAPI - The Zabbix API instance.
+     * @param args - The parsed arguments for the request.
+     * @param output - The list of fields to return.
+     * @returns A promise that resolves to the result or an error.
+     */
     async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: A, output?: string[]): Promise<ZabbixErrorResult | T> {
         return await super.executeRequestReturnError(zabbixAPI, args, output);
     }
 
+    /**
+     * Creates the parameters for the Zabbix API request.
+     * @param args - The parsed arguments for the request.
+     * @param output - The list of fields to return.
+     * @returns The Zabbix parameters.
+     */
     createZabbixParams(args?: A, output?: string[]): ZabbixParams {
         const params: any = {
             ...super.createZabbixParams(args),
@@ -58,9 +79,16 @@ export class ZabbixQueryHostsGenericRequest<T extends ZabbixResult, A extends Pa
 }
 
 
+/**
+ * Request to query host metadata from Zabbix.
+ */
 export class ZabbixQueryHostsMetaRequest extends ZabbixQueryHostsGenericRequest<Host[]> {
     public static PATH = "host.get.meta";
 
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string | null) {
         super(ZabbixQueryHostsMetaRequest.PATH, authToken, cookie);
     }
@@ -74,7 +102,15 @@ export class ZabbixQueryHostsMetaRequest extends ZabbixQueryHostsGenericRequest<
 }
 
 
+/**
+ * Generic request to query hosts with their items from Zabbix.
+ */
 export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixQueryHostsGenericRequest<T, A> {
+    /**
+     * @param path - The Zabbix API method path.
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(path: string, authToken?: string | null, cookie?: string) {
         super(path, authToken, cookie);
         this.skippableZabbixParams.set("selectItems", "items");
@@ -167,7 +203,15 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A e
     }
 }
 
+/**
+ * Generic request to query hosts with their items and inventory from Zabbix.
+ */
 export class ZabbixQueryHostsGenericRequestWithItemsAndInventory<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixQueryHostsGenericRequestWithItems<T, A> {
+    /**
+     * @param path - The Zabbix API method path.
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(path: string, authToken?: string | null, cookie?: string) {
         super(path, authToken, cookie);
         this.skippableZabbixParams.set("selectInventory", "inventory");
@@ -189,7 +233,13 @@ export class ZabbixQueryHostsRequestWithItemsAndInventory extends ZabbixQueryHos
     }
 }
 
+/**
+ * Arguments for querying devices.
+ */
 export class ZabbixQueryDevicesArgs extends ParsedArgs {
+    /**
+     * @param args - The raw arguments.
+     */
     constructor(public args?: any) {
         if (!args?.tag_deviceType ||
             (Array.isArray(args.tag_deviceType) && !args.tag_deviceType.length)) {
@@ -199,7 +249,14 @@ export class ZabbixQueryDevicesArgs extends ParsedArgs {
     }
 }
 
+/**
+ * Request to query devices from Zabbix.
+ */
 export class ZabbixQueryDevices  extends ZabbixQueryHostsGenericRequestWithItemsAndInventory<Device[], ZabbixQueryDevicesArgs> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string) {
         super("host.get.with_items", authToken, cookie);
     }
@@ -272,7 +329,14 @@ class ZabbixCreateHostParams implements ZabbixParams {
 }
 
 
+/**
+ * Request to create a host in Zabbix.
+ */
 export class ZabbixCreateHostRequest extends ZabbixRequest<CreateHostResponse> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string) {
         super("host.create", authToken, cookie);
     }
@@ -286,7 +350,14 @@ export class ZabbixCreateHostRequest extends ZabbixRequest<CreateHostResponse> {
     }
 }
 
+/**
+ * Request to delete hosts in Zabbix.
+ */
 export class ZabbixDeleteHostsRequest extends ZabbixRequest<{ hostids: string[] }> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string | null) {
         super("host.delete", authToken, cookie);
     }

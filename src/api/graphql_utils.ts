@@ -1,5 +1,10 @@
 import {FieldNode, GraphQLResolveInfo, InlineFragmentNode} from "graphql";
 
+/**
+ * Extracts the requested fields from a GraphQL resolve info object, including nested fields and fragments.
+ * @param info - The GraphQL resolve info.
+ * @returns An array of strings representing the full paths of the requested fields.
+ */
 export function getRequestedFields(info: GraphQLResolveInfo): string[] {
     if (!info || !info.fieldNodes) return [];
     const fields: string[] = [];

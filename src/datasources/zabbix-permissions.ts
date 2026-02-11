@@ -5,18 +5,38 @@ import {ApiErrorCode, PermissionNumber} from "../model/model_enum_values.js";
 import {Config} from "../common_utils.js";
 
 
+/**
+ * Base class for Zabbix requests that require specific user permissions.
+ */
 export class ZabbixRequestWithPermissions<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> extends ZabbixRequest<T, A> {
 
+    /**
+     * @param path - The Zabbix API method path.
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @param permissionsNeeded - The permissions required to execute this request.
+     */
     constructor(public path: string, public authToken?: string | null, public cookie?: string | null,
         protected permissionsNeeded?: QueryHasPermissionsArgs) {
         super(path, authToken, cookie);
     }
+    /**
+     * Prepares the request by checking user permissions.
+     * @param zabbixAPI - The Zabbix API instance.
+     * @param _args - The parsed arguments for the request.
+     * @returns A promise that resolves to the result or an error if permissions are missing.
+     */
     async prepare(zabbixAPI: ZabbixAPI, _args?: A): Promise<T | ZabbixErrorResult | undefined> {
         // If prepare returns something else than undefined, the execution will be skipped and the
         // result returned
         this.prepResult = await this.assureUserPermissions(zabbixAPI);
         return this.prepResult;
     }
+    /**
+     * Ensures that the user has the required permissions.
+     * @param zabbixAPI - The Zabbix API instance.
+     * @returns A promise that resolves to undefined if permissions are granted, or an error otherwise.
+     */
     async assureUserPermissions(zabbixAPI: ZabbixAPI) {
         if (this.authToken && this.authToken === Config.ZABBIX_PRIVILEGE_ESCALATION_TOKEN) {
             // Bypass permission check for the privilege escalation token as it is assumed to have required rights
@@ -104,6 +124,14 @@ export class ZabbixPermissionsHelper {
     private static permissionObjectNameCache: Map<string, string | null> = new Map()
     public static ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX = Config.ZABBIX_PERMISSION_TEMPLATE_GROUP_NAME_PREFIX
 
+    /**
+     * Retrieves permissions for the current user.
+     * @param zabbixAPI - The Zabbix API instance.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @param objectNames - Optional filter for object names.
+     * @returns A promise that resolves to an array of user permissions.
+     */
     public static async getUserPermissions(zabbixAPI: ZabbixAPI, zabbixAuthToken?: string, cookie?: string,
                                            objectNames?: InputMaybe<string[]> | undefined): Promise<UserPermission[]> {
         return Array.from((await this.getUserPermissionNumbers(zabbixAPI, zabbixAuthToken, cookie, objectNames)).entries()).map(value => {
@@ -211,6 +239,14 @@ export class ZabbixPermissionsHelper {
         return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     }
 
+    /**
+     * Checks if the user has the required permissions.
+     * @param zabbixAPI - The Zabbix API instance.
+     * @param args - The permissions to check.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to true if the user has all required permissions, false otherwise.
+     */
     public static async hasUserPermissions(zabbixAPI: ZabbixAPI, args: QueryHasPermissionsArgs, zabbixAuthToken?: string | null, cookie?: string | null): Promise<boolean> {
         let permissions = await this.getUserPermissionNumbers(zabbixAPI, zabbixAuthToken, cookie);
         for (const permission of args.permissions) {

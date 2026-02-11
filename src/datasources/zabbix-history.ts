@@ -16,10 +16,23 @@ export interface ZabbixExportValue extends ZabbixValue, ZabbixResult {
     itemid?: string
 }
 
+/**
+ * Parameters for querying history from Zabbix.
+ */
 export class ZabbixHistoryGetParams extends ParsedArgs {
     time_from_ms: number | undefined
     time_till_ms: number | undefined
 
+    /**
+     * @param itemids - The IDs of the items to query history for.
+     * @param output - The list of fields to return.
+     * @param limit - The maximum number of values to return.
+     * @param history - The storage item type (e.g., float, integer, character, text, log).
+     * @param time_from - The start time for the history query.
+     * @param time_until - The end time for the history query.
+     * @param sortfield - The field to sort the results by.
+     * @param sortorder - The sort order (ASC or DESC).
+     */
     constructor(public itemids: number[] | number | string | string[],
                 public output: string[] = ["value", "itemid", "clock", "ns"],
                 public limit: number | null = Array.isArray(itemids) ? itemids.length : 1,
@@ -35,7 +48,14 @@ export class ZabbixHistoryGetParams extends ParsedArgs {
     }
 }
 
+/**
+ * Request to query history from Zabbix.
+ */
 export class ZabbixQueryHistoryRequest extends ZabbixRequest<ZabbixExportValue[], ZabbixHistoryGetParams> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string | null) {
         super("history.get", authToken, cookie);
     }
@@ -65,7 +85,16 @@ export interface ZabbixHistoryPushResult {
     error?: ApiError | string[]
 }
 
+/**
+ * Parameters for pushing history to Zabbix.
+ */
 export class ZabbixHistoryPushParams extends ParsedArgs {
+    /**
+     * @param values - The history values to push.
+     * @param itemid - Optional item ID to push history for.
+     * @param key - Optional item key to push history for.
+     * @param host - Optional host name to push history for.
+     */
     constructor(public values: ZabbixHistoryPushInput[], public itemid?: string,
                 public key?: string,
                 public host?: string,) {
@@ -73,7 +102,14 @@ export class ZabbixHistoryPushParams extends ParsedArgs {
     }
 }
 
+/**
+ * Request to push history to Zabbix.
+ */
 export class ZabbixHistoryPushRequest extends ZabbixRequest<ZabbixHistoryPushResult, ZabbixHistoryPushParams> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string) {
         super("history.push", authToken, cookie);
     }

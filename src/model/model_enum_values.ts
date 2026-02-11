@@ -1,4 +1,7 @@
 // Zabbix value enum mappings
+/**
+ * Communication types used by Zabbix items.
+ */
 export enum DeviceCommunicationType {
     ZABBIX_AGENT = "0",
     ZABBIX_TRAP = "2",
@@ -16,17 +19,26 @@ export enum DeviceCommunicationType {
     SIMULATOR_JAVASCRIPT = "21",
 }
 
+/**
+ * Status of a Zabbix device or item.
+ */
 export enum DeviceStatus {
     ENABLED = "0",
     DISABLED = "1"
 }
 
+/**
+ * Types of storage for Zabbix items.
+ */
 export enum StorageItemType {
     Float = 0,
     Int = 3,
     Text = 4,
 }
 
+/**
+ * Error codes returned by the API.
+ */
 export enum ApiErrorCode {
     OK = 0,
     ZABBIX_ERROR = 1000,
@@ -45,6 +57,9 @@ export enum ApiErrorCode {
     PERMISSION_ERROR = 2002,
 }
 
+/**
+ * Error messages returned by the API.
+ */
 export enum ApiErrorMessage {
     OK = "",
     ZABBIX_NO_TRAPPER_ITEMS_FOR_PUSHING_VALUES_FOUND = "Unable to push value to history, didn't find corresponding trapper item",

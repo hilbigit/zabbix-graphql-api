@@ -33,11 +33,18 @@ export interface ZabbixWithTagsParams extends ZabbixParams {
     tags?: { tag: string; operator: number; value?: any; }[]
 }
 
+/**
+ * Parser for arguments passed to Zabbix requests.
+ * Handles Zabbix-specific argument mapping like name_pattern, tag filters, and field filters.
+ */
 export class ParsedArgs {
     public name_pattern?: string
     public distinct_by_name?: boolean;
     public zabbix_params: ZabbixParams[] | ZabbixParams
 
+    /**
+     * @param params - The raw parameters to parse.
+     */
     constructor(params?: any) {
         if (Array.isArray(params)) {
             this.zabbix_params = params.map(arg => this.parseArgObject(arg))
@@ -46,6 +53,11 @@ export class ParsedArgs {
         }
     }
 
+    /**
+     * Retrieves a parameter value by name.
+     * @param paramName - The name of the parameter to retrieve.
+     * @returns The parameter value or undefined.
+     */
     getParam(paramName: string): any {
         if (this.zabbix_params instanceof Array) {
             return undefined
@@ -54,6 +66,11 @@ export class ParsedArgs {
         return paramName in this.zabbix_params ? this.zabbix_params[paramName] : undefined
     }
 
+    /**
+     * Parses an argument object into Zabbix parameters.
+     * @param args - The raw argument object.
+     * @returns The parsed Zabbix parameters.
+     */
     parseArgObject(args?: any) {
         if (args && (typeof args !== 'object' || args.constructor !== Object)) {
             return args;
@@ -146,6 +163,9 @@ export class ParsedArgs {
     }
 }
 
+/**
+ * Base class for all Zabbix API requests.
+ */
 export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs> {
     protected requestBodyTemplate: ZabbixRequestBody;
     protected method: string
@@ -153,11 +173,22 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
     protected skippableZabbixParams: Map<string, string> = new Map();
     protected impliedFields: Map<string, string[]> = new Map();
 
+    /**
+     * @param path - The Zabbix API method path.
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(public path: string, public authToken?: string | null, public cookie?: string | null) {
         this.method = path.split(".", 2).join(".");
         this.requestBodyTemplate = new ZabbixRequestBody(this.method);
     }
 
+    /**
+     * Optimizes Zabbix parameters by removing unused fields and adding implied fields based on the requested output.
+     * @param params - The Zabbix parameters to optimize.
+     * @param output - The list of requested output fields.
+     * @returns The optimized Zabbix parameters.
+     */
     optimizeZabbixParams(params: ZabbixParams, output?: string[]): ZabbixParams {
         if (!output || output.length === 0) {
             return params;
@@ -202,10 +233,24 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
         return params;
     }
 
+    /**
+     * Creates the parameters for the Zabbix API request.
+     * @param args - The parsed arguments for the request.
+     * @param output - The list of fields to return.
+     * @returns The Zabbix parameters.
+     */
     createZabbixParams(args?: A, output?: string[]): ZabbixParams {
         return this.optimizeZabbixParams(args?.zabbix_params || {}, output)
     }
 
+    /**
+     * Constructs the request body for the Zabbix API call.
+     * @param args - The parsed arguments for the request.
+     * @param zabbixParams - Optional pre-constructed Zabbix parameters.
+     * @param output - The list of fields to return.
+     * @param version - The Zabbix API version.
+     * @returns The constructed Zabbix request body.
+     */
     getRequestBody(args?: A, zabbixParams?: ZabbixParams, output?: string[], version?: string): ZabbixRequestBody {
         let params: ZabbixParams
         if (Array.isArray(args?.zabbix_params)) {
@@ -233,6 +278,10 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
         return body
     };
 
+    /**
+     * Returns the HTTP headers for the Zabbix API call.
+     * @returns The HTTP headers.
+     */
     headers() {
         let headers: {
             "Content-Type": string
@@ -255,12 +304,25 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
     }
 
 
+    /**
+     * Prepares the request before execution. Can be overridden to perform checks or transformations.
+     * @param zabbixAPI - The Zabbix API instance.
+     * @param _args - The parsed arguments for the request.
+     * @returns A promise that resolves to the result, an error, or undefined if preparation is successful.
+     */
     async prepare(zabbixAPI: ZabbixAPI, _args?: A): Promise<T | ZabbixErrorResult | undefined> {
         // If prepare returns something else than undefined, the execution will be skipped and the
         // result returned
         return this.prepResult;
     }
 
+    /**
+     * Executes the request and returns the result or an error.
+     * @param zabbixAPI - The Zabbix API instance.
+     * @param args - The parsed arguments for the request.
+     * @param output - The list of fields to return.
+     * @returns A promise that resolves to the result or an error.
+     */
     async executeRequestReturnError(zabbixAPI: ZabbixAPI, args?: A, output?: string[]): Promise<T | ZabbixErrorResult> {
         let prepareResult = await this.prepare(zabbixAPI, args);
         if (prepareResult) {
@@ -299,6 +361,14 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
         }
     }
 
+    /**
+     * Executes the request and throws an error if it fails.
+     * @param zabbixApi - The Zabbix API instance.
+     * @param args - The parsed arguments for the request.
+     * @param output - The list of fields to return.
+     * @returns A promise that resolves to the result.
+     * @throws GraphQLError if the request fails.
+     */
     async executeRequestThrowError(zabbixApi: ZabbixAPI, args?: A, output?: string[]): Promise<T> {
         let response = await this.executeRequestReturnError(zabbixApi, args, output);
         if (isZabbixErrorResult(response)) {
@@ -317,16 +387,34 @@ export class ZabbixRequest<T extends ZabbixResult, A extends ParsedArgs = Parsed
 
 }
 
+/**
+ * Parameters for creating or updating entities in Zabbix.
+ */
 export class ZabbixCreateOrUpdateParams extends ParsedArgs {
+    /**
+     * @param args - The raw arguments.
+     * @param dryRun - Whether to perform a dry run (default: true).
+     */
     constructor(args: any, public dryRun = true) {
         super(args);
     }
 }
 
+/**
+ * Request to create or update entities in Zabbix.
+ * Automatically checks if an entity with the same name already exists.
+ */
 export class ZabbixCreateOrUpdateRequest<
     T extends ZabbixResult,
     P extends ZabbixRequest<ZabbixResult>,
     A extends ZabbixCreateOrUpdateParams = ZabbixCreateOrUpdateParams> extends ZabbixRequest<T, A> {
+    /**
+     * @param entity - The entity name (e.g., "host", "usergroup").
+     * @param updateExistingIdFieldname - The name of the ID field used for updating.
+     * @param prepareType - The class type used to query for existing entities.
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(public entity: string,
                 public updateExistingIdFieldname: string,
                 private prepareType: new (authToken?: string | null, cookie?: string | null) => P, authToken?: string | null, cookie?: string | null) {

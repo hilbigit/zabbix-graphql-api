@@ -21,15 +21,28 @@ const hostGroupReadWritePermissions = {
         }]
 }
 
+/**
+ * Request to create a host group in Zabbix.
+ */
 export class ZabbixCreateHostGroupRequest extends ZabbixRequestWithPermissions<CreateHostGroupResult> {
+    /**
+     * @param _authToken - Ignored, as privilege escalation token is used.
+     * @param cookie - Optional session cookie.
+     */
     constructor(_authToken?: string | null, cookie?: string) {
         super("hostgroup.create", zabbixPrivilegeEscalationToken, cookie, hostGroupReadWritePermissions);
     }
 }
 
+/**
+ * Parameters for querying host groups from Zabbix.
+ */
 export class ZabbixQueryHostgroupsParams extends ParsedArgs {
     search_name: string | undefined
 
+    /**
+     * @param args - The raw arguments.
+     */
     constructor(args?: any) {
         super(args);
         if ("search_name" in args && typeof (args.search_name) == "string") {
@@ -45,8 +58,16 @@ export type ZabbixQueryHostgroupsResult = {
     uuid: string
 }
 
+/**
+ * Request to query host groups from Zabbix.
+ */
 export class ZabbixQueryHostgroupsRequest extends ZabbixRequestWithPermissions<ZabbixQueryHostgroupsResult[],
     ZabbixQueryHostgroupsParams> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @param hostGroupReadPermissions - Optional host group read permissions.
+     */
     constructor(authToken?: string | null, cookie?: string | null, hostGroupReadPermissions?: any) {
         super("hostgroup.get", authToken, cookie, hostGroupReadPermissions,);
     }
@@ -69,7 +90,14 @@ export class ZabbixQueryHostgroupsRequest extends ZabbixRequestWithPermissions<Z
 
 }
 
+/**
+ * Request to delete host groups in Zabbix.
+ */
 export class ZabbixDeleteHostGroupsRequest extends ZabbixRequestWithPermissions<{ groupids: string[] }> {
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string | null) {
         super("hostgroup.delete", authToken, cookie, hostGroupReadWritePermissions);
     }
@@ -84,6 +112,14 @@ export class GroupHelper {
         return groupName.replace(FIND_ZABBIX_EDGE_DEVICE_BASE_GROUP_PREFIX, "")
     }
 
+    /**
+     * Finds host group IDs by their names.
+     * @param groupNames - The names of the host groups to find.
+     * @param zabbixApi - The Zabbix API instance.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to an array of host group IDs.
+     */
     public static async findHostGroupIdsByName(groupNames: string[], zabbixApi: ZabbixAPI, zabbixAuthToken?: string, cookie?: string) {
         let result: number[] = []
         for (let groupName of groupNames) {

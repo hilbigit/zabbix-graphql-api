@@ -12,7 +12,15 @@ import {isZabbixErrorResult, ParsedArgs, ZabbixErrorResult} from "../datasources
 import {CreateHostGroupResult, GroupHelper, ZabbixCreateHostGroupRequest} from "../datasources/zabbix-hostgroups.js";
 import {ZABBIX_EDGE_DEVICE_BASE_GROUP, zabbixAPI} from "../datasources/zabbix-api.js";
 
+/**
+ * Handles importing hosts and host groups into Zabbix.
+ */
 export class HostImporter {
+    /**
+     * Extracts and sorts all parent group names from a list of host groups to ensure correct hierarchy creation.
+     * @param hostGroups - The list of host groups to process.
+     * @returns A sorted array of host groups including parents.
+     */
     public static getHostGroupHierarchyNames(hostGroups: Array<CreateHostGroup>) {
         let nameToGroup = new Map<string, CreateHostGroup>()
         for (let group of hostGroups || []) {
@@ -31,6 +39,13 @@ export class HostImporter {
         return Array.from(nameToGroup.values()).sort((a, b) => a.groupName.localeCompare(b.groupName))
     }
 
+    /**
+     * Imports host groups into Zabbix, respecting hierarchy.
+     * @param hostGroups - The list of host groups to import.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to an array of import responses.
+     */
     public static async importHostGroups(hostGroups: InputMaybe<Array<CreateHostGroup>> | undefined, zabbixAuthToken?: string, cookie?: string) {
 
         if (!hostGroups) {
@@ -92,6 +107,13 @@ export class HostImporter {
         return result
     }
 
+    /**
+     * Imports hosts into Zabbix, linking them to groups and templates.
+     * @param hosts - The list of hosts to import.
+     * @param zabbixAuthToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     * @returns A promise that resolves to an array of import responses.
+     */
     static async importHosts(hosts: InputMaybe<Array<CreateHost>> | undefined, zabbixAuthToken?: string, cookie?: string) {
         if (!hosts) {
             return null

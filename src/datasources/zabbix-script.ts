@@ -3,12 +3,21 @@ import {ApiErrorCode} from "../model/model_enum_values.js";
 import {isZabbixErrorResult, ParsedArgs, ZabbixErrorResult, ZabbixParams, ZabbixRequest} from "./zabbix-request.js";
 import {ZabbixQueryHostsMetaRequest} from "./zabbix-hosts.js";
 
+/**
+ * Parameters for forcing a Zabbix configuration cache reload.
+ */
 export class ZabbixForceCacheReloadParams extends ParsedArgs {
+    /**
+     * @param hostid - The ID of the host to execute the script on.
+     */
     constructor(public hostid: number) {
         super();
     }
 }
 
+/**
+ * Request to force a Zabbix configuration cache reload.
+ */
 export class ZabbixForceCacheReloadRequest extends ZabbixRequest<{
     response: string
     value: string
@@ -27,6 +36,10 @@ export class ZabbixForceCacheReloadRequest extends ZabbixRequest<{
         "scope": "2"
     };
 
+    /**
+     * @param authToken - Optional Zabbix authentication token.
+     * @param cookie - Optional session cookie.
+     */
     constructor(authToken?: string | null, cookie?: string | null) {
         super("script.execute", authToken, cookie);
     }
