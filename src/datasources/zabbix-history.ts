@@ -35,7 +35,7 @@ export class ZabbixHistoryGetParams extends ParsedArgs {
      */
     constructor(public itemids: number[] | number | string | string[],
                 public output: string[] = ["value", "itemid", "clock", "ns"],
-                public limit: number | null = Array.isArray(itemids) ? itemids.length : 1,
+                public limit: number | null | undefined = undefined,
                 public history: StorageItemType | string = StorageItemType.Text,
                 time_from?: Date,
                 time_until?: Date,
