@@ -80,11 +80,15 @@ jobs:
           echo "API_VERSION=$API_VERSION" >> "$GITHUB_ENV"
           echo "LATEST_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
 
+      - name: Set up QEMU
+        if: ${{ github.ref_name == 'main' || github.ref_name == 'prod' || env.DEBUG_WORKFLOW == 'true' }}
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         if: ${{ github.ref_name == 'main' || github.ref_name == 'prod' || env.DEBUG_WORKFLOW == 'true' }}
         uses: docker/setup-buildx-action@v3
         with:
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64
 
       - name: Login to Forgejo Container Registry
         if: ${{ github.ref_name == 'main' || github.ref_name == 'prod' || env.DEBUG_WORKFLOW == 'true' }}
@@ -103,7 +107,7 @@ jobs:
             API_VERSION=${{ env.API_VERSION }}
           push: true
           tags: ${{ env.IMAGE_TAG }}:${{ env.API_VERSION }}
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64
 
   TriggerDeploymentAndSmoketest:
     runs-on: docker-develop
