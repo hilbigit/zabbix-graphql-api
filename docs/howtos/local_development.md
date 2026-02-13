@@ -8,7 +8,7 @@ The project includes a Docker Compose profile that launches a complete Zabbix st
 ### Included Services
 - **`zabbix-graphql-api`**: The main GraphQL server.
 - **`apollo-mcp-server`**: The Model Context Protocol server for AI integration.
-- **`postgres-server`**: PostgreSQL 16 database for Zabbix.
+- **`zabbix-db`**: PostgreSQL 16 database for Zabbix.
 - **`zabbix-server`**: Zabbix Server (PostgreSQL version).
 - **`zabbix-web`**: Zabbix Web interface (Nginx/PostgreSQL).
 
