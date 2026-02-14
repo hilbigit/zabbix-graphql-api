@@ -63,7 +63,10 @@ async function startApolloServer() {
                 // Request logging plugin
                 {
                     async requestDidStart(requestContext) {
-                        if (Config.VERBOSITY > 0) {
+                        const logParameters = Config.VERBOSITY > 0 || Config.VERBOSITY_PARAMETERS > 0;
+                        const logResponses = Config.VERBOSITY > 1 || Config.VERBOSITY_RESPONSES > 0;
+
+                        if (logParameters) {
                             logger.info(`GraphQL Request: ${requestContext.request.operationName || 'Unnamed Operation'}`);
                             if (requestContext.request.variables) {
                                 logger.info(`Parameters: ${JSON.stringify(requestContext.request.variables, null, 2)}`);
@@ -71,7 +74,7 @@ async function startApolloServer() {
                         }
                         return {
                             async willSendResponse(requestContext) {
-                                if (Config.VERBOSITY > 1) {
+                                if (logResponses) {
                                     logger.info(`GraphQL Response for ${requestContext.request.operationName || 'Unnamed Operation'}:`);
                                     logger.info(JSON.stringify(requestContext.response.body, null, 2));
                                 }

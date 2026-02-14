@@ -13,7 +13,7 @@ By leveraging GraphQL, the API provides a strongly-typed and introspectable inte
 
 You can start both the Zabbix GraphQL API and the Apollo MCP Server using Docker Compose. This setup uses a local `mcp-config.yaml` and a generated `schema.graphql`.
 
-- **Prerequisites**: Ensure you have a `.env` file with the required Zabbix connection details.
+- **Prerequisites**: Ensure you have a `.env` file with the required Zabbix connection details and the `APOLLO_MCP_SERVER_VERSION` variable (minimum recommended and tested with: `v1.7.0`).
 - **Prepare Operations**: Create the operations directory if it doesn't exist:
   ```bash
   mkdir -p mcp/operations
@@ -25,7 +25,7 @@ You can start both the Zabbix GraphQL API and the Apollo MCP Server using Docker
 
 This will:
 - Start the `zabbix-graphql-api` on `http://localhost:4001/graphql` (internal port 4000).
-- Start the `apollo-mcp-server` on `http://localhost:3000/mcp` (mapped from internal port 8000), configured to connect to the local API via `mcp-config.yaml`.
+- Start the `apollo-mcp-server` on `http://localhost:3000/mcp` (internal port 3000), configured to connect to the local API via `mcp-config.yaml`.
 
 ### Using with Claude Desktop
 
@@ -50,7 +50,7 @@ To use this integration with Claude Desktop, add the following configuration to 
         "-v", "/path/to/your/project/schema.graphql:/mcp-data/schema.graphql:ro",
         "-v", "/path/to/your/project/mcp/operations:/mcp/operations",
         "-e", "APOLLO_GRAPH_REF=local@main",
-        "ghcr.io/apollographql/apollo-mcp-server:latest",
+        "ghcr.io/apollographql/apollo-mcp-server:v1.7.0",
         "/mcp-config.yaml"
       ]
     }
@@ -110,9 +110,13 @@ You can control the logging level and verbosity of both the GraphQL API and the 
 - **GraphQL API Verbosity**:
     - `VERBOSITY=1`: Logs GraphQL operation names and parameters (variables).
     - `VERBOSITY=2`: Logs operation names, parameters, and the full response body.
+    - `VERBOSITY_PARAMETERS=1`: Specifically enable parameter logging (can be used independently of `VERBOSITY`).
+    - `VERBOSITY_RESPONSES=1`: Specifically enable response logging (can be used independently of `VERBOSITY`).
 - **MCP Server Logging**:
-    - `MCP_LOG_LEVEL`: Sets the log level for the Apollo MCP server (`debug`, `info`, `warn`, `error`).
-    - `MCP_LOG_PARAMETERS=true`: Enables logging of parameters in the MCP server.
-    - `MCP_LOG_RESPONSES=true`: Enables logging of responses in the MCP server.
+    - `MCP_LOG_LEVEL`: Sets the log level for the Apollo MCP server (`trace`, `debug`, `info`, `warn`, `error`).
+        - `debug`: Recommended for development as it provides a full configuration dump and detailed tool loading information.
+        - `trace`: extremely verbose, including periodic file system rescan events.
+        - `info`: Default level, provides a clean output while suppressing noisy internal library logs.
+    - *Note*: As of `apollo-mcp-server` v1.7.0, environment variable expansion in `mcp-config.yaml` requires the `env.` prefix (e.g. `${env.MCP_LOG_LEVEL:-info}`). Additionally, the previously used `MCP_LOG_PARAMETERS` and `MCP_LOG_RESPONSES` are **not supported** and will cause a startup failure if present in the config file. These have been replaced by API-level verbosity settings (`VERBOSITY_PARAMETERS` and `VERBOSITY_RESPONSES`).
 
 When running via Docker Compose, these can be set in your `.env` file.

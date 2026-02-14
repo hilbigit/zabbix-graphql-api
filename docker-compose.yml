@@ -12,14 +12,16 @@ services:
       - SCHEMA_PATH=/usr/app/dist/schema/
       - ZABBIX_DEVELOPMENT_TOKEN=${ZABBIX_DEVELOPMENT_TOKEN}
       - VERBOSITY=${VERBOSITY:-0}
+      - VERBOSITY_PARAMETERS=${VERBOSITY_PARAMETERS:-0}
+      - VERBOSITY_RESPONSES=${VERBOSITY_RESPONSES:-0}
       - LOG_LEVELS=${LOG_LEVELS:-INFO}
     volumes:
       - ./samples:/usr/app/dist/samples
 
   apollo-mcp-server:
-    image: ghcr.io/apollographql/apollo-mcp-server:latest
+    image: ghcr.io/apollographql/apollo-mcp-server:${APOLLO_MCP_SERVER_VERSION:-v1.7.0}
     ports:
-      - "3000:8000"
+      - "3000:3000"
     volumes:
       - ./mcp-config.yaml:/mcp-config.yaml
       - mcp-shared:/mcp-data:ro
@@ -28,8 +30,8 @@ services:
     environment:
       - APOLLO_GRAPH_REF=local@main
       - MCP_LOG_LEVEL=${MCP_LOG_LEVEL:-info}
-      - MCP_LOG_PARAMETERS=${MCP_LOG_PARAMETERS:-false}
-      - MCP_LOG_RESPONSES=${MCP_LOG_RESPONSES:-false}
+      # Note: MCP_LOG_PARAMETERS and MCP_LOG_RESPONSES are deprecated and not supported by apollo-mcp-server v1.7.0+
+      # Detailed logging is handled by the zabbix-graphql-api service via the VERBOSITY variable.
     depends_on:
       schema-gen:
         condition: service_completed_successfully

@@ -115,9 +115,12 @@ The API is configured via environment variables. Create a `.env` file or set the
 | `ADDITIONAL_RESOLVERS` | Comma-separated list of resolver types to generate | - | No |
 | `LOG_LEVELS` | Comma-separated list of log levels to enable (e.g. `DEBUG,INFO,ERROR`) | - | No |
 | `VERBOSITY` | Verbosity level for GraphQL logging (0=off, 1=parameters, 2=parameters+responses) | `0` | No |
-| `MCP_LOG_LEVEL` | Log level for the MCP server | `info` | No |
-| `MCP_LOG_PARAMETERS` | Whether to log parameters of MCP calls | `false` | No |
-| `MCP_LOG_RESPONSES` | Whether to log responses of MCP calls | `false` | No |
+| `VERBOSITY_PARAMETERS` | Enable detailed logging of parameters for GraphQL requests | `0` | No |
+| `VERBOSITY_RESPONSES` | Enable detailed logging of responses for GraphQL requests | `0` | No |
+| `MCP_LOG_LEVEL` | Log level for the MCP server (`trace`, `debug`, `info`, `warn`, `error`) | `info` | No |
+| `APOLLO_MCP_SERVER_VERSION` | Version tag for the Apollo MCP server Docker image (minimum recommended and tested with: `v1.7.0`) | `v1.7.0` | No |
+| `MCP_LOG_PARAMETERS` | **(Deprecated)** Use `VERBOSITY_PARAMETERS` instead. | `false` | No |
+| `MCP_LOG_RESPONSES` | **(Deprecated)** Use `VERBOSITY_RESPONSES` instead. | `false` | No |
 | `HOST_TYPE_FILTER_DEFAULT` | Default filter for host types | - | No |
 | `HOST_GROUP_FILTER_DEFAULT` | Default filter for host groups | - | No |
 
