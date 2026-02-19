@@ -17,6 +17,9 @@ The Zabbix GraphQL API acts as a wrapper and enhancer for the native Zabbix JSON
 - **Mass Operations**: Import/export capabilities for hosts, templates, and user rights
   - *Reference*: `schema/mutations.graphql` (importHosts, importTemplates, importUserRights, etc.), `docs/queries/sample_import_*.graphql`
 
+- **Group-Level Data Storage**: Persistence and retrieval of JSON-based configuration or metadata associated with host groups
+  - *Reference*: `schema/mutations.graphql` (`storeGroupValue`), `schema/queries.graphql` (`getGroupValue`), `docs/howtos/cookbook.md`
+
 - **Dynamic Schema Extension**: Extend the schema without code changes using environment variables
   - *Reference*: `src/api/schema.ts`, `samples/extensions/` (sample extensions), `src/common_utils.ts` (ADDITIONAL_SCHEMAS, ADDITIONAL_RESOLVERS)
 
@@ -40,7 +43,7 @@ For detailed information on specific topics and practical step-by-step instructi
 - [**Hierarchical Data Mapping**](./docs/howtos/hierarchical_data_mapping.md): How Zabbix items are mapped to nested GraphQL fields.
 - [**Roles & Permissions**](./docs/howtos/permissions.md): Managing user rights through Zabbix template groups.
 - [**Technical Maintenance Guide**](./docs/howtos/maintenance.md): Guide on code generation, testing, and Docker maintenance.
-- [**Test Specification**](./docs/tests.md): Detailed list of test cases and coverage checklist.
+- [**Test Specification**](./docs/testcases/tests.md): Detailed list of test cases and coverage checklist.
 - [**MCP & Agent Integration**](./docs/howtos/mcp.md): Connecting LLMs and autonomous agents via Model Context Protocol.
 
 See the [How-To Overview](./docs/howtos/README.md) for a complete list of documentation.
@@ -154,6 +157,7 @@ The API maps Zabbix entities to GraphQL types as follows:
 |---------------|--------------|-------------|
 | Host | `Host` / `Device` | Represents a Zabbix host; `Device` is a specialized `Host` with a `deviceType` tag |
 | Host Group | `HostGroup` | Represents a Zabbix host group |
+| Group Value | `JSONObject` | Stored configuration or metadata associated with a host group (managed via `storeGroupValue` / `getGroupValue`) |
 | Template | `Template` | Represents a Zabbix template |
 | Template Group | `HostGroup` | Represents a Zabbix template group |
 | Item | Nested fields | Zabbix items become nested fields based on their key names (hierarchical mapping) |
@@ -258,12 +262,13 @@ This API is officially supported and productively used with **Zabbix 7.0 (LTS)**
 - **Zabbix 7.0+ (including 7.4)**:
     - Full feature support.
     - **History Push**: Uses the native `history.push` API for efficient data ingestion.
+    - **Group-Level Storage**: Efficiently store/retrieve configuration objects using `storeGroupValue` and `getGroupValue`.
 - **Zabbix 6.4**:
-    - **History Push**: Not supported (requires Zabbix 7.0+). The `pushHistory` mutation returns a clear error.
+    - **History Push / Group Storage**: Not supported (requires Zabbix 7.0+). The `pushHistory` and `storeGroupValue` mutations return a clear error.
     - **Group Propagation**: Fully supported via the `hostgroup.propagate` API.
     - **UUIDs**: Fully supported for both Host Groups and Template Groups.
 - **Zabbix 6.2**:
-    - **History Push**: Not supported.
+    - **History Push / Group Storage**: Not supported.
     - **Authentication**: Fully supported. The API automatically falls back to using the `auth` field in JSON-RPC request bodies since Bearer token headers were only introduced in 6.4.
 
 #### ⚠️ Dropped Support for Zabbix 6.0

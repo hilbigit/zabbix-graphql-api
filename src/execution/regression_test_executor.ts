@@ -14,6 +14,12 @@ import {
 import {ZabbixQueryTemplatesRequest} from "../datasources/zabbix-templates.js";
 import {isZabbixErrorResult, ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
 import {ZabbixHistoryPushParams, ZabbixHistoryPushRequest} from "../datasources/zabbix-history.js";
+import {
+    ZabbixGetGroupValueRequest,
+    ZabbixGroupValueLocatorParams,
+    ZabbixStoreObjectInItemHistoryRequest,
+    ZabbixStoreValueInItemParams
+} from "../datasources/zabbix-store-in-item-history.js";
 
 /**
  * Handles the execution of regression tests to ensure bug fixes remain effective.
@@ -45,6 +51,9 @@ export class RegressionTestExecutor {
         const devHostNameWithoutTag = "REG_DEV_WITHOUT_TAG_" + Math.random().toString(36).substring(7);
         const pushHostName = "REG_PUSH_HOST_" + Math.random().toString(36).substring(7);
 
+        const hostGroupsToCleanup: string[] = [];
+        const templateGroupsToCleanup: string[] = [];
+
         try {
             // Regression 1: Locations query argument order
             // This verifies the fix where getLocations was called with (authToken, args) instead of (args, authToken)
@@ -70,9 +79,13 @@ export class RegressionTestExecutor {
             const hostGroupName = "Roadwork/Devices";
             
             // Assure template group exists
-            await TemplateImporter.importTemplateGroups([{
+            const regGroupResult = await TemplateImporter.importTemplateGroups([{
                 groupName: regGroupName
             }], zabbixAuthToken, cookie);
+            
+            if (regGroupResult?.length && !regGroupResult[0].message) {
+                templateGroupsToCleanup.push(regGroupName);
+            }
             
             const tempResult = await TemplateImporter.importTemplates([{
                 host: regTemplateName,
@@ -593,10 +606,139 @@ export class RegressionTestExecutor {
             });
             if (!pushSuccess) success = false;
 
+            // Regression 14: storeGroupValue mutation
+            let storeSuccess = false;
+            let storeGroupName = "REG_STORE_GROUP_" + Math.random().toString(36).substring(7);
+            let itemid1_dbg: any = null;
+            let itemid2_dbg: any = null;
+            try {
+                const storeValueType = "RegStoreType";
+                const storeKey = "reg.store.key";
+                const storeValue = { status: "ok", timestamp: Date.now() };
+
+                // 1. Create group
+                const storeGroupResult = await HostImporter.importHostGroups([{ groupName: storeGroupName }], zabbixAuthToken, cookie);
+                if (storeGroupResult?.length && !storeGroupResult[0].message) {
+                    hostGroupsToCleanup.push(storeGroupName);
+                }
+
+                // 2. Store value (should create host and item)
+                const storeRequest1 = new ZabbixStoreObjectInItemHistoryRequest(zabbixAuthToken, cookie);
+                const storeResult1 = await storeRequest1.executeRequestReturnError(zabbixAPI, new ZabbixStoreValueInItemParams({
+                    locator: {
+                        groupName: storeGroupName,
+                        valueType: storeValueType,
+                        key: storeKey,
+                    },
+                    value: storeValue
+                }));
+
+                if (isZabbixErrorResult(storeResult1)) {
+                     console.error("REG-STORE: Step 1 failed with Zabbix error: " + JSON.stringify(storeResult1));
+                }
+
+                if (!isZabbixErrorResult(storeResult1)) {
+                    const itemid1 = storeRequest1.itemid;
+                    itemid1_dbg = itemid1;
+                    const hostid1 = storeRequest1.hostid;
+
+                    // 3. Store again (should update existing item)
+                    const storeRequest2 = new ZabbixStoreObjectInItemHistoryRequest(zabbixAuthToken, cookie);
+                    const storeResult2 = await storeRequest2.executeRequestReturnError(zabbixAPI, new ZabbixStoreValueInItemParams({
+                        locator: {
+                            groupName: storeGroupName,
+                            valueType: storeValueType,
+                            key: storeKey,
+                            itemid: itemid1
+                        },
+                        value: { ...storeValue, updated: true },
+                    }));
+
+                    if (isZabbixErrorResult(storeResult2)) {
+                        console.error("REG-STORE: Step 2 failed with Zabbix error: " + JSON.stringify(storeResult2));
+                    }
+
+                    if (!isZabbixErrorResult(storeResult2)) {
+                        const itemid2 = storeRequest2.itemid;
+                        itemid2_dbg = itemid2;
+                        storeSuccess = (itemid1?.toString() === itemid2?.toString() && !!itemid1);
+
+                        if (storeSuccess) {
+                            // 4. Store different key (should create new item on same host)
+                            const storeKey2 = "reg.store.key.2";
+                            const storeRequest3 = new ZabbixStoreObjectInItemHistoryRequest(zabbixAuthToken, cookie);
+                            const storeResult3 = await storeRequest3.executeRequestReturnError(zabbixAPI, new ZabbixStoreValueInItemParams({
+                                locator: {
+                                    groupName: storeGroupName,
+                                    valueType: storeValueType,
+                                    key: storeKey2,
+                                },
+                                value: { another: "value" }
+                            }));
+
+                            if (!isZabbixErrorResult(storeResult3)) {
+                                const itemid3 = storeRequest3.itemid;
+                                const hostid3 = storeRequest3.hostid;
+                                // Verify itemid3 is different from itemid1, but hostid is the same
+                                const idsDifferent = itemid3?.toString() !== itemid1?.toString();
+                                const hostSame = hostid3?.toString() === hostid1?.toString();
+                                if (!idsDifferent || !hostSame) {
+                                    storeSuccess = false;
+                                    console.error(`REG-STORE: Step 4 failed. idsDifferent=${idsDifferent} (itemid1=${itemid1}, itemid3=${itemid3}), hostSame=${hostSame} (hostid1=${hostid1}, hostid3=${hostid3})`);
+                                } else {
+                                    // 5. Retrieve value (getGroupValue)
+                                    const getRequest = new ZabbixGetGroupValueRequest(zabbixAuthToken, cookie);
+                                    const getResult = await getRequest.executeRequestReturnError(zabbixAPI, new ZabbixGroupValueLocatorParams({
+                                        locator: {
+                                            groupName: storeGroupName,
+                                            valueType: storeValueType,
+                                            key: storeKey
+                                        }
+                                    }));
+
+                                    if (isZabbixErrorResult(getResult)) {
+                                        storeSuccess = false;
+                                        console.error("REG-STORE: Step 5 failed with Zabbix error: " + JSON.stringify(getResult));
+                                    } else {
+                                        // Verify retrieved value matches Step 3 updated value
+                                        const expectedValue = { ...storeValue, updated: true };
+                                        if (JSON.stringify(getResult) !== JSON.stringify(expectedValue)) {
+                                            storeSuccess = false;
+                                            console.error(`REG-STORE: Step 5 failed. Retrieved value mismatch. Expected=${JSON.stringify(expectedValue)}, Actual=${JSON.stringify(getResult)}`);
+                                        }
+                                    }
+                                }
+                            } else {
+                                storeSuccess = false;
+                                console.error("REG-STORE: Step 4 failed with Zabbix error: " + JSON.stringify(storeResult3));
+                            }
+                        }
+                    }
+
+                    // Cleanup storage host
+                    if (hostid1) {
+                        await HostDeleter.deleteHosts([hostid1], null, zabbixAuthToken, cookie);
+                    }
+                }
+            } catch (e: any) {
+                console.error("REG-STORE failed: " + (e.stack || e));
+            }
+
+            steps.push({
+                name: "REG-STORE: storeGroupValue mutation",
+                success: storeSuccess,
+                message: storeSuccess ? "Successfully stored and updated group value" : `Failed to store/update group value correctly (itemid1=${itemid1_dbg}, itemid2=${itemid2_dbg})`
+            });
+            if (!storeSuccess) success = false;
+
             // Step 1: Create Host Group (Legacy test kept for compatibility)
             const groupResult = await HostImporter.importHostGroups([{
                 groupName: groupName
             }], zabbixAuthToken, cookie);
+
+            if (groupResult?.length && !groupResult[0].message) {
+                hostGroupsToCleanup.push(groupName);
+            }
 
             const groupSuccess = !!groupResult?.length && !groupResult[0].error;
             steps.push({
@@ -630,21 +772,32 @@ export class RegressionTestExecutor {
                 message: error.message || String(error)
             });
         } finally {
-            // Cleanup
+            // Cleanup hosts
             await HostDeleter.deleteHosts(null, hostName, zabbixAuthToken, cookie);
             await HostDeleter.deleteHosts(null, macroHostName, zabbixAuthToken, cookie);
             await HostDeleter.deleteHosts(null, metaHostName, zabbixAuthToken, cookie);
             await HostDeleter.deleteHosts(null, devHostNameWithTag, zabbixAuthToken, cookie);
             await HostDeleter.deleteHosts(null, devHostNameWithoutTag, zabbixAuthToken, cookie);
             await HostDeleter.deleteHosts(null, pushHostName, zabbixAuthToken, cookie);
+            await HostDeleter.deleteHosts(null, stateHostName, zabbixAuthToken, cookie);
+            
+            // Cleanup templates
             await TemplateDeleter.deleteTemplates(null, regTemplateName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, httpTempName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, macroTemplateName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, metaTempName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, depTempName, zabbixAuthToken, cookie);
             await TemplateDeleter.deleteTemplates(null, stateTempName, zabbixAuthToken, cookie);
-            await HostDeleter.deleteHosts(null, stateHostName, zabbixAuthToken, cookie);
-            // We don't delete the group here as it might be shared or used by other tests in this run
+            
+            // Cleanup host groups created during this run (only those we created)
+            for (const g of hostGroupsToCleanup) {
+                await HostDeleter.deleteHostGroups(null, g, zabbixAuthToken, cookie);
+            }
+            
+            // Cleanup template groups created during this run (only those we created)
+            for (const tg of templateGroupsToCleanup) {
+                await TemplateDeleter.deleteTemplateGroups(null, tg, zabbixAuthToken, cookie);
+            }
         }
 
         return {

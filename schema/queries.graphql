@@ -169,5 +169,15 @@ type Query {
         """Wildcard name pattern for filtering template groups."""
         name_pattern: String
     ): [HostGroup]
+
+    """
+    Retrieves the last value stored with `storeGroupValue`.
+    
+    Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+    """
+    getGroupValue(
+        """Parameters to locate the stored value."""
+        locator: GroupValueLocator!
+    ): JSONObject
 }
 

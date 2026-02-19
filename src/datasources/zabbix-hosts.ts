@@ -337,7 +337,7 @@ export class ZabbixCreateHostRequest extends ZabbixRequest<CreateHostResponse> {
      * @param authToken - Optional Zabbix authentication token.
      * @param cookie - Optional session cookie.
      */
-    constructor(authToken?: string | null, cookie?: string) {
+    constructor(authToken?: string | null, cookie?: string | null) {
         super("host.create", authToken, cookie);
     }
 

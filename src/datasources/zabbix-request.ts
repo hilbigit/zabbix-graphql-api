@@ -40,17 +40,21 @@ export interface ZabbixWithTagsParams extends ZabbixParams {
 export class ParsedArgs {
     public name_pattern?: string
     public distinct_by_name?: boolean;
-    public zabbix_params: ZabbixParams[] | ZabbixParams
+    protected _zabbix_params: ZabbixParams[] | ZabbixParams
 
     /**
      * @param params - The raw parameters to parse.
      */
     constructor(params?: any) {
         if (Array.isArray(params)) {
-            this.zabbix_params = params.map(arg => this.parseArgObject(arg))
+            this._zabbix_params = params.map(arg => this.parseArgObject(arg))
         } else {
-            this.zabbix_params = this.parseArgObject(params)
+            this._zabbix_params = this.parseArgObject(params)
         }
+    }
+
+    get zabbix_params(): ZabbixParams[] | ZabbixParams {
+        return this._zabbix_params;
     }
 
     /**
@@ -59,7 +63,7 @@ export class ParsedArgs {
      * @returns The parameter value or undefined.
      */
     getParam(paramName: string): any {
-        if (this.zabbix_params instanceof Array) {
+        if (this._zabbix_params instanceof Array) {
             return undefined
         }
         // @ts-ignore

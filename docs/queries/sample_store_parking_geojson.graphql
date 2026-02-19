@@ -1,0 +1,70 @@
+### Mutation
+Store a GeoJSON `FeatureCollection` for Cologne Trade Fair parking lots using the `storeGroupValue` mutation.
+
+```graphql
+mutation StoreParkingGeoJSON($locator: GroupValueLocator!, $value: JSONObject!) {
+  storeGroupValue(locator: $locator, value: $value) {
+    itemid
+    error { message }
+  }
+}
+```
+
+### Variables
+```json
+{
+  "locator": {
+    "groupName": "Roadwork/CologneTradeFair",
+    "valueType": "FeatureCollection",
+    "key": "geometry.areas.parking"
+  },
+  "value": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": { "name": "P22", "type": "parking lot", "operator": "Koelnmesse", "ref": "P22", "source": "OpenStreetMap", "website": "https://www.koelnmesse.de/", "updatedAt": "2026-02-19T00:00:00Z" },
+        "geometry": { "type": "Polygon", "coordinates": [[[6.9812, 50.9469], [6.9823, 50.9467], [6.9820, 50.9459], [6.9810, 50.9461], [6.9812, 50.9469]]] }
+      },
+      {
+        "type": "Feature",
+        "properties": { "name": "P21", "type": "parking lot", "operator": "Koelnmesse", "ref": "P21", "source": "OpenStreetMap" },
+        "geometry": { "type": "Polygon", "coordinates": [[[6.9800, 50.9476], [6.9810, 50.9473], [6.9809, 50.9468], [6.9798, 50.9470], [6.9800, 50.9476]]] }
+      },
+      {
+        "type": "Feature",
+        "properties": { "name": "P32", "type": "parking lot", "operator": "Koelnmesse", "ref": "P32", "source": "OpenStreetMap" },
+        "geometry": { "type": "Polygon", "coordinates": [[[6.9835, 50.9438], [6.9843, 50.9436], [6.9841, 50.9430], [6.9833, 50.9432], [6.9835, 50.9438]]] }
+      }
+    ]
+  }
+}
+```
+
+### Verification Query
+Verify the stored GeoJSON using the `getGroupValue` query.
+
+```graphql
+query VerifyParkingGeoJSON($locator: GroupValueLocator!) {
+  getGroupValue(locator: $locator)
+}
+```
+
+Alternatively, verify by querying the host and its items:
+
+```graphql
+query VerifyParkingGeoJSONAlt($hostPattern: String!) {
+  allHosts(name_pattern: $hostPattern) {
+    host
+    ... on ZabbixHost {
+      tags
+    }
+    items {
+      name
+      key_
+      lastvalue
+      lastclock
+    }
+  }
+}
+```

@@ -25,7 +25,7 @@ Guide on code generation (GraphQL Codegen), running Jest tests, and local Docker
 ### 💻 [Local Development Environment](./local_development.md)
 Detailed instructions for setting up a fully isolated local development environment with Zabbix using Docker Compose.
 
-### 🧪 [Test Specification](../tests.md)
+### 🧪 [Test Specification](../testcases/tests.md)
 Detailed list of test cases, categories (Unit, Integration, E2E), and coverage checklist.
 
 ### 🤖 [MCP & Agent Integration](./mcp.md)

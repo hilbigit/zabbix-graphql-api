@@ -21,3 +21,12 @@ static readonly DRY_RUN = process.env.DRY_RUN
     static readonly HOST_TYPE_FILTER_DEFAULT = process.env.HOST_TYPE_FILTER_DEFAULT;
     static readonly HOST_GROUP_FILTER_DEFAULT = process.env.HOST_GROUP_FILTER_DEFAULT;
 }
+
+export function sleep(ms: number): { promise: Promise<void>, cancel: () => void } {
+    let timeoutId: NodeJS.Timeout;
+    const promise = new Promise<void>((resolve) => {
+        timeoutId = setTimeout(resolve, ms);
+    });
+    const cancel = () => clearTimeout(timeoutId);
+    return { promise, cancel };
+}

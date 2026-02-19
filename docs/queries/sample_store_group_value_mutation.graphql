@@ -1,0 +1,9 @@
+mutation StoreConfiguration($locator: GroupValueLocator!, $value: JSONObject!) {
+  storeGroupValue(
+    locator: $locator,
+    value: $value
+  ) {
+    itemid
+    error { message }
+  }
+}

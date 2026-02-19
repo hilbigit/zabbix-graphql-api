@@ -35,6 +35,7 @@ The [Roadmap](../roadmap.md) is to be considered as outlook giving constraints o
 
 ## Best Practices & Standards
 - **ESM & Imports**: The project uses ECMAScript Modules (ESM). Always use the `.js` extension when importing local files (e.g. `import { Config } from "../common_utils.js";`), even though the source files are `.ts`.
+- **Zabbix API Requests**: Always use dedicated request classes (extending `ZabbixRequest`) for interacting with the Zabbix API. Avoid using `zabbixAPI.requestByPath` directly in business logic or data sources, as request classes provide better type safety and parameter optimization.
 - **Configuration**: Always use the `Config` class to access environment variables. Avoid direct `process.env` calls.
 - **Type Safety**: Leverage types generated via `npx graphql-codegen --config codegen.ts` (or `npm run codegen` for watch mode) for resolvers and data handling to ensure consistency with the schema.
 - **Import Optimization**: 

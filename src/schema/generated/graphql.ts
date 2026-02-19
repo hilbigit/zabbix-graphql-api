@@ -400,6 +400,30 @@ export interface GpsPosition {
   longitude?: Maybe<Scalars['Float']['output']>;
 }
 
+/**
+ * Input for locating a specific value stored within a host group.
+ * Used by both retrieval queries and storage mutations.
+ */
+export interface GroupValueLocator {
+  /** Name of the target host group (either groupid or groupName is required). */
+  groupName?: InputMaybe<Scalars['String']['input']>;
+  /** ID of the target host group (either groupid or groupName is required). */
+  groupid?: InputMaybe<Scalars['Int']['input']>;
+  /** Name of the host to store/retrieve the value (optional). If not provided, valueType is used to find or create a storage host. */
+  host?: InputMaybe<Scalars['String']['input']>;
+  /** Item ID if an existing item should be used. */
+  itemid?: InputMaybe<Scalars['Int']['input']>;
+  /** The technical key of the item. */
+  key: Scalars['String']['input'];
+  /** The visible name of the item (optional). */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * The value for the "valueType" tag of the storage host.
+   * Mandatory if no host is provided. Used to identify the host within the group.
+   */
+  valueType?: InputMaybe<Scalars['String']['input']>;
+}
+
 /** Detailed result for a single pushed value. */
 export interface HistoryPushData {
   __typename?: 'HistoryPushData';
@@ -614,6 +638,25 @@ export interface Mutation {
   runAllRegressionTests: SmoketestResponse;
   /** Runs a smoketest: creates a template, links a host, verifies it, and cleans up. */
   runSmoketest: SmoketestResponse;
+  /**
+   * Store JSON object (e.g. config value) and assign it to a host group by groupid or groupName.
+   * If both groupid or groupName are unset an error will be returned and the dataset will not be stored.
+   *
+   * If host is provided the corresponding host will be looked up and the value will be pushed to
+   * an item of this host with the corresponding key - if such an item does not exist it will be created,
+   * if it exists it must be a ZABBIX_TRAP item, otherwise an error is returned. If a name is specified it will be
+   * set as item name.
+   *
+   * If no host is provided the field valueType is mandatory - the hosts of the specified group will
+   * be looked up for a host having a corresponding tag "valueType" matching to the specified value.
+   * If multiple hosts exist with this tag and this group, an error will be thrown.
+   * If no hosts exist with this tag and this group a new host will be created and the tag and the group will be assigned.
+   *
+   * Return value: If no error occurs, a hostid and an itemid will be returned.
+   *
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+   */
+  storeGroupValue?: Maybe<HistoryPushData>;
 }
 
 
@@ -690,6 +733,12 @@ export interface MutationRunSmoketestArgs {
   templateName: Scalars['String']['input'];
 }
 
+
+export interface MutationStoreGroupValueArgs {
+  locator: GroupValueLocator;
+  value: Scalars['JSONObject']['input'];
+}
+
 /** Operational data common to most devices. */
 export interface OperationalDeviceData {
   __typename?: 'OperationalDeviceData';
@@ -752,6 +801,12 @@ export interface Query {
   exportHostValueHistory?: Maybe<GenericResponse>;
   /** Exports user rights (roles and groups). */
   exportUserRights?: Maybe<UserRights>;
+  /**
+   * Retrieves the last value stored with `storeGroupValue`.
+   *
+   * Authentication: Requires `zbx_session` cookie or `zabbix-auth-token` header.
+   */
+  getGroupValue?: Maybe<Scalars['JSONObject']['output']>;
   /** Checks if the current user has the requested permissions. */
   hasPermissions?: Maybe<Scalars['Boolean']['output']>;
   /**
@@ -830,6 +885,11 @@ export interface QueryExportUserRightsArgs {
 }
 
 
+export interface QueryGetGroupValueArgs {
+  locator: GroupValueLocator;
+}
+
+
 export interface QueryHasPermissionsArgs {
   permissions: Array<PermissionRequest>;
 }
@@ -888,6 +948,11 @@ export enum SortOrder {
 }
 
 export { StorageItemType };
+
+export interface Tag {
+  tag: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+}
 
 /** Represents a Zabbix template. */
 export interface Template {
@@ -1301,6 +1366,7 @@ export type ResolversTypes = {
   GenericDeviceState: ResolverTypeWrapper<GenericDeviceState>;
   GenericResponse: ResolverTypeWrapper<GenericResponse>;
   GpsPosition: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['GpsPosition']>;
+  GroupValueLocator: GroupValueLocator;
   HistoryPushData: ResolverTypeWrapper<HistoryPushData>;
   HistoryPushInput: HistoryPushInput;
   HistoryPushResponse: ResolverTypeWrapper<HistoryPushResponse>;
@@ -1326,6 +1392,7 @@ export type ResolversTypes = {
   SortOrder: SortOrder;
   StorageItemType: StorageItemType;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Tag: Tag;
   Template: ResolverTypeWrapper<Omit<Template, 'items'> & { items?: Maybe<Array<ResolversTypes['ZabbixItem']>> }>;
   Time: ResolverTypeWrapper<Scalars['Time']['output']>;
   UserGroup: ResolverTypeWrapper<UserGroup>;
@@ -1380,6 +1447,7 @@ export type ResolversParentTypes = {
   GenericDeviceState: GenericDeviceState;
   GenericResponse: GenericResponse;
   GpsPosition: ResolversInterfaceTypes<ResolversParentTypes>['GpsPosition'];
+  GroupValueLocator: GroupValueLocator;
   HistoryPushData: HistoryPushData;
   HistoryPushInput: HistoryPushInput;
   HistoryPushResponse: HistoryPushResponse;
@@ -1402,6 +1470,7 @@ export type ResolversParentTypes = {
   SmoketestResponse: SmoketestResponse;
   SmoketestStep: SmoketestStep;
   String: Scalars['String']['output'];
+  Tag: Tag;
   Template: Omit<Template, 'items'> & { items?: Maybe<Array<ResolversParentTypes['ZabbixItem']>> };
   Time: Scalars['Time']['output'];
   UserGroup: UserGroup;
@@ -1655,6 +1724,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   pushHistory?: Resolver<Maybe<ResolversTypes['HistoryPushResponse']>, ParentType, ContextType, RequireFields<MutationPushHistoryArgs, 'values'>>;
   runAllRegressionTests?: Resolver<ResolversTypes['SmoketestResponse'], ParentType, ContextType>;
   runSmoketest?: Resolver<ResolversTypes['SmoketestResponse'], ParentType, ContextType, RequireFields<MutationRunSmoketestArgs, 'groupName' | 'hostName' | 'templateName'>>;
+  storeGroupValue?: Resolver<Maybe<ResolversTypes['HistoryPushData']>, ParentType, ContextType, RequireFields<MutationStoreGroupValueArgs, 'locator' | 'value'>>;
 };
 
 export type OperationalDeviceDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationalDeviceData'] = ResolversParentTypes['OperationalDeviceData']> = {
@@ -1677,6 +1747,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   apiVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   exportHostValueHistory?: Resolver<Maybe<ResolversTypes['GenericResponse']>, ParentType, ContextType, RequireFields<QueryExportHostValueHistoryArgs, 'sortOrder' | 'type'>>;
   exportUserRights?: Resolver<Maybe<ResolversTypes['UserRights']>, ParentType, ContextType, RequireFields<QueryExportUserRightsArgs, 'exclude_hostgroups_pattern' | 'name_pattern'>>;
+  getGroupValue?: Resolver<Maybe<ResolversTypes['JSONObject']>, ParentType, ContextType, RequireFields<QueryGetGroupValueArgs, 'locator'>>;
   hasPermissions?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<QueryHasPermissionsArgs, 'permissions'>>;
   locations?: Resolver<Maybe<Array<Maybe<ResolversTypes['Location']>>>, ParentType, ContextType, RequireFields<QueryLocationsArgs, 'distinct_by_name' | 'name_pattern' | 'templateids'>>;
   login?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QueryLoginArgs, 'password' | 'username'>>;

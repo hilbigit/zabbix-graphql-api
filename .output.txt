@@ -1,1 +1,1195 @@
-{"data":{"runAllRegressionTests":{"success":true,"message":"Regression tests passed successfully","steps":[{"name":"REG-LOC: Locations query argument order","success":true,"message":"Locations query executed without session error"},{"name":"REG-TEMP: Template technical name lookup","success":true,"message":"Template REG_TEMP_o1fedi created and searchable by technical name"},{"name":"REG-HTTP: HTTP Agent URL support","success":true,"message":"Template REG_HTTP_cnbxkf with HTTP Agent item created successfully"},{"name":"REG-MACRO: User Macro assignment","success":true,"message":"Macros successfully assigned to template and host"},{"name":"REG-HOST: Host retrieval and visibility (incl. groups and templates)","success":true,"message":"Host REG_HOST_ngacal retrieved successfully with groups and templates"},{"name":"REG-ITEM-META: Item metadata (preprocessing, units, description, error)","success":true,"message":"Item metadata successfully retrieved including preprocessing and units"},{"name":"REG-OPT: Query Optimization and Skippable Parameters","success":true,"message":"Optimization logic correctly filters output fields and skippable parameters"},{"name":"REG-EMPTY: Empty result handling","success":true,"message":"Correctly returned empty array for non-existent host"},{"name":"REG-DEP: Dependent Items support","success":true,"message":"Template with master and dependent items imported successfully"},{"name":"REG-STATE: State sub-properties retrieval (indirect dependency)","success":true,"message":"State sub-properties correctly trigger item fetching and are available"},{"name":"REG-OPT-NEG: Negative Optimization - items not requested (allDevices)","success":true,"message":"Optimization correctly omits items when neither items nor state are requested"},{"name":"REG-DEV-FILTER: allDevices deviceType filter","success":true,"message":"allDevices correctly filtered out hosts without deviceType tag"},{"name":"REG-PUSH: pushHistory mutation","success":true,"message":"Successfully pushed history data to trapper item"},{"name":"Create Host Group","success":true,"message":"Host group REG_GROUP_l5t5hv created"}]}}}
+ PASS  src/test/store_group_value.integration.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.log
+      Loading schema from path: ./schema/, cwd=/home/ahilbig/git/vcr/zabbix-graphql-api
+      at schema_loader (src/api/schema.ts:31:13)
+ PASS  src/test/store_group_value.unit.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+ PASS  src/test/template_integration.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.log
+      Loading schema from path: ./schema/, cwd=/home/ahilbig/git/vcr/zabbix-graphql-api
+      at schema_loader (src/api/schema.ts:31:13)
+ PASS  src/test/schema_dependent_queries.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.log
+      Connecting to Zabbix at url=http://cockpit.vcr.develop.hilbigit.com/
+      at Logger.info (src/logging/logger.ts:42:21)
+    console.log
+      Loading schema from path: ./schema/, cwd=/home/ahilbig/git/vcr/zabbix-graphql-api
+      at schema_loader (src/api/schema.ts:31:13)
+    console.log
+      checking host Distance Tracker 01 for deviceType - found DistanceTrackerDevice
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.count","value":"5"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.timeFrom","value":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.timeUntil","value":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "DistanceTrackerDevice"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_01), looking up key from item {"key":"state.current.count","value":"5"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_01), looking up key from item {"key":"state.current.timeFrom","value":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_01), looking up key from item {"key":"state.current.timeUntil","value":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "TRACKER_01"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 01), looking up key from item {"key":"state.current.count","value":"5"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 01), looking up key from item {"key":"state.current.timeFrom","value":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 01), looking up key from item {"key":"state.current.timeUntil","value":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "Distance Tracker 01"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving attributes of object field parent.state (undefined), looking up key from item {"key":"state.current.count","value":"5"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute count, result:  {"count":5}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":5}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":5}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving attributes of object field parent.state ([object Object]), looking up key from item {"key":"state.current.timeFrom","value":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute timeFrom, result:  {"count":5,"timeFrom":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":5,"timeFrom":"2024-01-01T10:00:00Z"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":5,"timeFrom":"2024-01-01T10:00:00Z"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving attributes of object field parent.state ([object Object]), looking up key from item {"key":"state.current.timeUntil","value":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute timeUntil, result:  {"count":5,"timeFrom":"2024-01-01T10:00:00Z","timeUntil":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":5,"timeFrom":"2024-01-01T10:00:00Z","timeUntil":"2024-01-01T11:00:00Z"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":5,"timeFrom":"2024-01-01T10:00:00Z","timeUntil":"2024-01-01T11:00:00Z"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  {"current":{"count":5,"timeFrom":"2024-01-01T10:00:00Z","timeUntil":"2024-01-01T11:00:00Z"}}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      checking host Distance Tracker 02 for deviceType - found DistanceTrackerDevice
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.count","value":"10"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.timeFrom","value":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "DistanceTrackerDevice"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_02), looking up key from item {"key":"state.current.count","value":"10"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_02), looking up key from item {"key":"state.current.timeFrom","value":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "TRACKER_02"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 02), looking up key from item {"key":"state.current.count","value":"10"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 02), looking up key from item {"key":"state.current.timeFrom","value":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "Distance Tracker 02"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving attributes of object field parent.state (undefined), looking up key from item {"key":"state.current.count","value":"10"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute count, result:  {"count":10}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":10}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":10}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving attributes of object field parent.state ([object Object]), looking up key from item {"key":"state.current.timeFrom","value":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute timeFrom, result:  {"count":10,"timeFrom":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":10,"timeFrom":"09:58:09"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":10,"timeFrom":"09:58:09"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  {"current":{"count":10,"timeFrom":"09:58:09"}}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      checking host Distance Tracker 03 for deviceType - found DistanceTrackerDevice
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.count","value":"0"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.timeFrom","value":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "DistanceTrackerDevice"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_03), looking up key from item {"key":"state.current.count","value":"0"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_03), looking up key from item {"key":"state.current.timeFrom","value":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "TRACKER_03"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 03), looking up key from item {"key":"state.current.count","value":"0"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 03), looking up key from item {"key":"state.current.timeFrom","value":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "Distance Tracker 03"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving attributes of object field parent.state (undefined), looking up key from item {"key":"state.current.count","value":"0"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute count, result:  {"count":0}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":0}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":0}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving attributes of object field parent.state ([object Object]), looking up key from item {"key":"state.current.timeFrom","value":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute timeFrom, result:  {"count":0,"timeFrom":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":0,"timeFrom":""}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":0,"timeFrom":""}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  {"current":{"count":0,"timeFrom":""}}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      checking host LED Display 01 for deviceType - found SinglePanelDevice
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.deviceType (SinglePanelDevice), looking up key from item {"key":"state.current.values.1.contentText","value":"Roadwork Ahead"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "SinglePanelDevice"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.host (DISPLAY_01), looking up key from item {"key":"state.current.values.1.contentText","value":"Roadwork Ahead"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "DISPLAY_01"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.debug
+      Resolving value of scalar field parent.name (LED Display 01), looking up key from item {"key":"state.current.values.1.contentText","value":"Roadwork Ahead"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      Device data mapped:  "LED Display 01"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 3)
+    console.log
+      checking host Distance Tracker 01 for deviceType - found DistanceTrackerDevice
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.hostid (10001), looking up key from item {"key":"state.current.count","value":"5"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.hostid (10001), looking up key from item {"key":"state.current.timeFrom","value":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.hostid (10001), looking up key from item {"key":"state.current.timeUntil","value":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "10001"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_01), looking up key from item {"key":"state.current.count","value":"5"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_01), looking up key from item {"key":"state.current.timeFrom","value":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_01), looking up key from item {"key":"state.current.timeUntil","value":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "TRACKER_01"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 01), looking up key from item {"key":"state.current.count","value":"5"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 01), looking up key from item {"key":"state.current.timeFrom","value":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 01), looking up key from item {"key":"state.current.timeUntil","value":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "Distance Tracker 01"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.count","value":"5"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.timeFrom","value":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.timeUntil","value":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "DistanceTrackerDevice"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.deviceWidgetPreview ([object Object]), looking up key from item {"key":"deviceType","value":"DistanceTrackerDevice"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Item key deviceType not matched fieldname=deviceWidgetPreview, result:  {}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device tags mapped:  {}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.state (undefined), looking up key from item {"key":"state.current.count","value":"5"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute count, result:  {"count":5}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":5}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":5}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.state ([object Object]), looking up key from item {"key":"state.current.timeFrom","value":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute timeFrom, result:  {"count":5,"timeFrom":"2024-01-01T10:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":5,"timeFrom":"2024-01-01T10:00:00Z"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":5,"timeFrom":"2024-01-01T10:00:00Z"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.state ([object Object]), looking up key from item {"key":"state.current.timeUntil","value":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute timeUntil, result:  {"count":5,"timeFrom":"2024-01-01T10:00:00Z","timeUntil":"2024-01-01T11:00:00Z"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":5,"timeFrom":"2024-01-01T10:00:00Z","timeUntil":"2024-01-01T11:00:00Z"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":5,"timeFrom":"2024-01-01T10:00:00Z","timeUntil":"2024-01-01T11:00:00Z"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  {"current":{"count":5,"timeFrom":"2024-01-01T10:00:00Z","timeUntil":"2024-01-01T11:00:00Z"}}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      checking host Distance Tracker 02 for deviceType - found DistanceTrackerDevice
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.hostid (10003), looking up key from item {"key":"state.current.count","value":"10"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.hostid (10003), looking up key from item {"key":"state.current.timeFrom","value":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "10003"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_02), looking up key from item {"key":"state.current.count","value":"10"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_02), looking up key from item {"key":"state.current.timeFrom","value":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "TRACKER_02"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 02), looking up key from item {"key":"state.current.count","value":"10"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 02), looking up key from item {"key":"state.current.timeFrom","value":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "Distance Tracker 02"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.count","value":"10"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.timeFrom","value":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "DistanceTrackerDevice"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.deviceWidgetPreview ([object Object]), looking up key from item {"key":"deviceType","value":"DistanceTrackerDevice"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Item key deviceType not matched fieldname=deviceWidgetPreview, result:  {}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device tags mapped:  {}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.state (undefined), looking up key from item {"key":"state.current.count","value":"10"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute count, result:  {"count":10}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":10}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":10}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.state ([object Object]), looking up key from item {"key":"state.current.timeFrom","value":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute timeFrom, result:  {"count":10,"timeFrom":"09:58:09"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":10,"timeFrom":"09:58:09"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":10,"timeFrom":"09:58:09"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  {"current":{"count":10,"timeFrom":"09:58:09"}}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      checking host Distance Tracker 03 for deviceType - found DistanceTrackerDevice
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.hostid (10004), looking up key from item {"key":"state.current.count","value":"0"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.hostid (10004), looking up key from item {"key":"state.current.timeFrom","value":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "10004"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_03), looking up key from item {"key":"state.current.count","value":"0"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.host (TRACKER_03), looking up key from item {"key":"state.current.timeFrom","value":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "TRACKER_03"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 03), looking up key from item {"key":"state.current.count","value":"0"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.name (Distance Tracker 03), looking up key from item {"key":"state.current.timeFrom","value":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "Distance Tracker 03"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.count","value":"0"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.deviceType (DistanceTrackerDevice), looking up key from item {"key":"state.current.timeFrom","value":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "DistanceTrackerDevice"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.deviceWidgetPreview ([object Object]), looking up key from item {"key":"deviceType","value":"DistanceTrackerDevice"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Item key deviceType not matched fieldname=deviceWidgetPreview, result:  {}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device tags mapped:  {}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.state (undefined), looking up key from item {"key":"state.current.count","value":"0"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute count, result:  {"count":0}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":0}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":0}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.state ([object Object]), looking up key from item {"key":"state.current.timeFrom","value":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute timeFrom, result:  {"count":0,"timeFrom":""}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute current, result:  {"current":{"count":0,"timeFrom":""}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"count":0,"timeFrom":""}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  {"current":{"count":0,"timeFrom":""}}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      checking host LED Display 01 for deviceType - found SinglePanelDevice
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.hostid (10002), looking up key from item {"key":"state.current.values.1.contentText","value":"Roadwork Ahead"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "10002"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.host (DISPLAY_01), looking up key from item {"key":"state.current.values.1.contentText","value":"Roadwork Ahead"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "DISPLAY_01"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.name (LED Display 01), looking up key from item {"key":"state.current.values.1.contentText","value":"Roadwork Ahead"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "LED Display 01"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving value of scalar field parent.deviceType (SinglePanelDevice), looking up key from item {"key":"state.current.values.1.contentText","value":"Roadwork Ahead"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  "SinglePanelDevice"
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.deviceWidgetPreview ([object Object]), looking up key from item {"key":"deviceType","value":"SinglePanelDevice"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Item key deviceType not matched fieldname=deviceWidgetPreview, result:  {}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device tags mapped:  {}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Resolving attributes of object field parent.state (undefined), looking up key from item {"key":"state.current.values.1.contentText","value":"Roadwork Ahead"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute contentText, result:  {"contentText":"Roadwork Ahead"}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute 1, result:  {"1":{"contentText":"Roadwork Ahead"}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute values, result:  {"values":{"1":{"contentText":"Roadwork Ahead"}}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Adding attribute current, result:  {"current":{"values":{"1":{"contentText":"Roadwork Ahead"}}}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.debug
+      Detected matching item key state in item , result:  {"current":{"values":{"1":{"contentText":"Roadwork Ahead"}}}}
+      at Logger.debug (src/logging/logger.ts:58:21)
+          at Array.forEach (<anonymous>)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+    console.log
+      Device data mapped:  {"current":{"values":{"1":{"contentText":"Roadwork Ahead"}}}}
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 4)
+ PASS  src/test/zabbix_docs_samples.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.log
+      Loading schema from path: ./schema/, cwd=/home/ahilbig/git/vcr/zabbix-graphql-api
+      at schema_loader (src/api/schema.ts:31:13)
+    console.error
+      Unable to find groupName=New Host Group 1
+      48 |     public error(...data: any[]) {
+      49 |         if (!this.levels || this.levels.has(Loglevel.ERROR)) {
+    > 50 |             console.error(...data)
+         |                     ^
+      51 |             if (this.logMqtt) {
+      52 |                 // TODO Push to mqtt TEST_STATS_LOG_TOPIC topic
+      53 |             }
+      at Logger.error (src/logging/logger.ts:50:21)
+      at GroupHelper.findHostGroupIdsByName (src/datasources/zabbix-hostgroups.ts:132:24)
+      at HostImporter.importHostGroups (src/execution/host_importer.ts:57:26)
+    console.error
+      Unable to find groupName=New Host Group 2
+      48 |     public error(...data: any[]) {
+      49 |         if (!this.levels || this.levels.has(Loglevel.ERROR)) {
+    > 50 |             console.error(...data)
+         |                     ^
+      51 |             if (this.logMqtt) {
+      52 |                 // TODO Push to mqtt TEST_STATS_LOG_TOPIC topic
+      53 |             }
+      at Logger.error (src/logging/logger.ts:50:21)
+      at GroupHelper.findHostGroupIdsByName (src/datasources/zabbix-hostgroups.ts:132:24)
+      at HostImporter.importHostGroups (src/execution/host_importer.ts:57:26)
+    console.error
+      Unable to find groupName=undefined
+      48 |     public error(...data: any[]) {
+      49 |         if (!this.levels || this.levels.has(Loglevel.ERROR)) {
+    > 50 |             console.error(...data)
+         |                     ^
+      51 |             if (this.logMqtt) {
+      52 |                 // TODO Push to mqtt TEST_STATS_LOG_TOPIC topic
+      53 |             }
+      at Logger.error (src/logging/logger.ts:50:21)
+      at GroupHelper.findHostGroupIdsByName (src/datasources/zabbix-hostgroups.ts:132:24)
+      at HostImporter.importHosts (src/execution/host_importer.ts:125:28)
+ PASS  src/test/history_push_integration.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.log
+      Loading schema from path: ./schema/, cwd=/home/ahilbig/git/vcr/zabbix-graphql-api
+      at schema_loader (src/api/schema.ts:31:13)
+ PASS  src/test/mcp_operations_validation.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.log
+      Connecting to Zabbix at url=http://cockpit.vcr.develop.hilbigit.com/
+      at Logger.info (src/logging/logger.ts:42:21)
+    console.log
+      Loading schema from path: ./schema/, cwd=/home/ahilbig/git/vcr/zabbix-graphql-api
+      at schema_loader (src/api/schema.ts:31:13)
+ PASS  src/test/host_integration.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.log
+      Loading schema from path: ./schema/, cwd=/home/ahilbig/git/vcr/zabbix-graphql-api
+      at schema_loader (src/api/schema.ts:31:13)
+    console.log
+      checking host BT_DEVICE_1 for deviceType - no device type found, returning as ZabbixHost
+      at Logger.info (src/logging/logger.ts:42:21)
+          at Array.from (<anonymous>)
+          at async Promise.all (index 0)
+ PASS  src/test/template_link.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.log
+      Loading schema from path: ./schema/, cwd=/home/ahilbig/git/vcr/zabbix-graphql-api
+      at schema_loader (src/api/schema.ts:31:13)
+ PASS  src/test/user_rights_integration.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.log
+      Loading schema from path: ./schema/, cwd=/home/ahilbig/git/vcr/zabbix-graphql-api
+      at schema_loader (src/api/schema.ts:31:13)
+ PASS  src/test/history_push.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+ PASS  src/test/host_query.test.ts
+ PASS  src/test/user_rights.test.ts
+ PASS  src/test/template_importer.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: ⚙️  override existing env vars with { override: true }
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.debug
+      Template group Existing Group already exists with groupid=102 - skipping
+      at Logger.debug (src/logging/logger.ts:58:21)
+ PASS  src/test/query_optimization.test.ts
+ PASS  src/test/indirect_dependencies.test.ts
+ PASS  src/test/misc_resolvers.test.ts
+ PASS  src/test/zabbix_api_args_parser.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+ PASS  src/test/template_query.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+ PASS  src/test/schema_config.test.ts
+  ● Console
+    console.log
+      Loading schema from path: ./test_schema/, cwd=/home/ahilbig/git/vcr/zabbix-graphql-api
+      at schema_loader (src/api/schema.ts:31:13)
+ PASS  src/test/host_importer.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+    console.error
+      Unable to find groupName=Parent
+      48 |     public error(...data: any[]) {
+      49 |         if (!this.levels || this.levels.has(Loglevel.ERROR)) {
+    > 50 |             console.error(...data)
+         |                     ^
+      51 |             if (this.logMqtt) {
+      52 |                 // TODO Push to mqtt TEST_STATS_LOG_TOPIC topic
+      53 |             }
+      at Logger.error (src/logging/logger.ts:50:21)
+      at GroupHelper.findHostGroupIdsByName (src/datasources/zabbix-hostgroups.ts:132:24)
+      at HostImporter.importHostGroups (src/execution/host_importer.ts:57:26)
+      at Object.<anonymous> (src/test/host_importer.test.ts:53:24)
+    console.error
+      Unable to find groupName=Parent/Child
+      48 |     public error(...data: any[]) {
+      49 |         if (!this.levels || this.levels.has(Loglevel.ERROR)) {
+    > 50 |             console.error(...data)
+         |                     ^
+      51 |             if (this.logMqtt) {
+      52 |                 // TODO Push to mqtt TEST_STATS_LOG_TOPIC topic
+      53 |             }
+      at Logger.error (src/logging/logger.ts:50:21)
+      at GroupHelper.findHostGroupIdsByName (src/datasources/zabbix-hostgroups.ts:132:24)
+      at HostImporter.importHostGroups (src/execution/host_importer.ts:57:26)
+      at Object.<anonymous> (src/test/host_importer.test.ts:53:24)
+ PASS  src/test/template_deleter.test.ts
+  ● Console
+    console.log
+      [dotenv@17.2.3] injecting env (14) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+ PASS  src/test/zabbix_api_config.test.ts
+  ● Console
+    console.log
+      Connecting to Zabbix at url=http://custom-zabbix
+      at Logger.info (src/logging/logger.ts:42:21)
+ PASS  src/test/logger_config.test.ts
+Test Suites: 24 passed, 24 total
+Tests:       100 passed, 100 total
+Snapshots:   0 total
+Time:        10.819 s
+Ran all test suites.

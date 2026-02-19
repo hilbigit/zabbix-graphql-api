@@ -139,6 +139,12 @@ Execute the `importTemplates` mutation to create the template and items automati
 > **Reference**: Use the [Sample: Distance Tracker Import](../queries/sample_import_distance_tracker_template.graphql) for a complete mutation and variables example.
 
 ### ✅ Step 4: Verify the Extension
+#### Automated Regression Test
+Parts of this functionality are covered by the regression suite. To run it:
+- Execute the `runAllRegressionTests` mutation.
+- Check the step `REG-STATE: State sub-properties retrieval (indirect dependency)`.
+
+#### Manual Verification
 Verify that the new type is available and correctly mapped by creating a test host and querying it.
 
 #### 1. Create a Test Host
@@ -299,6 +305,16 @@ Use the `importTemplates` mutation to create the template. Use **HTTP agent** or
   - Description: The average ground value (Bodenrichtwert) extracted from the BORIS NRW GeoJSON response.
 
 ### ✅ Step 5: Verification
+#### Automated Regression Test
+Parts of this functionality are covered by the regression suite. To run it:
+- Execute the `runAllRegressionTests` mutation.
+- Check the following steps:
+  - REG-HTTP: HTTP Agent URL support
+  - REG-DEP: Dependent Items support
+  - REG-ITEM-META: Item metadata (preprocessing, units, description, error)
+  - REG-STATE: State sub-properties retrieval (indirect dependency)
+
+#### Manual Verification
 Create a host, assign it macros for coordinates, and query its state.
 
 1.  **Create Host (Weather Example)**:
@@ -401,6 +417,12 @@ Push GeoJSON data to your simulated device using the `pushHistory` mutation. Thi
 > **Reference**: See the [Sample: Push GeoJSON History](../queries/sample_push_geojson_history.graphql) for a complete example of pushing historical data.
 
 ### ✅ Step 5: Verification
+#### Automated Regression Test
+Covered by the automated regression test suite. To run it:
+1. Execute the `runAllRegressionTests` mutation.
+2. Check for the step `REG-PUSH: pushHistory mutation`.
+
+#### Manual Verification
 Verify that the device correctly resolves to the new type and that both the current state and historical data are accessible.
 
 -   **Create Host**: Use the `importHosts` mutation to create a host (e.g. `Vehicle1`) and link it to the simulated template.
@@ -448,6 +470,14 @@ This recipe shows how to execute a comprehensive query to verify the state and c
 Execute the query against your GraphQL endpoint. This query retrieves information from `allHostGroups`, `allDevices`, and `allHosts`, using inline fragments to access fields specific to `DistanceTrackerDevice`.
 
 ### ✅ Step 3: Verification
+#### Automated Regression Test
+Parts of this functionality are covered by the regression suite. To run it:
+- Execute the `runAllRegressionTests` mutation.
+- Check the following steps:
+  - REG-STATE: State sub-properties retrieval (indirect dependency)
+  - REG-DEV-FILTER: allDevices deviceType filter
+
+#### Manual Verification
 Check the response for the following:
 - **apiVersion** and **zabbixVersion** are returned.
 - **allHostGroups** contains the expected groups.
@@ -482,6 +512,12 @@ mutation CreateNewHost($host: String!, $groups: [Int!]!, $templates: [Int], $tem
 ```
 
 ### ✅ Step 3: Verify Host Creation
+#### Automated Regression Test
+Covered by the automated regression test suite. To run it:
+1. Execute the `runAllRegressionTests` mutation.
+2. Check for the step `REG-HOST: Host retrieval and visibility (incl. groups and templates)`.
+
+#### Manual Verification
 Check if the host is correctly provisioned and linked to groups:
 ```graphql
 query VerifyHost($host: String!) {
@@ -562,6 +598,170 @@ query VerifyBulkImport($pattern: String!) {
 ```
 
 For detailed examples of the input structures, refer to [Sample Import Templates](../queries/sample_import_templates_mutation.graphql) and [Sample Import Hosts](../queries/sample_import_hosts_mutation.graphql).
+
+---
+
+## 🍳 Recipe: Storing Configuration in a Host Group
+
+This recipe demonstrates how to store a JSON-based configuration or state object and associate it with a host group. This is useful for managing application settings, device configurations, or any other metadata that needs to be persisted in Zabbix and retrieved via GraphQL.
+
+### 📋 Prerequisites
+- Zabbix GraphQL API is running.
+- A host group exists where the configuration should be stored (e.g. `Infrastructure/Configurations`).
+
+### 🛠️ Step 1: Preparation/Definition
+Identify the target host group name and the configuration data you want to store.
+
+### ⚙️ Step 2: Configuration/Settings
+No additional Zabbix configuration is required. The API will automatically handle host and item creation if they don't exist.
+
+### 🚀 Step 3: Execution/Action
+Execute the `storeGroupValue` mutation. The API will:
+- Look for a host in the group with the tag `valueType` matching your `valueType` argument.
+- If not found, create a new host with that tag.
+- Ensure a Zabbix Trapper item with your `key` exists on that host.
+- Push the JSON `value` to that item.
+
+```graphql
+mutation StoreConfig($locator: GroupValueLocator!, $config: JSONObject!) {
+  storeGroupValue(
+    locator: $locator,
+    value: $config
+  ) {
+    itemid
+    error { message }
+  }
+}
+```
+
+- *Variables*:
+```json
+{
+  "locator": {
+    "groupName": "Infrastructure/Configurations",
+    "valueType": "GlobalSettings",
+    "key": "api.config.json"
+  },
+  "config": {
+    "maintenanceMode": false,
+    "logLevel": "DEBUG",
+    "updatedAt": "2024-05-20T10:00:00Z"
+  }
+}
+```
+
+### ✅ Step 4: Verification
+Verify the stored value by querying the host and its items.
+
+#### Automated Regression Test
+The functionality is covered by the automated regression test suite. To run it:
+1. Execute the `runAllRegressionTests` mutation.
+2. Check for the step `REG-STORE: storeGroupValue mutation`.
+
+#### Manual Verification
+You can verify the stored value using the `getGroupValue` query:
+
+```graphql
+query GetConfig($locator: GroupValueLocator!) {
+  getGroupValue(locator: $locator)
+}
+```
+
+Alternatively, verify by querying the host and its items:
+
+```graphql
+query VerifyConfig($pattern: String!) {
+  allHosts(name_pattern: $pattern) {
+    host
+    ... on ZabbixHost {
+      tags
+    }
+    items {
+      name
+      key_
+      lastvalue
+    }
+  }
+}
+```
+
+---
+
+## 🍳 Recipe: Retrieving Stored Group Values
+
+This recipe shows how to retrieve a JSON-based configuration or state object previously stored using the `storeGroupValue` mutation.
+
+### 📋 Prerequisites
+- Zabbix GraphQL API is running.
+- A value has been stored using the `storeGroupValue` mutation.
+
+### 🛠️ Step 1: Preparation/Definition
+Identify the locator parameters used when the value was stored:
+- `groupName` or `groupid`
+- `valueType`
+- `key`
+
+### 🚀 Step 2: Execution/Action
+Execute the `getGroupValue` query.
+
+```graphql
+query GetStoredConfig($locator: GroupValueLocator!) {
+  getGroupValue(locator: $locator)
+}
+```
+
+- *Variables*:
+```json
+{
+  "locator": {
+    "groupName": "Infrastructure/Configurations",
+    "valueType": "GlobalSettings",
+    "key": "api.config.json"
+  }
+}
+```
+
+### ✅ Step 3: Verification
+The query will return the stored JSON object as the result. If no matching value is found, `null` is returned.
+
+---
+
+## 🍳 Recipe: Creating a GeoJSON Feature Collection for Cologne Trade Fair Parking
+
+This recipe shows how to persist a GeoJSON `FeatureCollection` using the `storeGroupValue` mutation. As a concrete example, we store the areas of parking lots belonging to the Cologne Trade Fair (Koelnmesse) under the host group `Roadwork/CologneTradeFair`. Each feature represents a parking lot polygon and includes descriptive metadata (e.g. name, type, operator) derived from public sources (e.g. OpenStreetMap).
+
+### 📋 Prerequisites
+- Zabbix GraphQL API is running.
+- You have a valid Zabbix user/session or token.
+- The base host group prefix `Roadwork` exists.
+- The subgroup `Roadwork/CologneTradeFair` exists. If it does not exist, create it manually first (via the `importHostGroups` mutation or in the Zabbix UI).
+
+### 🛠️ Step 1: Preparation/Definition
+Prepare a GeoJSON `FeatureCollection` with one feature per parking lot. Include descriptive metadata (e.g. name, type, operator) derived from public sources like OpenStreetMap.
+
+> **Reference**: For a complete sample `FeatureCollection` including parking lot "P22", see [Sample: Store Parking GeoJSON](../queries/sample_store_parking_geojson.graphql).
+
+- *Note*: Coordinates used in the samples are illustrative and simplified for documentation. For production, use the most accurate polygons available from authoritative or open data sources.
+
+### ⚙️ Step 2: Configuration/Settings
+- Manually ensure the host group `Roadwork/CologneTradeFair` exists (see Prerequisites).
+- The API will automatically:
+  - Create (or reuse) a storage host in that group tagged with `valueType=FeatureCollection`.
+  - Create (or update) a Zabbix Trapper item with key `geometry.areas.parking` on that host.
+
+### 🚀 Step 3: Execution/Action
+Execute the `storeGroupValue` mutation to store the `FeatureCollection` in Zabbix.
+
+> **Reference**: Use the [Sample: Store Parking GeoJSON](../queries/sample_store_parking_geojson.graphql) for the complete mutation and variables JSON.
+
+### ✅ Step 4: Verification
+Verify the stored value using the `getGroupValue` query or by querying the host and its items.
+
+> **Reference**: Use the **Verification Query** from [Sample: Store Parking GeoJSON](../queries/sample_store_parking_geojson.graphql).
+
+- *Automated Regression Test*: This functionality is covered by the regression suite. To run it:
+  - Execute the `runAllRegressionTests` mutation.
+  - Check for the step `REG-STORE: storeGroupValue mutation`.
 
 ---
 
@@ -725,6 +925,12 @@ mutation PushDeviceData($host: String, $key: String, $itemid: Int, $values: [His
 ```
 
 ### ✅ Step 3: Verification
+#### Automated Regression Test
+The functionality is covered by the automated regression test suite. To run it:
+1. Execute the `runAllRegressionTests` mutation.
+2. Check for the step `REG-PUSH: pushHistory mutation`.
+
+#### Manual Verification
 Verify that the data was successfully pushed by querying the item's last value:
 
 ```graphql

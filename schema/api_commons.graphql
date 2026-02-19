@@ -159,3 +159,27 @@ enum SortOrder {
     "Deliver values in descending order"
     desc
 }
+
+"""
+Input for locating a specific value stored within a host group.
+Used by both retrieval queries and storage mutations.
+"""
+input GroupValueLocator {
+    """ID of the target host group (either groupid or groupName is required)."""
+    groupid: Int
+    """Name of the target host group (either groupid or groupName is required)."""
+    groupName: String
+    """Name of the host to store/retrieve the value (optional). If not provided, valueType is used to find or create a storage host."""
+    host: String
+    """
+    The value for the "valueType" tag of the storage host. 
+    Mandatory if no host is provided. Used to identify the host within the group.
+    """
+    valueType: String
+    """Item ID if an existing item should be used."""
+    itemid: Int
+    """The technical key of the item."""
+    key: String!
+    """The visible name of the item (optional)."""
+    name: String
+}

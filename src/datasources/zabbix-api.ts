@@ -128,7 +128,7 @@ export class ZabbixAPI
      * @param output - The list of fields to return.
      * @returns A promise that resolves to the result or an error result.
      */
-    async requestByPath<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs>(path: string, args?: A, authToken?: string | null, cookies?: string, throwApiError: boolean = true, output?: string[]) {
+    async requestByPath<T extends ZabbixResult, A extends ParsedArgs = ParsedArgs>(path: string, args?: A, authToken?: string | null, cookies?: string | null, throwApiError: boolean = true, output?: string[]) {
         return this.executeRequest<T, A>(new ZabbixRequest<T>(path, authToken, cookies), args, throwApiError, output);
     }
 
@@ -139,7 +139,7 @@ export class ZabbixAPI
      * @param cookies - Optional session cookies.
      * @returns A promise that resolves to an array of location objects.
      */
-    async getLocations(args?: ParsedArgs, authToken?: string, cookies?: string) {
+    async getLocations(args?: ParsedArgs, authToken?: string | null, cookies?: string | null) {
         const hosts_promise = this.requestByPath("host.get", args, authToken, cookies);
         return hosts_promise.then(response => {
             // @ts-ignore

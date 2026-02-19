@@ -40,7 +40,7 @@ For running integration tests against a real Zabbix instance, it is recommended 
 #### Adding New Tests
 - **Location**: Place new test files in `src/test/` with the `.test.ts` extension.
 - **Coverage**: Ensure you cover both successful operations and error scenarios.
-- **Test Specification**: Every new test must be documented in the [Test Specification](../tests.md).
+- **Test Specification**: Every new test must be documented in the [Test Specification](../testcases/tests.md).
 - **Best Practice**: If you find a bug, first create a reproduction test in `src/test/` to verify the fix.
 
 ## 🔄 Updating Dependencies

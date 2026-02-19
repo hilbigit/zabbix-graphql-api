@@ -3,6 +3,8 @@ overrides:
   mutation_mode: all
 transport:
   type: streamable_http
+  address: 0.0.0.0
+  port: 3000
   stateful_mode: false
 operations:
   source: local

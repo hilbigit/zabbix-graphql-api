@@ -120,7 +120,7 @@ export class GroupHelper {
      * @param cookie - Optional session cookie.
      * @returns A promise that resolves to an array of host group IDs.
      */
-    public static async findHostGroupIdsByName(groupNames: string[], zabbixApi: ZabbixAPI, zabbixAuthToken?: string, cookie?: string) {
+    public static async findHostGroupIdsByName(groupNames: string[], zabbixApi: ZabbixAPI, zabbixAuthToken?: string | null, cookie?: string | null) {
         let result: number[] = []
         for (let groupName of groupNames) {
             let queryGroupsArgs = new ZabbixQueryHostgroupsParams({

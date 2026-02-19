@@ -11,7 +11,7 @@ import {
     MutationImportTemplateGroupsArgs,
     MutationImportTemplatesArgs,
     MutationImportUserRightsArgs,
-    MutationPushHistoryArgs,
+    MutationPushHistoryArgs, MutationStoreGroupValueArgs,
     Permission,
     QueryAllDevicesArgs,
     QueryAllHostGroupsArgs,
@@ -21,6 +21,7 @@ import {
     QueryHasPermissionsArgs,
     QueryTemplatesArgs,
     QueryUserPermissionsArgs,
+    QueryGetGroupValueArgs,
     Resolvers,
     StorageItemType,
 } from "../schema/generated/graphql.js";
@@ -34,7 +35,7 @@ import {TemplateImporter} from "../execution/template_importer.js";
 import {TemplateDeleter} from "../execution/template_deleter.js";
 import {HostValueExporter} from "../execution/host_exporter.js";
 import {logger} from "../logging/logger.js";
-import {ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
+import {isZabbixErrorResult, ParsedArgs, ZabbixRequest} from "../datasources/zabbix-request.js";
 import {ZabbixHistoryPushParams, ZabbixHistoryPushRequest} from "../datasources/zabbix-history.js";
 import {
     ZabbixCreateHostRequest,
@@ -65,6 +66,12 @@ import {isDevice} from "./resolver_helpers.js";
 import {ZabbixPermissionsHelper} from "../datasources/zabbix-permissions.js";
 import {Config} from "../common_utils.js";
 import {GraphqlParamsToNeededZabbixOutput} from "../datasources/graphql-params-to-zabbix-output.js";
+import {
+    ZabbixGetGroupValueRequest,
+    ZabbixGroupValueLocatorParams,
+    ZabbixStoreObjectInItemHistoryRequest,
+    ZabbixStoreValueInItemParams
+} from "../datasources/zabbix-store-in-item-history.js";
 
 
 /**
@@ -187,6 +194,14 @@ export function createResolvers(): Resolvers {
             }: any) => {
                 return await new ZabbixQueryTemplateGroupRequest(zabbixAuthToken, cookie)
                     .executeRequestThrowError(zabbixAPI, new ParsedArgs(args));
+            },
+
+            getGroupValue: async (_parent: any, args: QueryGetGroupValueArgs, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                return await new ZabbixGetGroupValueRequest(zabbixAuthToken, cookie)
+                    .executeRequestThrowError(zabbixAPI, new ZabbixGroupValueLocatorParams(args));
             }
         },
         Mutation: {
@@ -268,7 +283,15 @@ export function createResolvers(): Resolvers {
                         error: Array.isArray(d.error) ? {message: d.error.join(", ")} : d.error
                     }))
                 }
+            }, storeGroupValue: async (_parent: any, args: MutationStoreGroupValueArgs, {
+                zabbixAuthToken,
+                cookie
+            }: any) => {
+                const request = new ZabbixStoreObjectInItemHistoryRequest(zabbixAuthToken, cookie)
+                const result = await request.executeRequestReturnError(zabbixAPI, new ZabbixStoreValueInItemParams(args))
+                return isZabbixErrorResult(result) ? { error: result.error } : { itemid: String(request.itemid ?? "") }
             },
+
             deleteTemplates: async (_parent: any, args: MutationDeleteTemplatesArgs, {
                 zabbixAuthToken,
                 cookie
