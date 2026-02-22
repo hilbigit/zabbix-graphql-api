@@ -114,7 +114,7 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A e
     constructor(path: string, authToken?: string | null, cookie?: string) {
         super(path, authToken, cookie);
         this.skippableZabbixParams.set("selectItems", "items");
-        this.impliedFields.set("state", ["items"]);
+        this.impliedFields.set("state", ["items", "items.lastclock", "items.lastvalue"]);
     }
 
     createZabbixParams(args?: A, output?: string[]): ZabbixParams {
@@ -176,11 +176,11 @@ export class ZabbixQueryHostsGenericRequestWithItems<T extends ZabbixResult, A e
             }
         }
 
-        if (result && !isZabbixErrorResult(result) && (!output || output.includes("items.lastclock") || output.includes("items.lastvalue"))) {
+        if (result && !isZabbixErrorResult(result) && (!output || output.includes("state.current") || output.includes("items.lastclock") || output.includes("items.lastvalue"))) {
             const hosts = <ZabbixHost[]>result;
             for (let device of hosts) {
                 for (let item of device.items || []) {
-                    if (!item.lastclock) {
+                    if (!item.lastclock || !Number(item.lastclock)) {
                         let values = await new ZabbixQueryHistoryRequest(this.authToken, this.cookie).executeRequestReturnError(
                             zabbixAPI, new ZabbixHistoryGetParams(item.itemid, ["clock", "value", "itemid"], 1, item.value_type))
                         if (isZabbixErrorResult(values)) {
